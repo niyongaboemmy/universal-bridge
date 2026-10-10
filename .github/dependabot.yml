@@ -1,4 +1,6 @@
 # NFR-SEC-09: weekly dependency updates, grouped to keep review manageable.
+# Minor/patch updates are grouped; each major update gets its own PR so a
+# breaking change is reviewed (and CI-tested) on its own.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -8,10 +10,25 @@ updates:
     groups:
       payload:
         patterns: ["payload", "@payloadcms/*"]
+        update-types: [minor, patch]
       next-react:
-        patterns: ["next", "react", "react-dom", "@next/*"]
+        patterns: ["next", "react", "react-dom", "@next/*", "eslint-config-next"]
+        update-types: [minor, patch]
       dev-tooling:
         dependency-type: development
+        update-types: [minor, patch]
+    ignore:
+      # Types must match the production runtime (Node 22 on cPanel).
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+      # Toolchain majors are planned upgrades, not weekly bumps.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: eslint
+        update-types: [version-update:semver-major]
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
+    groups:
+      actions:
+        patterns: ["*"]
