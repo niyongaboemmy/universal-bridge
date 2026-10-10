@@ -61,9 +61,12 @@ switch_to "$REL"
 log "current -> releases/$ID (previous: ${PREV:-none})"
 
 # 5. Health check: the first request starts Node and runs pending migrations.
+# Only the app's own JSON counts: another site on the domain (or an error page)
+# can answer 200 too.
+health() { curl -fs -m 20 "$SITE/api/health" | grep -q '"db":"ok"'; }
 healthy=0
 for _ in $(seq 1 36); do
-  if curl -fs -m 20 -o /dev/null "$SITE/api/health"; then healthy=1; break; fi
+  if health; then healthy=1; break; fi
   sleep 5
 done
 if [ "$healthy" != 1 ]; then
@@ -81,7 +84,7 @@ log "Healthy: $(curl -fsS -m 20 "$SITE/api/health" || true)"
 SECRET="$(env_get REVALIDATE_SECRET)"
 curl -fsS -m 30 -X POST "$SITE/api/revalidate" \
   -H "authorization: Bearer $SECRET" -H "content-type: application/json" \
-  -d '{"tags":["cms","sitemap","search-index"],"expire":true}' >/dev/null &&
+  -d '{"tags":["cms","sitemap","search-index"],"expire":true}' | grep -q '"revalidated"' &&
   log "Content cache refreshed" || log "WARNING: cache refresh failed; run it by hand"
 for path in / /fr /rw /sitemap.xml; do curl -s -m 60 -o /dev/null "$SITE$path" || true; done
 
