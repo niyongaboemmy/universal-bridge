@@ -364,6 +364,10 @@ Each run calls `/api/cron/outbox` (emails, alerts, virus scans) and `/api/cron/j
 
 **Deploying.** Merge a PR into `main`. The deploy only runs after **CI** passes on that commit. If the `production` environment has reviewers, approve it under Actions.
 
+**When does it deploy?** Every push or merge to `main` runs **CI**. When CI passes, **Deploy (cPanel)** starts by itself (Actions tab). If CI fails, nothing deploys: fix CI, or run *Deploy (cPanel)* by hand with a commit SHA (also the way to roll back).
+
+**One-off SQL on production** (data fixes, checks, not schema changes): `pnpm db:prod-sql "select …"` runs read-only; `pnpm db:prod-sql -f db/sql/<file>.sql --write` asks for confirmation, backs up the database, runs the file in one transaction and refreshes the site cache. Without SSH access, use Actions → **Production SQL** with a file reviewed in a PR. See [db/sql/README.md](../db/sql/README.md).
+
 **Database changes.** After changing a collection or global:
 
 1. Run `pnpm db:migrate:create <short_name>`.
