@@ -22,7 +22,10 @@ async function inMaintenance(request: NextRequest) {
       cache: "no-store",
       signal: AbortSignal.timeout(2000),
     });
-    maintenance = { on: Boolean(((await res.json()) as { maintenance?: boolean }).maintenance), at: Date.now() };
+    maintenance = {
+      on: Boolean(((await res.json()) as { maintenance?: boolean }).maintenance),
+      at: Date.now(),
+    };
   } catch {
     // Keep the last known state.
   }

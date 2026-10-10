@@ -5,7 +5,6 @@ import { actingUser, can, type UserLike } from "@/access/roles";
 import { payload } from "@/lib/cms/payload";
 import type { EditRef } from "./attrs";
 
-
 /**
  * The live-edit session for this request: draft mode on AND a signed-in staff
  * member with an editing role. Cached per request (React cache), so every
@@ -23,7 +22,11 @@ export const liveEditSession = cache(async () => {
   const p = await payload();
   const h = await headers();
   const { user } = await p.auth({ headers: h });
-  if (!user || user.collection !== "users" || !can(actingUser(user as UserLike, h), "content.liveEdit"))
+  if (
+    !user ||
+    user.collection !== "users" ||
+    !can(actingUser(user as UserLike, h), "content.liveEdit")
+  )
     return null;
   return { user: user as { id: number; email: string; name?: string } };
 });

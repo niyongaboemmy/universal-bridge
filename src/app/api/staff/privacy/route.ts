@@ -17,7 +17,11 @@ export const dynamic = "force-dynamic";
 async function superUser(request: NextRequest) {
   const p = await payload();
   const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
-  if (!user || user.collection !== "users" || !can(actingUser(user as UserLike, request.headers), "privacy.manage"))
+  if (
+    !user ||
+    user.collection !== "users" ||
+    !can(actingUser(user as UserLike, request.headers), "privacy.manage")
+  )
     return null;
   return { p, req: { payload: p, user, context: {} } as unknown as PayloadRequest };
 }

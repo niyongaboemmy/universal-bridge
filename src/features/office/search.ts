@@ -58,7 +58,12 @@ const SOURCES: Source[] = [
     scope: (u) => {
       const t = applicationTypesFor(u);
       if (t === "all") return sql`true`;
-      return t.length ? sql`a.type in (${sql.join(t.map((x) => sql`${x}`), sql`, `)})` : null;
+      return t.length
+        ? sql`a.type in (${sql.join(
+            t.map((x) => sql`${x}`),
+            sql`, `,
+          )})`
+        : null;
     },
     query: (hay, scope, terms) => sql`
       select a.id, a.name as title, concat_ws(' · ', a.ref, a.type, coalesce(a.subject, ''), a.status) as subtitle,
@@ -134,24 +139,79 @@ const SOURCES: Source[] = [
 ];
 
 /** Website content (CMS): titles, summaries and SEO text in every language. */
-const CONTENT: { table: string; slug: string; label: string; perm: Parameters<typeof can>[1]; cols: string }[] = [
-  { table: "pages", slug: "pages", label: "Page", perm: "content.site", cols: "l.title, l.seo_description" },
-  { table: "posts", slug: "posts", label: "Post", perm: "content.site", cols: "l.title, l.excerpt" },
-  { table: "services", slug: "services", label: "Service", perm: "content.site", cols: "l.title, l.summary" },
-  { table: "case_studies", slug: "case-studies", label: "Case study", perm: "content.site", cols: "l.title, l.summary, l.client_label" },
-  { table: "programs", slug: "programs", label: "Program", perm: "content.academy", cols: "l.title, l.summary" },
-  { table: "jobs", slug: "jobs", label: "Job post", perm: "content.careers", cols: "l.title, l.summary" },
-  { table: "events", slug: "events", label: "Event", perm: "content.site", cols: "l.title, l.summary" },
+const CONTENT: {
+  table: string;
+  slug: string;
+  label: string;
+  perm: Parameters<typeof can>[1];
+  cols: string;
+}[] = [
+  {
+    table: "pages",
+    slug: "pages",
+    label: "Page",
+    perm: "content.site",
+    cols: "l.title, l.seo_description",
+  },
+  {
+    table: "posts",
+    slug: "posts",
+    label: "Post",
+    perm: "content.site",
+    cols: "l.title, l.excerpt",
+  },
+  {
+    table: "services",
+    slug: "services",
+    label: "Service",
+    perm: "content.site",
+    cols: "l.title, l.summary",
+  },
+  {
+    table: "case_studies",
+    slug: "case-studies",
+    label: "Case study",
+    perm: "content.site",
+    cols: "l.title, l.summary, l.client_label",
+  },
+  {
+    table: "programs",
+    slug: "programs",
+    label: "Program",
+    perm: "content.academy",
+    cols: "l.title, l.summary",
+  },
+  {
+    table: "jobs",
+    slug: "jobs",
+    label: "Job post",
+    perm: "content.careers",
+    cols: "l.title, l.summary",
+  },
+  {
+    table: "events",
+    slug: "events",
+    label: "Event",
+    perm: "content.site",
+    cols: "l.title, l.summary",
+  },
 ];
 
 function snippet(hay: string, terms: string[], title: string): string | undefined {
   const lower = hay.toLowerCase();
   const term = terms.find((t) => !title.toLowerCase().includes(t.toLowerCase())) ?? terms[0]!;
   const i = lower.indexOf(term.toLowerCase());
-  if (i < 0 || (title.toLowerCase().includes(term.toLowerCase()) && terms.every((t) => title.toLowerCase().includes(t.toLowerCase()))))
+  if (
+    i < 0 ||
+    (title.toLowerCase().includes(term.toLowerCase()) &&
+      terms.every((t) => title.toLowerCase().includes(t.toLowerCase())))
+  )
     return undefined;
   const start = Math.max(0, i - 50);
-  const text = hay.slice(start, i + term.length + 70).replace(/\s+/g, " ").trim();
+  const text = hay
+    .slice(start, i + term.length + 70)
+    .replace(/\s+/g, " ")
+    .trim();
   return (start > 0 ? "…" : "") + text + (i + term.length + 70 < hay.length ? "…" : "");
 }
 

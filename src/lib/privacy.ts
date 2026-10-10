@@ -81,7 +81,9 @@ export async function runRetention(
 ) {
   // Periods come from office → Settings (defaults above).
   const r = periods ?? (await settings()).retention;
-  const leads = await ids(payload, "leads", { updatedAt: { less_than: ago(r.leadsMonths * MONTH) } });
+  const leads = await ids(payload, "leads", {
+    updatedAt: { less_than: ago(r.leadsMonths * MONTH) },
+  });
   const applications = await ids(payload, "applications", {
     and: [
       { status: { in: ["rejected", "waitlisted"] } },

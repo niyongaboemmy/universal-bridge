@@ -214,10 +214,17 @@ export function RoleMatrix({ roles, canEdit }: { roles: RoleRow[]; canEdit: bool
         })}
       </ul>
 
-      <div role="search" aria-label="Filter permissions" className="flex flex-wrap items-center gap-2">
+      <div
+        role="search"
+        aria-label="Filter permissions"
+        className="flex flex-wrap items-center gap-2"
+      >
         <label className="relative min-w-0 flex-1 basis-56">
           <span className="sr-only">Search permissions</span>
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-fg-muted" aria-hidden />
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-fg-muted"
+            aria-hidden
+          />
           <input
             type="search"
             value={find}

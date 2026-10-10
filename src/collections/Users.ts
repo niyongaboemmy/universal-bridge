@@ -135,8 +135,7 @@ export const Users: CollectionConfig = {
     beforeChange: [
       async ({ data, originalDoc, req }) => {
         // Only a super admin can hand out (or take away) the super admin role.
-        if (!req.user || isSuperUser(actingFromReq(req)) || !Array.isArray(data.roles))
-          return data;
+        if (!req.user || isSuperUser(actingFromReq(req)) || !Array.isArray(data.roles)) return data;
         const superRole = await req.payload.find({
           collection: "roles",
           where: { slug: { equals: "super" } },

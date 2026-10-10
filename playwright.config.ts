@@ -22,8 +22,16 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 7"] }, testIgnore: /maintenance\.spec/ },
     ...(all
       ? [
-          { name: "webkit", use: { ...devices["Desktop Safari"] }, testIgnore: /maintenance\.spec/ },
-          { name: "firefox", use: { ...devices["Desktop Firefox"] }, testIgnore: /maintenance\.spec/ },
+          {
+            name: "webkit",
+            use: { ...devices["Desktop Safari"] },
+            testIgnore: /maintenance\.spec/,
+          },
+          {
+            name: "firefox",
+            use: { ...devices["Desktop Firefox"] },
+            testIgnore: /maintenance\.spec/,
+          },
         ]
       : []),
     // Maintenance mode takes the whole public site down: run it alone, after everything else.

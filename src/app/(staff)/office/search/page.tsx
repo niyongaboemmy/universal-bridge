@@ -28,7 +28,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         title="Search"
         subtitle="Requests, applicants and their answers, notes, openings, projects, people, accounts and website content."
       />
-      <FilterBar perPage={false} keep={[]} fields={[{ kind: "search", name: "q", placeholder: "Search everything…" }]} />
+      <FilterBar
+        perPage={false}
+        keep={[]}
+        fields={[{ kind: "search", name: "q", placeholder: "Search everything…" }]}
+      />
       {q.length >= 2 && (
         <nav aria-label="Result types" className="flex flex-wrap gap-2">
           <Link
@@ -51,9 +55,15 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         </nav>
       )}
       {q.length < 2 ? (
-        <Empty title="Type at least two letters" body="Tip: press / or ⌘K anywhere to search from any page." />
+        <Empty
+          title="Type at least two letters"
+          body="Tip: press / or ⌘K anywhere to search from any page."
+        />
       ) : !all.length ? (
-        <Empty title={`Nothing found for “${q}”`} body="Try fewer or different words. Every word must appear." />
+        <Empty
+          title={`Nothing found for “${q}”`}
+          body="Try fewer or different words. Every word must appear."
+        />
       ) : (
         <div className="office-stagger grid gap-4 xl:grid-cols-2">
           {groups.map((g) => (

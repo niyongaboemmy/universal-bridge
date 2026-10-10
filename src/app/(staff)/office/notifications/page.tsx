@@ -91,7 +91,10 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
         ]}
       />
       {!result.totalDocs ? (
-        <Empty title="No notifications" body="New requests, applicants and assignments show up here." />
+        <Empty
+          title="No notifications"
+          body="New requests, applicants and assignments show up here."
+        />
       ) : (
         <Card pad={false}>
           <ul className="divide-y divide-[var(--border-subtle)]">
@@ -106,10 +109,18 @@ export default async function Notifications({ searchParams }: { searchParams: Pr
                 >
                   <KindIcon kind={n.kind} size={34} />
                   <span className="min-w-0 flex-1">
-                    <span className={cn("block text-body-sm", !n.readAt && "font-semibold")}>{n.title}</span>
-                    {n.body && <span className="block truncate text-[0.8125rem] text-fg-muted">{n.body}</span>}
+                    <span className={cn("block text-body-sm", !n.readAt && "font-semibold")}>
+                      {n.title}
+                    </span>
+                    {n.body && (
+                      <span className="block truncate text-[0.8125rem] text-fg-muted">
+                        {n.body}
+                      </span>
+                    )}
                   </span>
-                  <span className="shrink-0 text-[0.75rem] text-fg-muted">{timeAgo(n.createdAt)}</span>
+                  <span className="shrink-0 text-[0.75rem] text-fg-muted">
+                    {timeAgo(n.createdAt)}
+                  </span>
                 </Link>
               </li>
             ))}

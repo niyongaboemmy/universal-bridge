@@ -14,7 +14,11 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   const p = await payload();
   const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
-  if (!user || user.collection !== "users" || !can(actingUser(user as UserLike, request.headers), "audit.view"))
+  if (
+    !user ||
+    user.collection !== "users" ||
+    !can(actingUser(user as UserLike, request.headers), "audit.view")
+  )
     return NextResponse.json({ error: "Not allowed" }, { status: 403 });
   const sp = Object.fromEntries(request.nextUrl.searchParams);
   const { entries } = await listLogs(filtersFrom(sp), 1, 5000);
@@ -34,11 +38,14 @@ export async function GET(request: NextRequest) {
       device: e.device ?? "",
     };
   });
-  await audit({ payload: p, user, headers: request.headers, context: {} } as unknown as PayloadRequest, {
-    action: "export.csv",
-    entity: "audit-log",
-    meta: { rows: rows.length },
-  });
+  await audit(
+    { payload: p, user, headers: request.headers, context: {} } as unknown as PayloadRequest,
+    {
+      action: "export.csv",
+      entity: "audit-log",
+      meta: { rows: rows.length },
+    },
+  );
   return new NextResponse(toCsv(rows, Object.keys(rows[0] ?? { at: "" })), {
     headers: {
       "content-type": "text/csv; charset=utf-8",

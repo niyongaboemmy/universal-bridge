@@ -137,7 +137,11 @@ export function MemberRegisterForm({
         required
       />
       <label className="flex items-center gap-2.5 text-body-sm">
-        <input type="checkbox" name="newsletter" className="size-4 accent-[var(--accent-primary)]" />
+        <input
+          type="checkbox"
+          name="newsletter"
+          className="size-4 accent-[var(--accent-primary)]"
+        />
         {copy.newsletter}
       </label>
       <button type="submit" disabled={pending} className={btnCls}>

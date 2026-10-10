@@ -25,14 +25,23 @@ type Result = {
 
 /** Wrap the searched words in <mark>. */
 export function Highlight({ text, q }: { text: string; q: string }) {
-  const terms = q.trim().split(/\s+/).filter((t) => t.length >= 2);
+  const terms = q
+    .trim()
+    .split(/\s+/)
+    .filter((t) => t.length >= 2);
   if (!terms.length) return <>{text}</>;
-  const re = new RegExp(`(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
+  const re = new RegExp(
+    `(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
+    "gi",
+  );
   return (
     <>
       {text.split(re).map((part, i) =>
         i % 2 ? (
-          <mark key={i} className="rounded-sm bg-[color-mix(in_oklab,var(--accent-spark)_30%,transparent)] px-0.5 text-inherit">
+          <mark
+            key={i}
+            className="rounded-sm bg-[color-mix(in_oklab,var(--accent-spark)_30%,transparent)] px-0.5 text-inherit"
+          >
             {part}
           </mark>
         ) : (

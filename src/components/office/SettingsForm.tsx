@@ -8,7 +8,8 @@ import { field, SubmitButton, useToastResult } from "./ProfileForms";
 export type SettingField = {
   name: string; // "fromName" or "inboxes.sales"
   label: string;
-  type: "text" | "email" | "url" | "number" | "checkbox" | "select" | "range" | "textarea" | "datetime";
+  type:
+    "text" | "email" | "url" | "number" | "checkbox" | "select" | "range" | "textarea" | "datetime";
   help?: string;
   placeholder?: string;
   value: unknown;

@@ -3,7 +3,16 @@ import type { Permission } from "@/access/permissions";
 import { can, type UserLike } from "@/access/roles";
 
 type Notice = {
-  kind: "request" | "demo" | "message" | "application" | "assignment" | "opening" | "project" | "account" | "system";
+  kind:
+    | "request"
+    | "demo"
+    | "message"
+    | "application"
+    | "assignment"
+    | "opening"
+    | "project"
+    | "account"
+    | "system";
   title: string;
   body?: string | null;
   href?: string | null;

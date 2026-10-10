@@ -26,7 +26,17 @@ export async function upcomingFor(user: UserLike & { id: number }): Promise<Upco
   const rows = async <T>(q: ReturnType<typeof sql>) => (await db.execute(q)).rows as T[];
   const jobs: Promise<void>[] = [];
 
-  if (can(user, "requests.view", "requests.manage", "demos.view", "demos.manage", "messages.view", "messages.manage")) {
+  if (
+    can(
+      user,
+      "requests.view",
+      "requests.manage",
+      "demos.view",
+      "demos.manage",
+      "messages.view",
+      "messages.manage",
+    )
+  ) {
     jobs.push(
       rows<{ id: number; ref: string; name: string; at: string }>(sql`
         select id, ref, name, next_follow_up_at as at from leads
@@ -118,7 +128,8 @@ export async function upcomingFor(user: UserLike & { id: number }): Promise<Upco
           out.push({
             key: `p${p.id}`,
             kind: "project",
-            title: new Date(p.at).getTime() < Date.now() ? `${p.name} is overdue` : `${p.name} is due`,
+            title:
+              new Date(p.at).getTime() < Date.now() ? `${p.name} is overdue` : `${p.name} is due`,
             body: "Project deadline",
             href: `/office/projects/${p.id}`,
             due: new Date(p.at).toISOString(),
@@ -136,7 +147,10 @@ export async function upcomingFor(user: UserLike & { id: number }): Promise<Upco
       rows<{ type: string; n: number }>(sql`
         select type, count(*)::int as n from applications
         where status = 'received' and created_at < now() - interval '3 days'
-          and type in (${sql.join(types.map((t) => sql`${t}`), sql`, `)})
+          and type in (${sql.join(
+            types.map((t) => sql`${t}`),
+            sql`, `,
+          )})
         group by 1`).then((r) =>
         r.forEach((a) =>
           out.push({
@@ -153,5 +167,7 @@ export async function upcomingFor(user: UserLike & { id: number }): Promise<Upco
   }
   await Promise.all(jobs);
   const rank = { late: 0, warn: 1, info: 2 } as const;
-  return out.sort((a, b) => rank[a.tone] - rank[b.tone] || (a.due ?? "").localeCompare(b.due ?? ""));
+  return out.sort(
+    (a, b) => rank[a.tone] - rank[b.tone] || (a.due ?? "").localeCompare(b.due ?? ""),
+  );
 }

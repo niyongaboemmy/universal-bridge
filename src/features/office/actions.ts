@@ -203,13 +203,17 @@ export async function updateProject(
 
 export async function setEmployeeStatus(id: number, status: string): Promise<ActionResult> {
   const user = await officeUser();
-  if (!["active", "on-leave", "left"].includes(status)) return { ok: false, error: "Unknown status" };
+  if (!["active", "on-leave", "left"].includes(status))
+    return { ok: false, error: "Unknown status" };
   return run(async () => {
     const p = await payload();
     await p.update({
       collection: "employees",
       id,
-      data: { status, ...(status === "left" ? { endDate: new Date().toISOString() } : {}) } as never,
+      data: {
+        status,
+        ...(status === "left" ? { endDate: new Date().toISOString() } : {}),
+      } as never,
       user,
       overrideAccess: false,
     });

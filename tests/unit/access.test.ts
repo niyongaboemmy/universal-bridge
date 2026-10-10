@@ -118,7 +118,8 @@ describe("working as one role", () => {
   const editor = { id: 2, ...role("editor") };
   const sales = { id: 5, ...role("sales") };
   const user = { id: 9, roles: [editor, sales] };
-  const h = (v?: string) => new Headers(v ? { cookie: `x=1; ub-act=${encodeURIComponent(v)}` } : {});
+  const h = (v?: string) =>
+    new Headers(v ? { cookie: `x=1; ub-act=${encodeURIComponent(v)}` } : {});
 
   it("narrows to the chosen role", () => {
     const u = actingUser(user, h("9:2"));

@@ -84,7 +84,9 @@ export function projectCard(p: Project): KanbanItem {
     title: p.name,
     subtitle: [titleCase(p.kind), p.client].filter(Boolean).join(" · "),
     meta: p.health && p.health !== "on-track" ? [titleCase(p.health)] : [],
-    badge: p.dueDate ? `Due ${new Date(p.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}` : undefined,
+    badge: p.dueDate
+      ? `Due ${new Date(p.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
+      : undefined,
     urgency: p.health === "off-track" ? "late" : p.health === "at-risk" ? "warn" : "ok",
     href: `/office/projects/${p.id}`,
     progress: typeof p.progress === "number" ? p.progress / 100 : undefined,

@@ -2,7 +2,8 @@ import type { CollectionAfterChangeHook, PayloadRequest } from "payload";
 import type { Permission } from "@/access/permissions";
 import { notifyPermission, notifyUser } from "./notify";
 
-const idOf = (v: unknown) => (typeof v === "object" && v ? (v as { id: number }).id : (v as number | null));
+const idOf = (v: unknown) =>
+  typeof v === "object" && v ? (v as { id: number }).id : (v as number | null);
 const who = (req: PayloadRequest) =>
   (req.user as { name?: string; email?: string } | null)?.name ||
   (req.user as { email?: string } | null)?.email ||
@@ -18,7 +19,12 @@ async function safely(req: PayloadRequest, fn: () => Promise<void>) {
 }
 
 /** New requests, demo requests and messages → the people who handle them; assignments → the assignee. */
-export const notifyLead: CollectionAfterChangeHook = async ({ doc, previousDoc, operation, req }) => {
+export const notifyLead: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  operation,
+  req,
+}) => {
   const kind = doc.product ? "demo" : doc.department === "sales" ? "request" : "message";
   const perms: Record<string, Permission[]> = {
     request: ["requests.view", "requests.manage"],
@@ -48,7 +54,12 @@ export const notifyLead: CollectionAfterChangeHook = async ({ doc, previousDoc, 
 };
 
 /** New applications → the people who review that type; assignments → the reviewer. */
-export const notifyApplication: CollectionAfterChangeHook = async ({ doc, previousDoc, operation, req }) => {
+export const notifyApplication: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  operation,
+  req,
+}) => {
   const href = `/office/applicants/${doc.id}`;
   await safely(req, async () => {
     if (operation === "create")

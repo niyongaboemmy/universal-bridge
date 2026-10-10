@@ -531,8 +531,7 @@ export async function WebsiteSection({ user }: { user: OfficeUser }) {
             empty="No visits recorded yet."
           />
           <p className="mt-4 text-[0.8125rem] text-fg-secondary">
-            Visitor → request conversion{" "}
-            <strong className="text-fg">{conv}</strong>
+            Visitor → request conversion <strong className="text-fg">{conv}</strong>
           </p>
         </Card>
       </div>

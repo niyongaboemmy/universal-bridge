@@ -146,8 +146,20 @@ export default async function OfficeLayout({ children }: { children: ReactNode }
     })),
   );
   pages.push(
-    { id: "/office/search", group: "Go to", label: "Search everything", href: "/office/search", keys: undefined },
-    { id: "/office/notifications", group: "Go to", label: "Notifications", href: "/office/notifications", keys: undefined },
+    {
+      id: "/office/search",
+      group: "Go to",
+      label: "Search everything",
+      href: "/office/search",
+      keys: undefined,
+    },
+    {
+      id: "/office/notifications",
+      group: "Go to",
+      label: "Notifications",
+      href: "/office/notifications",
+      keys: undefined,
+    },
   );
   const actions = [
     ...(allowed(user, "projects.manage")
@@ -294,7 +306,10 @@ export default async function OfficeLayout({ children }: { children: ReactNode }
             <span className="size-2 animate-pulse rounded-full bg-current" />
             <strong>Maintenance mode is on.</strong> Visitors see the “back soon” page.
             {can(user, "settings") && (
-              <Link href="/office/settings?s=site" className="font-semibold underline underline-offset-2">
+              <Link
+                href="/office/settings?s=site"
+                className="font-semibold underline underline-offset-2"
+              >
                 Turn it off
               </Link>
             )}

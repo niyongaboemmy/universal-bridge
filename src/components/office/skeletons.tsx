@@ -22,7 +22,10 @@ export function BoardSkeleton({ cards = 5, columns = 5 }: { cards?: number; colu
       </div>
       <div className="flex gap-3 overflow-hidden">
         {Array.from({ length: columns }, (_, c) => (
-          <div key={c} className="grid w-72 shrink-0 content-start gap-2 rounded-2xl border border-subtle p-2">
+          <div
+            key={c}
+            className="grid w-72 shrink-0 content-start gap-2 rounded-2xl border border-subtle p-2"
+          >
             <div className="office-skeleton h-6 w-28" />
             {Array.from({ length: 3 - (c % 2) }, (_, i) => (
               <div key={i} className="office-skeleton h-24" />

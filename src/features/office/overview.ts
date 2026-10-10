@@ -4,7 +4,7 @@ import { payload } from "@/lib/cms/payload";
 
 /** Data for the overview's sections (SQL aggregates; each section loads on its own). */
 const rows = async <T>(q: ReturnType<typeof sql>) =>
-  ((await (await payload()).db.drizzle.execute(q)).rows as T[]);
+  (await (await payload()).db.drizzle.execute(q)).rows as T[];
 
 const SERVICE = sql`department = 'sales' and coalesce(product, '') = ''`;
 const DEMO = sql`coalesce(product, '') <> ''`;
@@ -12,7 +12,14 @@ const MESSAGE = sql`department <> 'sales' and coalesce(product, '') = ''`;
 
 /** Daily counts for the last `days` days: requests by kind, applications, visitors. */
 export async function dailySeries(days = 14) {
-  return rows<{ day: string; service: number; demo: number; message: number; applications: number; visitors: number }>(sql`
+  return rows<{
+    day: string;
+    service: number;
+    demo: number;
+    message: number;
+    applications: number;
+    visitors: number;
+  }>(sql`
     with d as (select generate_series(current_date - (${days - 1} * interval '1 day'), current_date, interval '1 day')::date as day)
     select to_char(d.day, 'YYYY-MM-DD') as day,
       (select count(*)::int from leads l where l.created_at::date = d.day and ${SERVICE}) as service,
@@ -59,7 +66,10 @@ export async function clientsData() {
 
 export async function talentData(types: string[]) {
   if (!types.length) return null;
-  const inTypes = sql.join(types.map((t) => sql`${t}`), sql`, `);
+  const inTypes = sql.join(
+    types.map((t) => sql`${t}`),
+    sql`, `,
+  );
   const [byStage, byType, openings] = await Promise.all([
     rows<{ status: string; n: number }>(sql`
       select status, count(*)::int as n from applications where type in (${inTypes}) group by 1`),
@@ -68,7 +78,15 @@ export async function talentData(types: string[]) {
         count(*) filter (where created_at > now() - interval '30 days')::int as n,
         count(*) filter (where created_at between now() - interval '60 days' and now() - interval '30 days')::int as prev
       from applications where type in (${inTypes}) group by 1`),
-    rows<{ id: number; title: string; kind: string; closes_at: string | null; seats: number | null; applied: number; accepted: number }>(sql`
+    rows<{
+      id: number;
+      title: string;
+      kind: string;
+      closes_at: string | null;
+      seats: number | null;
+      applied: number;
+      accepted: number;
+    }>(sql`
       select o.id, l.title, o.kind, o.closes_at, o.seats,
         (select count(*) from applications a where a.opening_id = o.id)::int as applied,
         (select count(*) from applications a where a.opening_id = o.id and a.status = 'accepted')::int as accepted
@@ -83,7 +101,14 @@ export async function workData() {
   const [health, active] = await Promise.all([
     rows<{ health: string; n: number }>(sql`
       select health, count(*)::int as n from projects where status in ('planning','active','on-hold') group by 1`),
-    rows<{ id: number; name: string; progress: number; due_date: string | null; health: string; kind: string }>(sql`
+    rows<{
+      id: number;
+      name: string;
+      progress: number;
+      due_date: string | null;
+      health: string;
+      kind: string;
+    }>(sql`
       select id, name, coalesce(progress, 0)::int as progress, due_date, health, kind from projects
       where status in ('active','planning') order by due_date nulls last limit 6`),
   ]);

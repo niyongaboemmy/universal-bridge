@@ -10,7 +10,12 @@ async function staff(request: NextRequest) {
   const p = await payload();
   const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
   if (!user || user.collection !== "users") return null;
-  return { p, user: actingUser(user as UserLike & { id: number }, request.headers) as UserLike & { id: number } };
+  return {
+    p,
+    user: actingUser(user as UserLike & { id: number }, request.headers) as UserLike & {
+      id: number;
+    },
+  };
 }
 
 /** The bell: latest notifications, the unread count and what's coming up. */
@@ -56,7 +61,9 @@ export async function POST(request: NextRequest) {
   const s = await staff(request);
   if (!s) return NextResponse.json({ error: "Sign in" }, { status: 401 });
   const body = (await request.json().catch(() => ({}))) as { ids?: number[]; all?: boolean };
-  const ids = Array.isArray(body.ids) ? body.ids.filter((n) => Number.isInteger(n)).slice(0, 200) : [];
+  const ids = Array.isArray(body.ids)
+    ? body.ids.filter((n) => Number.isInteger(n)).slice(0, 200)
+    : [];
   if (!body.all && !ids.length) return NextResponse.json({ ok: true });
   await s.p.update({
     collection: "notifications",
