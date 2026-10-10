@@ -1,0 +1,69 @@
+/*
+ * Alias tokens (tier 2) — Night mood: the dark theme, plus `.ink` — artwork that
+ * is dark in both themes (cover art, the CTA card). In the light theme, Night
+ * sections are "accent paper" instead (see globals.css), so the page reads as
+ * one light document. In Night, depth comes from lighter surfaces and borders.
+ */
+[data-theme="dark"],
+.ink {
+  color-scheme: dark;
+  --bg-canvas: var(--ub-navy-950);
+  --bg-surface: var(--ub-navy-900);
+  --bg-surface-raised: var(--ub-navy-800);
+  --bg-sunken: var(--ub-navy-950);
+  --bg-inverse: var(--ub-neutral-0);
+  --text-primary: var(--ub-neutral-50);
+  --text-secondary: var(--ub-neutral-300);
+  --text-muted: var(--ub-neutral-400);
+  --text-inverse: var(--ub-navy-900);
+  --border-subtle: rgb(255 255 255 / 0.07);
+  --border-strong: rgb(255 255 255 / 0.15);
+  --accent-primary: var(--ub-blue-300);
+  --accent-primary-hover: var(--ub-blue-200);
+  --accent-primary-soft: rgb(74 123 235 / 0.14);
+  --on-accent: var(--ub-navy-950);
+  --accent-spark: var(--ub-orange-500);
+  --accent-spark-text: var(--ub-orange-400);
+  --accent-spark-hover: var(--ub-orange-400);
+  --on-spark: var(--ub-navy-950);
+  --focus-ring: var(--ub-orange-400);
+  /* Supplied dark-background logo: brighter royal blue (logos are exempt from contrast rules). */
+  --logo-blue: #1d5cf0;
+  /* Logo ink: the light (white) logo on dark backgrounds. The orange wedge and "Ltd" stay orange. */
+  --logo-ink: #ffffff;
+  --glow: rgb(31 91 216 / 0.35);
+  --success: var(--ub-green-400);
+  --warning: var(--ub-amber-400);
+  --danger: var(--ub-red-400);
+  --circuit: rgb(127 163 250 / 0.28);
+
+  --shadow-1: 0 0 0 1px var(--border-subtle);
+  --shadow-2: 0 0 0 1px var(--border-subtle), inset 0 1px 0 rgb(255 255 255 / 0.04);
+  --shadow-3: 0 0 0 1px var(--border-strong), 0 0 40px rgb(31 91 216 / 0.18);
+  --shadow-4: 0 0 0 1px var(--border-strong), 0 24px 64px rgb(0 0 0 / 0.5);
+  --glass-bg: rgb(10 22 51 / 0.66);
+}
+
+/*
+ * Dark theme only: "Day" sections sit one step lighter than Night sections
+ * (hero, Labs, CTA band, footer), so the Night → Day rhythm survives in dark
+ * mode (UI/UX audit P2-2). `.night` elements re-declare the deeper values above.
+ */
+[data-theme="dark"] {
+  --bg-canvas: #0b1631;
+  --bg-surface: #112043;
+  --bg-surface-raised: #172a56;
+  --bg-sunken: #081127;
+}
+[data-theme="dark"] .night {
+  --bg-canvas: var(--ub-navy-950);
+  --bg-surface: var(--ub-navy-900);
+  --bg-surface-raised: var(--ub-navy-800);
+  --bg-sunken: var(--ub-navy-950);
+}
+
+/* Dark artwork paints its own background in both themes. */
+.ink {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+}

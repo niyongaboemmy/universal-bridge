@@ -1,0 +1,30 @@
+// Icons editors can pick in the CMS. Kept as a fixed list so only these are
+// bundled (lucide-react is tree-shaken per import).
+export const ICON_NAMES = [
+  "code",
+  "smartphone",
+  "cloud",
+  "brain",
+  "cpu",
+  "palette",
+  "compass",
+  "life-buoy",
+  "landmark",
+  "graduation-cap",
+  "banknote",
+  "heart-pulse",
+  "sprout",
+  "shopping-bag",
+  "hand-heart",
+  "book-open",
+  "briefcase",
+  "badge-check",
+  "users",
+  "building",
+  "calendar",
+  "newspaper",
+  "handshake",
+  "flask-conical",
+  "rocket",
+] as const;
+export type IconName = (typeof ICON_NAMES)[number];

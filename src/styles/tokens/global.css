@@ -1,0 +1,102 @@
+/*
+ * Global tokens (tier 1): raw values. Components never use these directly —
+ * they use the alias tokens in alias.light.css / alias.dark.css (UI/UX §5).
+ * Brand values are estimated from artwork; confirm with master files (OI-07).
+ */
+:root {
+  --ub-blue-50: #eef3ff;
+  --ub-blue-100: #d9e4ff;
+  --ub-blue-200: #b3c8ff;
+  --ub-blue-300: #7fa3fa;
+  --ub-blue-400: #4a7beb;
+  --ub-blue-500: #1f5bd8;
+  --ub-blue-600: #0145b8; /* master logo file (OI-07) */
+  --ub-blue-700: #0036a3;
+  --ub-blue-800: #062b82;
+  --ub-blue-900: #041f5e;
+  --ub-blue-950: #02133b;
+
+  --ub-navy-50: #e8ecf5;
+  --ub-navy-100: #c9d1e3;
+  --ub-navy-200: #93a2c4;
+  --ub-navy-300: #5e709b;
+  --ub-navy-400: #344675;
+  --ub-navy-500: #1c2c57;
+  --ub-navy-600: #142246;
+  --ub-navy-700: #0f1b3a;
+  --ub-navy-800: #10224d;
+  --ub-navy-900: #0a1633;
+  --ub-navy-950: #060d20;
+
+  --ub-orange-50: #fff4ea;
+  --ub-orange-100: #ffe3c7;
+  --ub-orange-200: #ffc48f;
+  --ub-orange-300: #ffa257;
+  --ub-orange-400: #ff8a26;
+  --ub-orange-500: #fe760d; /* master logo file (OI-07) */
+  --ub-orange-600: #e56a00;
+  --ub-orange-700: #b04e00; /* darkened from #bf5500 so accent text passes 4.5:1 on canvas */
+  --ub-orange-800: #994300;
+  --ub-orange-900: #733200;
+
+  --ub-neutral-0: #ffffff;
+  --ub-neutral-50: #f7f8fa;
+  --ub-neutral-100: #eef0f4;
+  --ub-neutral-200: #dde1e8;
+  --ub-neutral-300: #c2c8d2;
+  --ub-neutral-400: #9aa2b1;
+  --ub-neutral-500: #6e7787;
+  --ub-neutral-600: #4f5767;
+  --ub-neutral-700: #363d4b;
+  --ub-neutral-800: #232937;
+  --ub-neutral-900: #151a24;
+  --ub-neutral-950: #0b0e15;
+
+  --ub-green-400: #4ade80;
+  --ub-green-600: #15803d;
+  --ub-amber-400: #fbbf24;
+  --ub-amber-600: #b45309;
+  --ub-red-400: #f87171;
+  --ub-red-600: #dc2626;
+  --ub-red-700: #b91c1c;
+  --ub-green-700: #116530;
+
+  /* Radius (UI/UX §5.4) */
+  /* Softer, consistent scale: each step is clearly rounder than the last. */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --radius-2xl: 32px;
+  --radius-3xl: 40px;
+  --radius-full: 9999px;
+
+  /* Layout (UI/UX §8) */
+  --content-max: 1360px;
+  --reading-max: 720px;
+  --gutter: 16px;
+  /* Width-led, but capped by height so short laptop screens are not mostly padding. */
+  --section-y: clamp(72px, min(11vw, 16svh), 176px);
+}
+
+@media (min-width: 480px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+@media (min-width: 768px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --gutter: 48px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 64px;
+  }
+}

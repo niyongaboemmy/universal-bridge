@@ -1,0 +1,21 @@
+name: Lighthouse
+
+# NFR-PERF-02/07: runs against the Vercel preview of each PR.
+on:
+  deployment_status:
+
+jobs:
+  lighthouse:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ github.event.deployment_status.target_url }}/
+            ${{ github.event.deployment_status.target_url }}/services
+            ${{ github.event.deployment_status.target_url }}/contact
+            ${{ github.event.deployment_status.target_url }}/academy
+          configPath: ./lighthouserc.json
+          uploadArtifacts: true

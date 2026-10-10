@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/universal_bridge
+  PAYLOAD_SECRET: ci-only-secret-not-used-anywhere-else
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  REVALIDATE_SECRET: ci
+  CRON_SECRET: ci
+  RATE_LIMIT_SALT: ci
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+  TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+  EMAIL_FROM: "Universal Bridge <hello@universalbridge.rw>"
+  # Test-only signing key (never used outside CI).
+  CERT_SIGNING_KEY: 4c0c3e1f2a6b7d8e9f00112233445566778899aabbccddeeff0011223344556677
+
+jobs:
+  static:
+    name: Static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm check:i18n
+      - run: pnpm check:content
+      - run: pnpm check:contrast
+      - run: pnpm exec tsx scripts/check-csp.ts
+      - name: Secrets scan (NFR-SEC-07)
+        uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+
+  test:
+    name: Unit + integration
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: universal_bridge }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test -- --coverage
+
+  e2e:
+    name: Build + E2E + a11y
+    runs-on: ubuntu-latest
+    needs: [static]
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: universal_bridge }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm db:seed
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium webkit firefox
+      - name: Start production server
+        run: pnpm start & npx wait-on http://localhost:3000/api/health --timeout 120000
+      - name: Bundle budget (NFR-PERF-03)
+        run: pnpm exec tsx scripts/check-bundle.ts
+      - run: pnpm test:e2e
+        env: { E2E_BASE_URL: "http://localhost:3000", CI: "true" }
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-report, path: playwright-report, retention-days: 7 }

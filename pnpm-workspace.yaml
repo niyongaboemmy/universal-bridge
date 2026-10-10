@@ -1,0 +1,9 @@
+allowBuilds:
+  "@parcel/watcher": true
+  "@swc/core": true
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+overrides:
+  # Keep axe's playwright-core on the runner's version (browsers are pinned to it).
+  playwright-core: 1.62.1

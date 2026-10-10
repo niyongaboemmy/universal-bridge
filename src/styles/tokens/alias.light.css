@@ -1,0 +1,49 @@
+/*
+ * Alias tokens (tier 2) — Daylight mood, the default light theme (UI/UX §5.2).
+ * White paper: pure white page and cards, cool off-white for accent sections,
+ * soft blue light instead of dark slabs.
+ */
+:root,
+.day {
+  color-scheme: light;
+  --bg-canvas: var(--ub-neutral-0);
+  --bg-surface: var(--ub-neutral-0);
+  --bg-surface-raised: var(--ub-neutral-0);
+  --bg-sunken: #f5f7fb;
+  /* Accent paper for Night sections in light theme: a cool off-white with a faint dot grid. */
+  --bg-accent-paper: #f4f7fd;
+  --paper-dot: color-mix(in oklch, var(--ub-blue-600) 11%, transparent);
+  --bg-inverse: var(--ub-navy-900);
+  --text-primary: var(--ub-navy-900);
+  --text-secondary: var(--ub-neutral-600);
+  --text-muted: var(--ub-neutral-600);
+  --text-inverse: var(--ub-neutral-50);
+  /* Translucent hairlines: they take on the tint of whatever is behind them,
+     so edges read soft on white paper and on accent paper alike. */
+  --border-subtle: rgb(10 22 51 / 0.08);
+  --border-strong: rgb(10 22 51 / 0.2);
+  --accent-primary: var(--ub-blue-600);
+  --accent-primary-hover: var(--ub-blue-700);
+  --accent-primary-soft: var(--ub-blue-50);
+  --on-accent: var(--ub-neutral-0);
+  --accent-spark: var(--ub-orange-500);
+  --accent-spark-text: var(--ub-orange-700);
+  --accent-spark-hover: var(--ub-orange-600);
+  --on-spark: var(--ub-navy-900);
+  --focus-ring: var(--ub-blue-600);
+  --logo-blue: #0145b8;
+  /* Logo ink: master blue on light backgrounds (e.g. the scrolled header in light theme). */
+  --logo-ink: var(--logo-blue);
+  --glow: rgb(31 91 216 / 0.12);
+  --success: var(--ub-green-700);
+  --warning: var(--ub-amber-600);
+  --danger: var(--ub-red-700);
+  --circuit: color-mix(in oklch, var(--ub-blue-600) 22%, transparent);
+
+  /* Layered, low-opacity shadows: depth without hard edges. */
+  --shadow-1: 0 1px 2px rgb(10 22 51 / 0.04), 0 2px 8px rgb(10 22 51 / 0.04);
+  --shadow-2: 0 2px 6px rgb(10 22 51 / 0.04), 0 8px 24px rgb(10 22 51 / 0.07);
+  --shadow-3: 0 4px 12px rgb(10 22 51 / 0.05), 0 18px 48px rgb(10 22 51 / 0.1);
+  --shadow-4: 0 8px 24px rgb(10 22 51 / 0.06), 0 32px 80px rgb(10 22 51 / 0.14);
+  --glass-bg: rgb(255 255 255 / 0.72);
+}

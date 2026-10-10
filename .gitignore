@@ -34,3 +34,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local data (uploads in dev)
+/.data
+/media
+
+# testing
+/playwright-report
+/test-results
+/storybook-static
+
+# env template is committed
+!.env.example
+
+# separate production build for bundle checks
+/.next-*/
