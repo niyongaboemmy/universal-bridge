@@ -233,8 +233,13 @@ export function AvatarUploader({ current, name }: { current: string | null; name
   }
   // Only a local preview (blob:) or the stored avatar's URL (ours or the storage bucket's)
   // ever goes into <img src>.
-  const preview_ = preview && /^blob:/.test(preview) ? preview : null;
-  const current_ = current && /^(\/(api|media)\/|https:\/\/)/.test(current) ? current : null;
+  const preview_ = preview?.startsWith("blob:") ? preview : null;
+  const current_ =
+    current?.startsWith("/api/") ||
+    current?.startsWith("/media/") ||
+    current?.startsWith("https://")
+      ? current
+      : null;
   const shown = preview_ ?? current_;
   return (
     <form ref={form} action={action} className="flex items-center gap-4">
