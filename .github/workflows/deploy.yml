@@ -135,13 +135,27 @@ jobs:
             User ${{ secrets.CPANEL_SSH_USER }}
             IdentityFile ~/.ssh/id_deploy
             IdentitiesOnly yes
+            BatchMode yes
+            PasswordAuthentication no
             StrictHostKeyChecking yes
+            ConnectTimeout 30
             ServerAliveInterval 30
           EOF
 
-      - name: Upload release
+      # One SSH login per deploy: the server's firewall blocks an IP for a while
+      # after a few logins in quick succession. Exit code 255 means ssh itself
+      # could not connect, so only then wait and try again.
+      - name: Upload and activate (health check, automatic rollback)
         run: |
-          ssh cpanel "mkdir -p '$APP_DIR/releases/$RELEASE' && tar -xzf - -C '$APP_DIR/releases/$RELEASE'" < release.tgz
-
-      - name: Activate (health check, automatic rollback)
-        run: ssh cpanel "APP_ROOT=\$HOME/$APP_DIR bash '$APP_DIR/releases/$RELEASE/deploy/activate.sh' '$RELEASE'"
+          for attempt in 1 2 3 4; do
+            set +e
+            ssh cpanel "set -e; mkdir -p '$APP_DIR/releases/$RELEASE'; \
+              tar -xzf - -C '$APP_DIR/releases/$RELEASE'; \
+              APP_ROOT=\$HOME/$APP_DIR bash '$APP_DIR/releases/$RELEASE/deploy/activate.sh' '$RELEASE'" < release.tgz
+            code=$?
+            set -e
+            [ "$code" -ne 255 ] && exit "$code"
+            echo "SSH connection failed (attempt $attempt); retrying in 2 minutes"
+            sleep 120
+          done
+          exit 255
