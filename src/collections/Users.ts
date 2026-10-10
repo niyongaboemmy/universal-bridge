@@ -5,9 +5,6 @@ import { audit } from "@/lib/audit";
 import { passwordProblem } from "@/lib/auth/password";
 import { roleIds } from "./Roles";
 
-const siteUrl = () =>
-  (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
-
 function clientIp(req: PayloadRequest) {
   return (
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -48,18 +45,51 @@ export const Users: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
     cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    // Branded emails (src/emails/account.tsx). The same Payload operation sends both the
+    // invitation (from the outbox, context.invite) and "forgot password". Expiration is
+    // set per call: 1 hour for a reset, 3 days for an invitation.
     forgotPassword: {
-      expiration: 60 * 60 * 1000,
-      generateEmailSubject: () => "Set your Universal Bridge admin password",
-      generateEmailHTML: (args) => {
-        const token = (args as { token?: string }).token ?? "";
-        const link = `${siteUrl()}/admin/reset/${token}`;
-        return `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;color:#0a1633">
-  <h1 style="font-size:20px">Set your password</h1>
-  <p>Use the button below to set a new password for the Universal Bridge admin. The link works once and expires in one hour.</p>
-  <p><a href="${link}" style="display:inline-block;background:#fe760d;color:#0a1633;padding:12px 20px;border-radius:999px;text-decoration:none;font-weight:600">Set password</a></p>
-  <p style="font-size:13px;color:#4f5767">If you didn't ask for this, you can ignore this email; your password stays the same.</p>
-</div>`;
+      generateEmailSubject: ({ req } = {}) =>
+        req?.context?.invite
+          ? "You're invited to Universal Bridge Office"
+          : "Reset your Universal Bridge password",
+      generateEmailHTML: async ({ req, token = "", user } = {}) => {
+        const { staffInviteEmail, staffResetEmail, deviceLabel } = await import("@/emails/account");
+        const u = (user ?? {}) as { email: string; name?: string; roles?: unknown[] };
+        if (req?.context?.invite) {
+          const ids = (u.roles ?? []).map((r) =>
+            typeof r === "object" && r ? (r as { id: number }).id : (r as number),
+          );
+          const roles = ids.length
+            ? (
+                await req.payload.find({
+                  collection: "roles",
+                  where: { id: { in: ids } },
+                  overrideAccess: true,
+                  depth: 0,
+                  limit: 20,
+                  req,
+                })
+              ).docs.map((r) => r.name)
+            : [];
+          return (
+            await staffInviteEmail({
+              token,
+              name: u.name,
+              email: u.email,
+              roles,
+              invitedBy: (req.context.invitedBy as string | undefined) ?? null,
+            })
+          ).html;
+        }
+        return (
+          await staffResetEmail({
+            token,
+            name: u.name,
+            email: u.email,
+            device: deviceLabel(req?.headers?.get("user-agent")),
+          })
+        ).html;
       },
     },
   },
@@ -187,7 +217,7 @@ export const Users: CollectionConfig = {
               req,
               data: {
                 kind: "staff-invite",
-                payload: { email: doc.email },
+                payload: { email: doc.email, invitedBy: (req.user as { name?: string }).name },
                 status: "pending",
                 attempts: 0,
                 runAfter: new Date().toISOString(),

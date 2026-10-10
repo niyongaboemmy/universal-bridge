@@ -14,12 +14,14 @@ export function LoginForm({
   next,
   providers,
   notice,
+  forgot,
 }: {
+  forgot?: boolean;
   next?: string;
   providers: { id: string; label: string }[];
   notice?: { tone: "error" | "info"; text: string };
 }) {
-  const [mode, setMode] = useState<"signin" | "reset">("signin");
+  const [mode, setMode] = useState<"signin" | "reset">(forgot ? "reset" : "signin");
   const [signInState, signInAction, signingIn] = useActionState<SignInState, FormData>(
     signIn,
     null,

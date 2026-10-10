@@ -211,7 +211,9 @@ test.describe("Adding staff with a password", () => {
       await asStaff(page, s.token);
       await page.goto("/office/accounts");
       await page.getByRole("button", { name: "Add staff" }).click();
-      await expect(page.getByRole("button", { name: "Send invitation" })).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Send invitation", exact: true }),
+      ).toBeVisible();
       await expect(page.getByRole("radio", { name: "Set a password" })).toHaveCount(0);
     } finally {
       await request.delete(`/api/users/${s.id}`, { headers });

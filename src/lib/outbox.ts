@@ -57,7 +57,7 @@ export type OutboxJob =
     }
   | { kind: "notify-team"; payload: { text: string; url?: string } }
   | { kind: "scan-upload"; payload: { fileId: number } }
-  | { kind: "staff-invite"; payload: { email: string } }
+  | { kind: "staff-invite"; payload: { email: string; invitedBy?: string; reset?: boolean } }
   | { kind: "crm-sync"; payload: Record<string, unknown> };
 
 export const MAX_ATTEMPTS = 5;
@@ -194,13 +194,17 @@ async function run(
       return;
     }
     case "staff-invite": {
-      // ADM-01: a new staff member sets their own password from a reset link.
+      // ADM-01: a new staff member sets their own password from an invitation link
+      // (or, sent again from the office, a reset link for someone who has signed in).
+      const invite = !p.reset;
       await payload.forgotPassword({
         collection: "users",
         data: { email: p.email as string },
         disableEmail: false,
+        // An invitation lasts 3 days (INVITE_HOURS); a reset link one hour.
+        expiration: (invite ? 72 : 1) * 60 * 60 * 1000,
         // Sent by the server, not asked for by a visitor: not subject to the reset rate limit.
-        context: { internal: true },
+        context: { internal: true, invite, invitedBy: p.invitedBy },
       });
       return;
     }

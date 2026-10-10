@@ -276,7 +276,9 @@
       "summary": "What you sent us",
       "next": "In the meantime, you can book a 30-minute discovery call at a time that suits you.",
       "book": "Book a call",
-      "signoff": "— The Universal Bridge team"
+      "signoff": "— The Universal Bridge team",
+      "eyebrow": "Message received",
+      "title": "Thanks — we're on it"
     },
     "applicationStatus": {
       "subject": "Update on your application ({ref})",
@@ -286,7 +288,20 @@
       "accepted": "Congratulations! Your application for {subject} has been accepted. We'll send the details of what happens next shortly.",
       "rejected": "Thank you for applying for {subject}. After careful review, we won't be moving forward with your application this time. We'd be glad to hear from you again in future.",
       "waitlisted": "Your application for {subject} is on the waitlist. We'll contact you as soon as a place opens.",
-      "signoff": "— The Universal Bridge team"
+      "signoff": "— The Universal Bridge team",
+      "eyebrow": "Application update",
+      "title": {
+        "shortlisted": "You've been shortlisted",
+        "accepted": "Congratulations!",
+        "rejected": "About your application",
+        "waitlisted": "You're on the waitlist"
+      },
+      "steps": {
+        "received": "Application received",
+        "review": "Reviewed by our team",
+        "shortlisted": "Shortlisted",
+        "decision": "Final decision"
+      }
     },
     "applicationConfirmation": {
       "subject": "We've received your application ({ref})",
@@ -298,7 +313,33 @@
       "next1": "We review every application, usually within 5 working days.",
       "next2": "Shortlisted applicants are invited to a short conversation.",
       "next3": "You receive our decision by email.",
-      "signoff": "— The Universal Bridge team"
+      "signoff": "— The Universal Bridge team",
+      "eyebrow": "Application received",
+      "title": "Your application is in"
+    },
+    "linkFallback": "Button not working? Paste this link into your browser:",
+    "layout": {
+      "website": "Website",
+      "services": "Services",
+      "academy": "Academy",
+      "contact": "Contact"
+    },
+    "newsletter": {
+      "eyebrow": "Newsletter"
+    },
+    "passwordReset": {
+      "subject": "Reset your Universal Bridge password",
+      "preview": "Use this link within an hour to choose a new password.",
+      "eyebrow": "Account security",
+      "title": "Reset your password",
+      "intro": "Someone asked to reset the password of your Universal Bridge account.",
+      "greeting": "Hi {name},",
+      "body": "Use the button below to choose a new password. The link works once and expires in one hour.",
+      "button": "Choose a new password",
+      "account": "Account",
+      "requested": "Requested",
+      "from": "From",
+      "ignore": "Didn't ask for this? Ignore this email — your password stays the same."
     }
   },
   "templates": {

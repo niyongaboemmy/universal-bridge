@@ -36,6 +36,18 @@ async function createStaff(request: APIRequestContext, email: string) {
   return (await res.json()).doc.id as number;
 }
 
+/** The /login/reset link in the newest email with this subject. */
+function resetLink(email: string, subject: string) {
+  const mail = mailTo(email)
+    .reverse()
+    .find((m) => m.subject === subject);
+  const href = /href="https?:\/\/[^/"]+(\/login\/reset\?[^"]+)"/.exec(mail?.html ?? "")?.[1];
+  expect(href, `no reset link in "${subject}"`).toBeTruthy();
+  return href!.replaceAll("&amp;", "&");
+}
+
+const NEW_PASSWORD = "lantern meadow 2026 harbour";
+
 async function login(page: import("@playwright/test").Page, email: string) {
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
@@ -69,8 +81,8 @@ test.describe("Admin authentication", () => {
     try {
       await expect
         .poll(() => mailTo(email).map((m) => m.subject))
-        .toContain("Set your Universal Bridge admin password");
-      expect(mailTo(email)[0]!.html).toMatch(/\/admin\/reset\/[\w-]+/);
+        .toContain("You're invited to Universal Bridge Office");
+      expect(mailTo(email)[0]!.html).toMatch(/\/login\/reset\?token=[\w-]+&(amp;)?invite=1/);
       await login(page, email);
       // Staff land in the office; the CMS is one click away.
       await page.waitForURL(/\/office/);
@@ -91,6 +103,89 @@ test.describe("Admin authentication", () => {
     }
   });
 
+  test("invitation link: branded email → set a password → signed in to the office", async ({
+    page,
+    request,
+  }) => {
+    test.skip(process.env.E2E_MFA === "1", "MFA journey below covers sign-in");
+    const email = uniqueEmail("invitee");
+    const id = await createStaff(request, email);
+    try {
+      const subject = "You're invited to Universal Bridge Office";
+      await expect.poll(() => mailTo(email).map((m) => m.subject)).toContain(subject);
+      const mail = mailTo(email).find((m) => m.subject === subject)!;
+      expect(mail.html).toContain("ub-mark-white-email.png");
+      expect(mail.text).toContain("Accept invitation");
+      const link = resetLink(email, subject);
+      await page.goto(link);
+      await expect(page.getByRole("heading", { name: "Welcome, E2E" })).toBeVisible();
+      await expect(page.getByText(email)).toBeVisible();
+      // The policy is checked live and again on the server.
+      await page.getByLabel("New password").fill("short");
+      await expect(page.getByText("Use at least 12 characters", { exact: false })).toBeVisible();
+      await page.getByLabel("New password").fill("123456789012");
+      await expect(page.getByText("This password is too common.")).toBeVisible();
+      await page.getByLabel("New password").fill(NEW_PASSWORD);
+      await page.getByLabel("Repeat password").fill(`${NEW_PASSWORD}!`);
+      await page.getByRole("button", { name: "Activate account" }).click();
+      await expect(page.locator("main").getByRole("alert")).toContainText("don't match");
+      await page.getByLabel("Repeat password").fill(NEW_PASSWORD);
+      await page.getByRole("button", { name: "Activate account" }).click();
+      await page.waitForURL(/\/office/);
+      // The link works once.
+      await page.context().clearCookies();
+      await page.goto(link);
+      await expect(page.getByRole("heading", { name: "This link has expired" })).toBeVisible();
+    } finally {
+      await request.delete(`/api/users/${id}`, { headers: await staffHeaders(request) });
+    }
+  });
+
+  test("forgot password: request a link → choose a new password → old one stops working", async ({
+    page,
+    request,
+  }) => {
+    test.skip(process.env.E2E_MFA === "1", "MFA journey below covers sign-in");
+    const email = uniqueEmail("forgot");
+    const id = await createStaff(request, email);
+    try {
+      test.slow();
+      // Wait for the invitation first: a later one would replace the reset token.
+      await expect
+        .poll(() => mailTo(email).map((m) => m.subject))
+        .toContain("You're invited to Universal Bridge Office");
+      // Payload sends at most one password email per account every 15 seconds.
+      await page.waitForTimeout(15_500);
+      await page.goto("/login?forgot=1");
+      await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+      await page.getByLabel("Email").fill(email);
+      await page.getByRole("button", { name: "Send link" }).click();
+      await expect(page.getByText("a link is on its way")).toBeVisible();
+      const subject = "Reset your Universal Bridge password";
+      await expect.poll(() => mailTo(email).map((m) => m.subject)).toContain(subject);
+      await page.goto(resetLink(email, subject));
+      await expect(page.getByRole("heading", { name: "Choose a new password" })).toBeVisible();
+      await page.getByLabel("New password").fill(NEW_PASSWORD);
+      await page.getByLabel("Repeat password").fill(NEW_PASSWORD);
+      await page.getByRole("button", { name: "Set password & sign in" }).click();
+      await page.waitForURL(/\/office/);
+      // The old password no longer works.
+      await page.context().clearCookies();
+      await login(page, email);
+      await expect(page.locator("main").getByRole("alert")).toContainText("don't match");
+    } finally {
+      await request.delete(`/api/users/${id}`, { headers: await staffHeaders(request) });
+    }
+  });
+
+  test("old Payload reset links and expired links land on the branded page", async ({ page }) => {
+    await page.goto("/admin/reset/not-a-real-token");
+    await expect(page).toHaveURL(/\/login\/reset\?token=not-a-real-token/);
+    await expect(page.getByRole("heading", { name: "This link has expired" })).toBeVisible();
+    await page.getByRole("link", { name: "Send me a new link" }).click();
+    await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  });
+
   test("invite → set up two-step verification → every new sign-in needs a code", async ({
     page,
     browser,
@@ -103,8 +198,8 @@ test.describe("Admin authentication", () => {
       // The invitation is a "set your password" email with a reset link.
       await expect
         .poll(() => mailTo(email).map((m) => m.subject))
-        .toContain("Set your Universal Bridge admin password");
-      expect(mailTo(email)[0]!.html).toMatch(/\/admin\/reset\/[\w-]+/);
+        .toContain("You're invited to Universal Bridge Office");
+      expect(mailTo(email)[0]!.html).toMatch(/\/login\/reset\?token=[\w-]+&(amp;)?invite=1/);
 
       // First sign-in, then enrol from the staff page.
       await login(page, email);

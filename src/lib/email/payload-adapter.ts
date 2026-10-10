@@ -14,17 +14,14 @@ export const ubEmailAdapter: EmailAdapter = () => ({
       .flat()
       .map((t) => (typeof t === "string" ? t : t?.address))
       .filter(Boolean) as string[];
+    const html = String(message.html ?? "");
+    // Plain-text part from the branded HTML (skips the <head> styles, keeps link URLs).
+    const { toPlainText } = await import("@react-email/components");
     return sendEmail({
       to,
       subject: String(message.subject ?? ""),
-      html: String(message.html ?? ""),
-      text: String(
-        message.text ??
-          String(message.html ?? "")
-            .replace(/<[^>]+>/g, " ")
-            .replace(/\s+/g, " ")
-            .trim(),
-      ),
+      html,
+      text: String(message.text ?? toPlainText(html)),
     });
   },
 });

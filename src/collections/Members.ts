@@ -2,8 +2,6 @@ import { APIError, type CollectionConfig, type FieldAccess, type PayloadRequest 
 import { can, actingFromReq } from "@/access/roles";
 import { passwordProblem } from "@/lib/auth/password";
 
-const siteUrl = () =>
-  (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const noField: FieldAccess = () => false;
 const managers: FieldAccess = ({ req }) =>
   req.user?.collection === "users" && can(actingFromReq(req), "members.manage");
@@ -41,18 +39,26 @@ export const Members: CollectionConfig = {
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
     cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    // Branded, in the member's language (src/emails/account.tsx).
     forgotPassword: {
       expiration: 60 * 60 * 1000,
-      generateEmailSubject: () => "Reset your Universal Bridge password",
-      generateEmailHTML: (args) => {
-        const token = (args as { token?: string }).token ?? "";
-        const link = `${siteUrl()}/account/reset?token=${encodeURIComponent(token)}`;
-        return `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:auto;color:#0a1633">
-  <h1 style="font-size:20px">Reset your password</h1>
-  <p>Use the button below to choose a new password. The link works once and expires in one hour.</p>
-  <p><a href="${link}" style="display:inline-block;background:#0145b8;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600">Choose a new password</a></p>
-  <p style="font-size:13px;color:#4f5767">If you didn't ask for this, you can ignore this email.</p>
-</div>`;
+      generateEmailSubject: async ({ user } = {}) => {
+        const { emailTranslator } = await import("@/emails/translator");
+        const l = (user as { locale?: string } | undefined)?.locale;
+        return emailTranslator(l === "fr" || l === "rw" ? l : "en")("passwordReset.subject");
+      },
+      generateEmailHTML: async ({ req, token = "", user } = {}) => {
+        const { memberResetEmail, deviceLabel } = await import("@/emails/account");
+        const u = (user ?? {}) as { email: string; name?: string; locale?: string };
+        return (
+          await memberResetEmail({
+            token,
+            name: u.name,
+            email: u.email,
+            locale: u.locale,
+            device: deviceLabel(req?.headers?.get("user-agent")),
+          })
+        ).html;
       },
     },
   },
