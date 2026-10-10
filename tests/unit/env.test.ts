@@ -32,4 +32,16 @@ describe("configuration check (NFR-MNT-06)", () => {
   it("warns about recommended services", () => {
     expect(checkEnv(good).warnings.join("\n")).toMatch(/RESEND_API_KEY/);
   });
+
+  it("accepts SMTP instead of Resend, but not without its password", () => {
+    const smtp = {
+      ...good,
+      SMTP_HOST: "mail.example.com",
+      SMTP_USER: "noreply@x",
+    } as unknown as NodeJS.ProcessEnv;
+    expect(checkEnv(smtp).errors.join("\n")).toMatch(/SMTP_PASSWORD/);
+    const ok = checkEnv({ ...smtp, SMTP_PASSWORD: "p" } as unknown as NodeJS.ProcessEnv);
+    expect(ok.errors).toEqual([]);
+    expect(ok.warnings.join("\n")).not.toMatch(/emails are written to disk/);
+  });
 });
