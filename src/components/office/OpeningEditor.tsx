@@ -43,7 +43,8 @@ const TYPES: { type: FieldType; label: string; icon: React.ReactNode }[] = [
 const ICON = Object.fromEntries(TYPES.map((t) => [t.type, t.icon]));
 
 type F = OpeningField & { uid: string };
-const uid = () => Math.random().toString(36).slice(2, 9);
+/** Local key for a question while editing (never stored). */
+const uid = () => crypto.randomUUID().slice(0, 8);
 
 /** Suggested questions per kind (a starting point; everything stays editable). */
 const TEMPLATES: Record<string, Omit<OpeningField, "key">[]> = {

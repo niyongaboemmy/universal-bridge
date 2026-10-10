@@ -27,7 +27,8 @@ async function superUser(request: NextRequest) {
 }
 
 const validEmail = (e: unknown): e is string =>
-  typeof e === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+  // Length-capped first: the pattern can't backtrack on long input (CodeQL ReDoS).
+  typeof e === "string" && e.length <= 254 && /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(e.trim());
 
 export async function GET(request: NextRequest) {
   const s = await superUser(request);
