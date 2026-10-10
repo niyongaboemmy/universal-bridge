@@ -54,7 +54,7 @@ export default async function Overview({
     },
     allowed(user, "users.manage") && {
       href: "/office/accounts?invite=1",
-      label: "Invite staff",
+      label: "Add staff",
       icon: <UserPlus />,
     },
     allowed(user, "roles.manage") && {

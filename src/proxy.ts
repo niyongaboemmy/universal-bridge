@@ -50,8 +50,14 @@ export default async function proxy(request: NextRequest) {
     return (await adminGate(request)) ?? NextResponse.next();
   }
   // Staff screens (sign-in, two-step verification, the office) are not localised.
-  if (pathname === "/office" || pathname.startsWith("/office/"))
-    return (await adminGate(request)) ?? NextResponse.next();
+  if (pathname === "/office" || pathname.startsWith("/office/")) {
+    const gate = await adminGate(request);
+    if (gate) return gate;
+    // The office layout needs the path (first-sign-in password change).
+    const headers = new Headers(request.headers);
+    headers.set("x-ub-path", pathname);
+    return NextResponse.next({ request: { headers } });
+  }
   if (pathname.startsWith("/staff") || pathname === "/login" || pathname === "/maintenance")
     return NextResponse.next();
   // Visitors get the holding page while maintenance is on; signed-in staff see the site.

@@ -81,6 +81,14 @@ export async function changePassword(
   }
   return run(async () => {
     await p.update({ collection: "users", id: user.id, data: { password: next }, ...req(user) });
+    // The first-sign-in requirement is met.
+    if (user.mustChangePassword)
+      await p.db.updateOne({
+        collection: "users",
+        id: user.id,
+        data: { mustChangePassword: false },
+        returning: false,
+      } as never);
   }, "Password changed");
 }
 
@@ -225,23 +233,56 @@ export async function deleteRole(id: number): Promise<ActionResult> {
 
 // ---- Accounts ----------------------------------------------------------------------
 
+/**
+ * Add a staff member: by invitation (they set their own password from an email), or —
+ * super admins only — with a password typed in here. With "must change", the person
+ * has to choose their own password at first sign-in.
+ */
 export async function inviteStaff(_: ActionResult | null, form: FormData): Promise<ActionResult> {
   const user = await officeUser();
   const email = str(form.get("email"))?.toLowerCase();
   const name = str(form.get("name"));
   const roles = form.getAll("roles").map(Number).filter(Boolean);
+  const withPassword = form.get("mode") === "password";
   if (!email?.includes("@") || !name) return { ok: false, error: "Name and email are required." };
   if (!roles.length) return { ok: false, error: "Pick at least one role." };
-  return run(async () => {
-    const p = await payload();
-    // A random password nobody knows; the invitation email lets them set their own.
-    const password = `${crypto.randomUUID()}Aa1!`;
-    await p.create({
-      collection: "users",
-      data: { email, name, roles, password, jobTitle: str(form.get("jobTitle")) } as never,
-      ...req(user),
-    });
-  }, "Invitation sent");
+
+  let password = `${crypto.randomUUID()}Aa1!`; // nobody knows it; the invitation replaces it
+  const mustChange = withPassword && form.get("mustChange") === "on";
+  if (withPassword) {
+    const { isSuperUser } = await import("@/access/roles");
+    if (!isSuperUser(user as never))
+      return { ok: false, error: "Only a super admin can set a password for someone." };
+    password = String(form.get("password") ?? "");
+    const problem = passwordProblem(password, { email, name });
+    if (problem) return { ok: false, error: problem };
+  }
+  const p = await payload();
+  const taken = await p.count({
+    collection: "users",
+    where: { email: { equals: email } },
+    overrideAccess: true,
+  });
+  if (taken.totalDocs)
+    return { ok: false, error: "A staff account with this email already exists." };
+  return run(
+    async () => {
+      await p.create({
+        collection: "users",
+        data: {
+          email,
+          name,
+          roles,
+          password,
+          jobTitle: str(form.get("jobTitle")),
+          ...(withPassword ? { mustChangePassword: mustChange } : {}),
+        } as never,
+        context: { passwordSet: withPassword },
+        ...req(user),
+      });
+    },
+    withPassword ? "Account created" : "Invitation sent",
+  );
 }
 
 export async function setUserRoles(id: number, roles: number[]): Promise<ActionResult> {

@@ -1982,6 +1982,7 @@ export interface User {
   avatar?: (number | null) | Avatar;
   landing?: ('office' | 'cms') | null;
   lastLoginAt?: string | null;
+  mustChangePassword?: boolean | null;
   /**
    * On after the person sets up an authenticator app. Untick to reset it (lost phone).
    */
@@ -4122,6 +4123,7 @@ export interface UsersSelect<T extends boolean = true> {
   avatar?: T;
   landing?: T;
   lastLoginAt?: T;
+  mustChangePassword?: T;
   mfaEnabled?: T;
   mfaEnrolledAt?: T;
   mfaSecret?: T;

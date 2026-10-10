@@ -84,6 +84,21 @@ export default async function Profile() {
         </dl>
       </section>
 
+      {user.mustChangePassword && (
+        <section
+          role="alert"
+          className="flex flex-wrap items-center gap-3 rounded-2xl border border-[color-mix(in_oklab,var(--accent-spark)_45%,transparent)] bg-[color-mix(in_oklab,var(--accent-spark)_10%,transparent)] px-5 py-4"
+        >
+          <KeyRound className="size-5 shrink-0 text-[var(--accent-spark-text)]" aria-hidden />
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold">Choose your own password</p>
+            <p className="text-body-sm text-fg-secondary">
+              Your account was created with a temporary password. Change it below to open the
+              office.
+            </p>
+          </div>
+        </section>
+      )}
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
         <div className="grid content-start gap-5">
           <Card title="Picture">
@@ -92,8 +107,12 @@ export default async function Profile() {
           <Card title="Details">
             <ProfileDetails user={user} />
           </Card>
-          <Card title="Password">
-            <PasswordForm email={user.email} name={user.name} />
+          <Card title="Password" className={user.mustChangePassword ? "order-first" : undefined}>
+            <PasswordForm
+              email={user.email}
+              name={user.name}
+              then={user.mustChangePassword ? "/office" : undefined}
+            />
           </Card>
         </div>
         <div className="grid content-start gap-5">

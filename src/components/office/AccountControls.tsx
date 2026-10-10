@@ -1,6 +1,21 @@
 "use client";
 
-import { Check, ChevronDown, Loader2, LockOpen, Trash2, UserPlus, X } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  Eye,
+  EyeOff,
+  KeyRound,
+  Loader2,
+  LockOpen,
+  Mail,
+  Trash2,
+  UserPlus,
+  Wand2,
+  X,
+} from "lucide-react";
+import { PASSWORD_MIN, passwordProblem } from "@/lib/auth/password";
 import { useActionState, useEffect, useOptimistic, useRef, useState, useTransition } from "react";
 import {
   inviteStaff,
@@ -194,25 +209,61 @@ export function MemberRoleSelect({
   );
 }
 
-export function InviteButton({ roles, open: initial }: { roles: RoleOpt[]; open?: boolean }) {
+export function InviteButton({
+  roles,
+  open: initial,
+  canSetPassword = false,
+}: {
+  roles: RoleOpt[];
+  open?: boolean;
+  /** Super admins may create the account with a password instead of an invitation. */
+  canSetPassword?: boolean;
+}) {
   const [open, setOpen] = useState(Boolean(initial));
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
+        className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
       >
-        <UserPlus className="size-4" aria-hidden /> Invite staff
+        <UserPlus className="size-4" aria-hidden /> Add staff
       </button>
-      {open && <InviteDialog roles={roles} onClose={() => setOpen(false)} />}
+      {open && (
+        <InviteDialog
+          roles={roles}
+          canSetPassword={canSetPassword}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </>
   );
 }
 
-function InviteDialog({ roles, onClose }: { roles: RoleOpt[]; onClose: () => void }) {
+/** A strong, readable password (4 groups, no look-alike characters). */
+function generatePassword() {
+  const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  const s = [...bytes].map((b) => chars[b % chars.length]).join("");
+  return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}`;
+}
+
+function InviteDialog({
+  roles,
+  canSetPassword,
+  onClose,
+}: {
+  roles: RoleOpt[];
+  canSetPassword: boolean;
+  onClose: () => void;
+}) {
   const ref = useRef<HTMLDialogElement>(null);
   const [state, action, pending] = useActionState(inviteStaff, null);
+  const [mode, setMode] = useState<"invite" | "password">("invite");
+  const [pw, setPw] = useState("");
+  const [show, setShow] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [who, setWho] = useState({ name: "", email: "" });
   const [picked, setPicked] = useState<number[]>(
     roles.filter((r) => r.slug === "editor").map((r) => r.id),
   );
@@ -221,15 +272,17 @@ function InviteDialog({ roles, onClose }: { roles: RoleOpt[]; onClose: () => voi
   useEffect(() => {
     if (state?.ok) onClose();
   }, [state, onClose]);
+  const problem = mode === "password" && pw ? passwordProblem(pw, who) : null;
   return (
     <dialog
       ref={ref}
       onClose={onClose}
-      className="office-page m-auto w-[min(30rem,calc(100vw-2rem))] rounded-2xl border border-subtle bg-surface p-0 text-fg shadow-2 backdrop:bg-black/50 backdrop:backdrop-blur-sm"
+      className="office-page m-auto w-[min(32rem,calc(100vw-2rem))] rounded-2xl border border-subtle bg-surface p-0 text-fg shadow-2 backdrop:bg-black/50 backdrop:backdrop-blur-sm"
     >
       <form action={action} className="grid gap-4 p-5">
+        <input type="hidden" name="mode" value={mode} />
         <div className="flex items-center justify-between">
-          <h2 className="text-heading-md">Invite a staff member</h2>
+          <h2 className="text-heading-md">Add a staff member</h2>
           <button
             type="button"
             onClick={onClose}
@@ -239,10 +292,43 @@ function InviteDialog({ roles, onClose }: { roles: RoleOpt[]; onClose: () => voi
             <X className="size-4" />
           </button>
         </div>
+        {canSetPassword && (
+          <div
+            role="radiogroup"
+            aria-label="How they get in"
+            className="grid grid-cols-2 gap-1 rounded-xl bg-[var(--bg-sunken)] p-1"
+          >
+            {(
+              [
+                ["invite", "Email an invitation", <Mail key="i" className="size-4" aria-hidden />],
+                ["password", "Set a password", <KeyRound key="i" className="size-4" aria-hidden />],
+              ] as const
+            ).map(([m, label, icon]) => (
+              <button
+                key={m}
+                type="button"
+                role="radio"
+                aria-checked={mode === m}
+                onClick={() => setMode(m)}
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-[0.8125rem] font-medium text-fg-secondary transition-colors aria-checked:bg-surface aria-checked:text-fg aria-checked:shadow-1"
+              >
+                {icon}
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="grid gap-4 sm:grid-cols-2">
           <label className={labelCls}>
             Full name
-            <input name="name" required className={field} autoFocus />
+            <input
+              name="name"
+              required
+              className={field}
+              autoFocus
+              value={who.name}
+              onChange={(e) => setWho((w) => ({ ...w, name: e.target.value }))}
+            />
           </label>
           <label className={labelCls}>
             Job title
@@ -251,8 +337,96 @@ function InviteDialog({ roles, onClose }: { roles: RoleOpt[]; onClose: () => voi
         </div>
         <label className={labelCls}>
           Work email
-          <input name="email" type="email" required className={field} />
+          <input
+            name="email"
+            type="email"
+            required
+            className={field}
+            value={who.email}
+            onChange={(e) => setWho((w) => ({ ...w, email: e.target.value }))}
+          />
         </label>
+        {mode === "password" && (
+          <div className="office-page grid gap-2">
+            <div className={labelCls}>
+              <label htmlFor="new-staff-password">Password</label>
+              <span className="flex gap-2">
+                <span className="relative min-w-0 flex-1">
+                  <input
+                    id="new-staff-password"
+                    name="password"
+                    type={show ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    minLength={PASSWORD_MIN}
+                    value={pw}
+                    onChange={(e) => {
+                      setPw(e.target.value);
+                      setCopied(false);
+                    }}
+                    aria-invalid={Boolean(problem)}
+                    aria-describedby="new-staff-password-hint"
+                    className={cn(field, "pr-10 font-mono")}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShow((v) => !v)}
+                    aria-label={show ? "Hide password" : "Show password"}
+                    className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-fg-muted hover:text-fg"
+                  >
+                    {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPw(generatePassword());
+                    setShow(true);
+                    setCopied(false);
+                  }}
+                  className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-[10px] border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
+                >
+                  <Wand2 className="size-4" aria-hidden /> Generate
+                </button>
+                {pw && (
+                  <button
+                    type="button"
+                    aria-label="Copy password"
+                    onClick={async () => {
+                      await navigator.clipboard?.writeText(pw).catch(() => null);
+                      setCopied(true);
+                    }}
+                    className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-strong hover:bg-[var(--bg-sunken)]"
+                  >
+                    {copied ? (
+                      <Check className="size-4 text-success" />
+                    ) : (
+                      <Copy className="size-4" />
+                    )}
+                  </button>
+                )}
+              </span>
+              <span
+                id="new-staff-password-hint"
+                className={cn(
+                  "text-[0.75rem] font-normal",
+                  problem ? "text-danger" : "text-fg-muted",
+                )}
+              >
+                {problem ?? `At least ${PASSWORD_MIN} characters. Share it with them privately.`}
+              </span>
+            </div>
+            <label className="flex items-center gap-2 text-body-sm">
+              <input
+                type="checkbox"
+                name="mustChange"
+                defaultChecked
+                className="size-4 accent-[#0145b8]"
+              />
+              Ask them to choose their own password at first sign-in
+            </label>
+          </div>
+        )}
         <fieldset>
           <legend className="text-[0.8125rem] font-medium text-fg-secondary">Roles</legend>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -288,11 +462,15 @@ function InviteDialog({ roles, onClose }: { roles: RoleOpt[]; onClose: () => voi
             })}
           </div>
         </fieldset>
-        <p className="text-[0.8125rem] text-fg-muted">
-          They get an email to set their own password (link valid one hour).
-        </p>
+        {mode === "invite" && (
+          <p className="text-[0.8125rem] text-fg-muted">
+            They get an email to set their own password (link valid one hour).
+          </p>
+        )}
         <div className="flex justify-end">
-          <SubmitButton pending={pending}>Send invitation</SubmitButton>
+          <SubmitButton pending={pending}>
+            {mode === "password" ? "Create account" : "Send invitation"}
+          </SubmitButton>
         </div>
       </form>
     </dialog>

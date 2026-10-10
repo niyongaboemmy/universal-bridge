@@ -61,7 +61,9 @@ export async function signIn(_prev: SignInState, form: FormData): Promise<SignIn
     path: "/",
     expires: new Date(Date.now() + auth.tokenExpiration * 1000),
   });
-  const to = await landing(result.user as never, form.get("next"));
+  const to = (result.user as { mustChangePassword?: boolean }).mustChangePassword
+    ? "/office/profile?first=1"
+    : await landing(result.user as never, form.get("next"));
   // With two-step verification on, the proxy sends the session through /staff/mfa first.
   if (mfaMode() !== "off") redirect(`/staff/mfa?next=${encodeURIComponent(to)}`);
   redirect(to);

@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/brand/Logo";
 import { CommandPalette, PaletteTrigger } from "@/components/office/CommandPalette";
@@ -66,6 +68,9 @@ async function badges() {
  */
 export default async function OfficeLayout({ children }: { children: ReactNode }) {
   const user = await officeUser();
+  // An account created with a password must choose its own before anything else.
+  if (user.mustChangePassword && (await headers()).get("x-ub-path") !== "/office/profile")
+    redirect("/office/profile?first=1");
   const [b, system] = await Promise.all([badges(), settings()]);
   const item = (area: Area, href: string, label: string, icon: ReactNode, count?: number) =>
     can(user, area) ? [{ href, label, icon, count }] : [];

@@ -1,5 +1,6 @@
 import * as migration_20261010_120600_initial from './20261010_120600_initial';
 import * as migration_20261010_214517_office_workspace from './20261010_214517_office_workspace';
+import * as migration_20261010_221939_staff_password from './20261010_221939_staff_password';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20261010_214517_office_workspace.up,
     down: migration_20261010_214517_office_workspace.down,
-    name: '20261010_214517_office_workspace'
+    name: '20261010_214517_office_workspace',
+  },
+  {
+    up: migration_20261010_221939_staff_password.up,
+    down: migration_20261010_221939_staff_password.down,
+    name: '20261010_221939_staff_password'
   },
 ];

@@ -18,6 +18,7 @@ export type OfficeUser = {
   avatar?: number | Avatar | null;
   roles?: (number | RoleDoc)[];
   lastLoginAt?: string | null;
+  mustChangePassword?: boolean | null;
   collection: "users";
   /** Every role the person has (`roles` holds only the active one while switched). */
   allRoles?: RoleDoc[];

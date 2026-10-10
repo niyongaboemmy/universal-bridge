@@ -120,12 +120,22 @@ function strength(pw: string) {
   return Math.min(s, 4);
 }
 
-export function PasswordForm({ email, name }: { email: string; name?: string }) {
+export function PasswordForm({
+  email,
+  name,
+  then,
+}: {
+  email: string;
+  name?: string;
+  /** Where to go once the password is changed (first sign-in). */
+  then?: string;
+}) {
   const [pw, setPw] = useState("");
   const [state, action, pending] = useActionState(
     async (prev: ActionResult | null, fd: FormData) => {
       const r = await changePassword(prev, fd);
       if (r.ok) setPw("");
+      if (r.ok && then) window.location.assign(then);
       return r;
     },
     null,
@@ -148,10 +158,12 @@ export function PasswordForm({ email, name }: { email: string; name?: string }) 
           className={field}
         />
       </label>
-      <label className={labelCls}>
-        New password
+      <div className={labelCls}>
+        <label htmlFor="profile-new-password">New password</label>
         <span className="relative">
           <input
+            id="profile-new-password"
+            aria-describedby="profile-new-password-hint"
             name="next"
             type={show ? "text" : "password"}
             autoComplete="new-password"
@@ -182,6 +194,7 @@ export function PasswordForm({ email, name }: { email: string; name?: string }) 
           ))}
         </span>
         <span
+          id="profile-new-password-hint"
           className={cn("text-[0.75rem] font-normal", problem ? "text-danger" : "text-fg-muted")}
         >
           {problem ??
@@ -189,7 +202,7 @@ export function PasswordForm({ email, name }: { email: string; name?: string }) 
               ? "Looks good."
               : `At least ${PASSWORD_MIN} characters. A short sentence works well.`)}
         </span>
-      </label>
+      </div>
       <label className={labelCls}>
         Repeat new password
         <input
