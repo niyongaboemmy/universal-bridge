@@ -13,6 +13,7 @@ import { fmtDate, timeAgo } from "@/components/office/format";
 import { Pagination } from "@/components/office/Pagination";
 import { Card, Empty, PageHeader, Pill, Stat, Tabs } from "@/components/office/ui";
 import { findPage, listHref, listParams, textSearch, type Params } from "@/features/office/query";
+import { isSuperUser } from "@/access/roles";
 import { allowed, requireArea } from "@/features/office/session";
 import { payload } from "@/lib/cms/payload";
 import { nowMs } from "@/lib/time/office-hours";
@@ -70,7 +71,11 @@ export default async function Accounts({ searchParams }: { searchParams: Promise
         subtitle="Staff who use the office and the CMS, and people registered on the website."
         actions={
           canStaff && tab === "staff" ? (
-            <InviteButton roles={roleOpts} open={sp.invite === "1"} />
+            <InviteButton
+              roles={roleOpts}
+              open={sp.invite === "1"}
+              canSetPassword={isSuperUser(user as never)}
+            />
           ) : undefined
         }
       />

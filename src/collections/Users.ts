@@ -172,11 +172,15 @@ export const Users: CollectionConfig = {
             entity: "users",
             entityId: doc.id,
             label: doc.name || doc.email,
-            meta: { roles: ids(doc.roles) },
+            meta: {
+              roles: ids(doc.roles),
+              method: req.context?.passwordSet ? "password" : "invite",
+            },
           });
           // Invitation: the new person sets their own password from an emailed link. Sent from
           // the outbox once this transaction commits (the reset step can't see uncommitted rows).
-          if (req.user) {
+          // Not when a super admin created the account with a password (office → Accounts).
+          if (req.user && !req.context?.passwordSet) {
             await req.payload.create({
               collection: "outbox",
               overrideAccess: true,
@@ -317,6 +321,16 @@ export const Users: CollectionConfig = {
       type: "date",
       access: { create: noField, update: noField },
       admin: { position: "sidebar", readOnly: true },
+    },
+    {
+      // Set when a super admin creates the account with a password: the person must
+      // choose their own before using the office (cleared by the password change).
+      name: "mustChangePassword",
+      label: "Must change password at next sign-in",
+      type: "checkbox",
+      defaultValue: false,
+      access: { create: superFieldOnly, update: superFieldOnly },
+      admin: { position: "sidebar" },
     },
     {
       // ADM-01: two-step verification. Set up and used at /staff/mfa; only a super

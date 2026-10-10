@@ -2,11 +2,12 @@ import path from "node:path";
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
 import {
   adminToken,
+  loginStaff,
+  mailTo,
   presetConsent,
   staffHeaders,
   stubTurnstile,
   uniqueEmail,
-  loginStaff,
 } from "./helpers";
 
 // Sign-in, roles & permissions, settings, system logs, openings and website accounts.
@@ -136,6 +137,86 @@ test.describe("Staff access", () => {
     await expect(page.getByText("changed settings").first()).toBeVisible();
     await page.getByText("changed settings").first().click();
     await expect(page.getByText("settings.update").first()).toBeVisible();
+  });
+});
+
+test.describe("Adding staff with a password", () => {
+  test.skip(({ isMobile }) => isMobile, "staff screens run on desktop");
+
+  test("a super admin sets a password; the person must choose their own first", async ({
+    page,
+    browser,
+    request,
+  }) => {
+    const email = uniqueEmail("pw");
+    await asStaff(page, await adminToken(request));
+    await page.goto("/office/accounts");
+    await page.getByRole("button", { name: "Add staff" }).click();
+    const dialog = page.getByRole("dialog");
+    await dialog.getByRole("radio", { name: "Set a password" }).click();
+    await dialog.getByLabel("Full name").fill("Password Person");
+    await dialog.getByLabel("Work email").fill(email);
+    await dialog.getByRole("button", { name: "Generate" }).click();
+    const password = await dialog.getByLabel("Password", { exact: true }).inputValue();
+    expect(password).toMatch(/^\w{4}-\w{4}-\w{4}-\w{4}$/);
+    await expect(dialog.getByLabel(/choose their own password/)).toBeChecked();
+    await dialog.getByRole("button", { name: "Create account" }).click();
+    await expect(page.getByRole("status").last()).toContainText("Account created");
+
+    const headers = await staffHeaders(request);
+    const found = await request.get(`/api/users?where[email][equals]=${email}&depth=0`, {
+      headers,
+    });
+    const id = ((await found.json()).docs[0] as { id: number }).id;
+    try {
+      // No invitation email for an account created with a password.
+      await page.waitForTimeout(1500);
+      expect(mailTo(email)).toHaveLength(0);
+
+      // First sign-in: straight to the password change; the rest of the office waits.
+      const ctx = await browser.newContext();
+      const p2 = await ctx.newPage();
+      await p2.goto("/login");
+      await p2.getByLabel("Email").fill(email);
+      await p2.getByLabel("Password", { exact: true }).fill(password);
+      await p2.getByRole("button", { name: "Sign in" }).click();
+      await p2.waitForURL(/\/office\/profile\?first=1/);
+      await expect(p2.getByText("Choose your own password")).toBeVisible();
+      await p2.goto("/office/requests");
+      await expect(p2).toHaveURL(/\/office\/profile\?first=1/);
+
+      await p2.getByLabel("Current password").fill(password);
+      await p2.getByLabel("New password", { exact: true }).fill("a brand new lantern 2026");
+      await p2.getByLabel("Repeat new password").fill("a brand new lantern 2026");
+      await p2.getByRole("button", { name: "Change password" }).click();
+      await p2.waitForURL(/\/office$/);
+      await expect(p2.getByRole("heading", { level: 1 })).toContainText(
+        /Good (morning|afternoon|evening)/,
+      );
+      await ctx.close();
+    } finally {
+      await request.delete(`/api/users/${id}`, { headers });
+    }
+  });
+
+  test("only super admins get the password option", async ({ page, request }) => {
+    const headers = await staffHeaders(request);
+    const created = await request.post("/api/roles", {
+      headers,
+      data: { name: `Account staff ${Date.now()}`, permissions: ["users.manage", "cms.access"] },
+    });
+    const role = (await created.json()).doc as { id: number };
+    const s = await staff(request, [role.id]);
+    try {
+      await asStaff(page, s.token);
+      await page.goto("/office/accounts");
+      await page.getByRole("button", { name: "Add staff" }).click();
+      await expect(page.getByRole("button", { name: "Send invitation" })).toBeVisible();
+      await expect(page.getByRole("radio", { name: "Set a password" })).toHaveCount(0);
+    } finally {
+      await request.delete(`/api/users/${s.id}`, { headers });
+      await request.delete(`/api/roles/${role.id}`, { headers });
+    }
   });
 });
 

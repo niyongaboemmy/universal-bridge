@@ -407,7 +407,7 @@ The site handles personal data (applications, CVs, leads), so it must follow **R
 
 ### Staff accounts and sign-in (ADM-01, NFR-SEC-05)
 
-- **Invitations.** Someone with `users.manage` invites them (office → Accounts → Invite staff). The person gets an email to set their own password. Passwords need at least 12 characters and can't be common or contain the person's name or email.
+- **Adding staff** (office → Accounts → Add staff). Someone with `users.manage` sends an invitation: the person gets an email to set their own password. A super admin can instead create the account with a password typed in (or generated), with no email sent. By default the person must choose their own password at first sign-in: until they do, the office opens only their profile. Passwords need at least 12 characters and can't be common or contain the person's name or email.
 - **Sign-in** is email and password for now. Two-step verification and Google/Microsoft SSO are built but **switched off** until UB decides to roll them out:
   - Two-step verification: set `MFA_ENFORCEMENT=required` (every account) or `enrolled` (opt-in). Staff then enrol at `/staff/mfa` with an authenticator app and get 10 recovery codes; sessions that haven't passed the step can't open the admin or the API (`401 MFA_REQUIRED`). A super admin resets it by unticking "Two-step verification" on the user.
   - SSO: set `SSO_ENABLED=1` plus the Google and/or Microsoft client id and secret, and register `{NEXT_PUBLIC_SITE_URL}/api/sso/{google|microsoft}/callback` with the provider. It signs in existing staff accounts only (optionally limited by `SSO_ALLOWED_DOMAINS`).
