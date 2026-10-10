@@ -231,16 +231,17 @@ export function AvatarUploader({ current, name }: { current: string | null; name
     input.current!.files = dt.files;
     form.current?.requestSubmit();
   }
-  // Only a local preview (blob:) or the stored avatar's URL (ours or the storage bucket's)
-  // ever goes into <img src>.
-  const preview_ = preview?.startsWith("blob:") ? preview : null;
+  // The stored avatar's URL (ours or the storage bucket's) is an <img>; a just-picked file
+  // shows as a CSS background from its local blob: URL, never as markup.
   const current_ =
     current?.startsWith("/api/") ||
     current?.startsWith("/media/") ||
     current?.startsWith("https://")
       ? current
       : null;
-  const shown = preview_ ?? current_;
+  const previewStyle = preview?.startsWith("blob:")
+    ? { backgroundImage: `url("${preview}")` }
+    : undefined;
   return (
     <form ref={form} action={action} className="flex items-center gap-4">
       <label
@@ -259,9 +260,11 @@ export function AvatarUploader({ current, name }: { current: string | null; name
           over && "scale-105 border-accent",
         )}
       >
-        {shown ? (
+        {previewStyle ? (
+          <span aria-hidden className="size-full bg-cover bg-center" style={previewStyle} />
+        ) : current_ ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={shown} alt="" className="size-full object-cover" />
+          <img src={current_} alt="" className="size-full object-cover" />
         ) : (
           <span className="font-display text-2xl font-bold text-fg-muted">
             {name
