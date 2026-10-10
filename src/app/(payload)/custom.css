@@ -2,3 +2,22 @@
 :root {
   --theme-success-500: #0b47c1;
 }
+
+/* Same typefaces as the website and the office: Inter for text, Plus Jakarta Sans for
+   headings, JetBrains Mono for code. */
+html:root {
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+}
+html:root h1,
+html:root h2,
+html:root h3,
+html:root h4,
+html:root .doc-header__title,
+html:root .step-nav,
+html:root .nav__label {
+  font-family: var(--font-jakarta), var(--font-body);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}

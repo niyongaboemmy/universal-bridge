@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { nobody, roleAccess } from "@/access/roles";
+import { allow, isSuper, nobody } from "@/access/roles";
 
 // SRS §11 Subscriber + §7.2 newsletter (double opt-in).
 export const Subscribers: CollectionConfig = {
@@ -11,9 +11,9 @@ export const Subscribers: CollectionConfig = {
     defaultColumns: ["email", "locale", "confirmedAt", "unsubscribedAt"],
   },
   access: {
-    read: roleAccess("editor", "sales"),
-    update: roleAccess("super"),
-    delete: roleAccess("super"),
+    read: allow("subscribers.view"),
+    update: isSuper,
+    delete: isSuper,
     create: nobody,
   },
   fields: [

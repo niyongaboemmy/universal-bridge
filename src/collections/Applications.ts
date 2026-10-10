@@ -1,6 +1,7 @@
-import type { CollectionConfig } from "payload";
-import { nobody, roleAccess, type Role } from "@/access/roles";
+import type { AccessResult, CollectionConfig, Where } from "payload";
+import { can, isSuper, isSuperUser, nobody, type UserLike, actingFromReq } from "@/access/roles";
 import { auditHooks } from "@/lib/audit";
+import { notifyApplication } from "@/lib/notify-hooks";
 
 export const APPLICATION_TYPES = ["academy", "internship", "job", "partner", "event"] as const;
 export const APPLICATION_STATUSES = [
@@ -12,26 +13,22 @@ export const APPLICATION_STATUSES = [
   "waitlisted",
 ] as const;
 
-/** Which staff role sees which application type (SRS §3.2, least privilege). */
-export const ROLE_FOR: Record<(typeof APPLICATION_TYPES)[number], Role[]> = {
-  academy: ["academy"],
-  internship: ["academy", "hr"],
-  job: ["hr"],
-  partner: ["sales"],
-  event: ["editor", "academy"],
-};
-
-/** Application types a user may see (super: all). */
-export function applicationTypesFor(user: { roles?: Role[] } | null | undefined): string[] | "all" {
-  if (!user?.roles) return [];
-  if (user.roles.includes("super")) return "all";
-  return Object.entries(ROLE_FOR)
-    .filter(([, roles]) => roles.some((r) => user.roles!.includes(r)))
-    .map(([type]) => type);
+/** Application types a user may see and move (permission `applicants.<type>`; super: all). */
+export function applicationTypesFor(user: UserLike): string[] | "all" {
+  if (!user) return [];
+  if (isSuperUser(user)) return "all";
+  return APPLICATION_TYPES.filter((t) => can(user, `applicants.${t}`));
 }
 
-const scopedRead = ({ req }: { req: { user?: unknown } }) => {
-  const types = applicationTypesFor(req.user as { roles?: Role[] } | null);
+const scopedRead = ({
+  req,
+}: {
+  req: { user?: { collection?: string; id?: unknown } | null };
+}): AccessResult => {
+  // Members follow their own applications.
+  if (req.user?.collection === "members") return { member: { equals: req.user.id } } as Where;
+  if (req.user?.collection !== "users") return false;
+  const types = applicationTypesFor(actingFromReq(req as never));
   if (types === "all") return true;
   return types.length ? { type: { in: types } } : false;
 };
@@ -49,14 +46,15 @@ export const Applications: CollectionConfig = {
   },
   access: {
     read: scopedRead,
-    update: scopedRead,
-    delete: roleAccess("super"),
+    update: ({ req }) => (req.user?.collection === "users" ? scopedRead({ req }) : false),
+    delete: isSuper,
     create: nobody,
   },
   hooks: {
     ...auditHooks("applications"),
     afterChange: [
       ...auditHooks("applications").afterChange,
+      notifyApplication,
       // ADM-05: tell the applicant when staff move their application on.
       async ({ doc, previousDoc, operation, req }) => {
         const notify = ["shortlisted", "accepted", "rejected", "waitlisted"];
@@ -64,6 +62,7 @@ export const Applications: CollectionConfig = {
           operation !== "update" ||
           !req.user ||
           doc.notifyApplicant === false ||
+          !(await (await import("@/lib/settings")).settings()).notifyApplicants ||
           doc.status === previousDoc?.status ||
           !notify.includes(doc.status)
         )
@@ -172,6 +171,13 @@ export const Applications: CollectionConfig = {
         { name: "phone", type: "text" },
       ],
     },
+    {
+      type: "row",
+      fields: [
+        { name: "opening", type: "relationship", relationTo: "openings", index: true },
+        { name: "member", type: "relationship", relationTo: "members", index: true },
+      ],
+    },
     { name: "program", type: "relationship", relationTo: "programs" },
     { name: "intake", type: "relationship", relationTo: "intakes" },
     { name: "job", type: "relationship", relationTo: "jobs" },
@@ -224,6 +230,13 @@ export const Applications: CollectionConfig = {
       admin: { position: "sidebar" },
     },
     { name: "firstResponseAt", type: "date", admin: { position: "sidebar", readOnly: true } },
+    {
+      name: "rating",
+      type: "number",
+      min: 1,
+      max: 5,
+      admin: { position: "sidebar", description: "Screening score, 1–5" },
+    },
     {
       name: "notifyApplicant",
       label: "Email the applicant about status changes",

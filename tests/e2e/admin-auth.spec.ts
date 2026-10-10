@@ -37,10 +37,10 @@ async function createStaff(request: APIRequestContext, email: string) {
 }
 
 async function login(page: import("@playwright/test").Page, email: string) {
-  await page.goto("/admin/login");
+  await page.goto("/login");
   await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByRole("button", { name: "Login" }).click();
+  await page.getByLabel("Password", { exact: true }).fill(PASSWORD);
+  await page.getByRole("button", { name: "Sign in" }).click();
 }
 
 test.describe("Admin authentication", () => {
@@ -72,7 +72,10 @@ test.describe("Admin authentication", () => {
         .toContain("Set your Universal Bridge admin password");
       expect(mailTo(email)[0]!.html).toMatch(/\/admin\/reset\/[\w-]+/);
       await login(page, email);
-      await page.waitForURL(/\/admin(?!\/login)/);
+      // Staff land in the office; the CMS is one click away.
+      await page.waitForURL(/\/office/);
+      await page.goto("/admin");
+      await expect(page).toHaveURL(/\/admin(?!\/login)/);
       await expect(page.getByRole("link", { name: "Two-step verification" })).toHaveCount(0);
       expect((await page.request.get("/api/pages?limit=1")).status()).toBe(200);
       // The staff MFA page is switched off and sends people back to the admin.
@@ -105,7 +108,7 @@ test.describe("Admin authentication", () => {
 
       // First sign-in, then enrol from the staff page.
       await login(page, email);
-      await page.waitForURL(/\/admin(?!\/login)/);
+      await page.waitForURL(/\/(office|staff\/mfa)/);
       await page.goto("/staff/mfa");
       await page.getByRole("button", { name: "Set up two-step verification" }).click();
       const secret = (await page.locator("[data-secret]").textContent())!.replace(/\s/g, "");
@@ -120,7 +123,7 @@ test.describe("Admin authentication", () => {
       const codes = await list.locator("li").allTextContents();
       expect(codes).toHaveLength(10);
       await page.getByRole("button", { name: /continue/ }).click();
-      await expect(page).toHaveURL(/\/admin/);
+      await expect(page).toHaveURL(/\/(office|admin)/);
 
       // A new browser: the password alone no longer opens the admin or the API.
       const ctx = await browser.newContext();
@@ -136,7 +139,7 @@ test.describe("Admin authentication", () => {
       await fresh.getByRole("button", { name: "Use a recovery code" }).click();
       await fresh.getByLabel(/recovery codes/).fill(codes[0]!);
       await fresh.getByRole("button", { name: "Verify" }).click();
-      await fresh.waitForURL(/\/admin(?!\/login)/);
+      await fresh.waitForURL(/\/(office|admin)(?!\/login)/);
       expect((await fresh.request.get("/api/pages?limit=1")).status()).toBe(200);
       await ctx.close();
 
@@ -153,7 +156,7 @@ test.describe("Admin authentication", () => {
       await again.getByRole("button", { name: "Use the authenticator app instead" }).click();
       await again.getByLabel(/6-digit code/).fill(totp(secret, 1));
       await again.getByRole("button", { name: "Verify" }).click();
-      await again.waitForURL(/\/admin(?!\/login)/);
+      await again.waitForURL(/\/(office|admin)(?!\/login)/);
       await ctx2.close();
 
       // Sign-ins and MFA events are in the audit log.

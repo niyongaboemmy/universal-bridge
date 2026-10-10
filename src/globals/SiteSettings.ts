@@ -1,5 +1,5 @@
 import type { GlobalConfig } from "payload";
-import { anyone, roleAccess } from "@/access/roles";
+import { allow, anyone } from "@/access/roles";
 import { revalidateGlobal } from "@/lib/cms/revalidate";
 
 // CMS-03: site settings, contact info, social links. FR-TEAM-03: company channels only.
@@ -7,7 +7,7 @@ export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site settings",
   admin: { group: "Settings" },
-  access: { read: anyone, update: roleAccess("editor") },
+  access: { read: anyone, update: allow("content.site") },
   hooks: { afterChange: [revalidateGlobal("site-settings")] },
   fields: [
     {

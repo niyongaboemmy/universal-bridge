@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    members: MemberAuthOperations;
   };
   blocks: {};
   collections: {
@@ -88,11 +89,19 @@ export interface Config {
     clients: Client;
     media: Media;
     leads: Lead;
+    employees: Employee;
+    projects: Project;
+    'page-views': PageView;
+    openings: Opening;
     applications: Application;
     'private-files': PrivateFile;
     certificates: Certificate;
     subscribers: Subscriber;
     users: User;
+    members: Member;
+    roles: Role;
+    avatars: Avatar;
+    notifications: Notification;
     outbox: Outbox;
     'audit-log': AuditLog;
     'payload-kv': PayloadKv;
@@ -124,11 +133,19 @@ export interface Config {
     clients: ClientsSelect<false> | ClientsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     leads: LeadsSelect<false> | LeadsSelect<true>;
+    employees: EmployeesSelect<false> | EmployeesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    'page-views': PageViewsSelect<false> | PageViewsSelect<true>;
+    openings: OpeningsSelect<false> | OpeningsSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     'private-files': PrivateFilesSelect<false> | PrivateFilesSelect<true>;
     certificates: CertificatesSelect<false> | CertificatesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    members: MembersSelect<false> | MembersSelect<true>;
+    roles: RolesSelect<false> | RolesSelect<true>;
+    avatars: AvatarsSelect<false> | AvatarsSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     outbox: OutboxSelect<false> | OutboxSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -145,17 +162,19 @@ export interface Config {
     navigation: Navigation;
     'site-settings': SiteSetting;
     announcement: Announcement;
+    'system-settings': SystemSetting;
   };
   globalsSelect: {
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     announcement: AnnouncementSelect<false> | AnnouncementSelect<true>;
+    'system-settings': SystemSettingsSelect<false> | SystemSettingsSelect<true>;
   };
   locale: 'en' | 'fr' | 'rw';
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | Member;
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -168,6 +187,24 @@ export interface Config {
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface MemberAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -1873,6 +1910,12 @@ export interface Lead {
   source?: string | null;
   message: string;
   /**
+   * Estimated deal value
+   */
+  value?: number | null;
+  currency?: ('RWF' | 'USD' | 'EUR' | 'KES' | 'UGX') | null;
+  nextFollowUpAt?: string | null;
+  /**
    * Internal notes (ADM-04). Never shown to the submitter.
    */
   notes?:
@@ -1929,7 +1972,16 @@ export interface Lead {
 export interface User {
   id: number;
   name: string;
-  roles: ('super' | 'editor' | 'academy' | 'hr' | 'sales')[];
+  roles: (number | Role)[];
+  legacyRoles?: ('super' | 'editor' | 'academy' | 'hr' | 'sales')[] | null;
+  jobTitle?: string | null;
+  phone?: string | null;
+  /**
+   * Changed from the profile page.
+   */
+  avatar?: (number | null) | Avatar;
+  landing?: ('office' | 'cms') | null;
+  lastLoginAt?: string | null;
   /**
    * On after the person sets up an authenticator app. Untick to reset it (lost phone).
    */
@@ -1969,6 +2021,254 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Roles and their permissions. Easier to manage in the office under Roles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles".
+ */
+export interface Role {
+  id: number;
+  name: string;
+  /**
+   * Short id used in code and exports. Set from the name.
+   */
+  slug?: string | null;
+  description?: string | null;
+  audience: 'staff' | 'member';
+  permissions?:
+    | (
+        | 'office.overview'
+        | 'requests.view'
+        | 'requests.manage'
+        | 'demos.view'
+        | 'demos.manage'
+        | 'messages.view'
+        | 'messages.manage'
+        | 'applicants.academy'
+        | 'applicants.internship'
+        | 'applicants.job'
+        | 'applicants.partner'
+        | 'applicants.event'
+        | 'openings.view'
+        | 'openings.manage'
+        | 'projects.view'
+        | 'projects.manage'
+        | 'people.view'
+        | 'people.manage'
+        | 'analytics.view'
+        | 'subscribers.view'
+        | 'users.manage'
+        | 'members.manage'
+        | 'roles.manage'
+        | 'settings.manage'
+        | 'privacy.manage'
+        | 'audit.view'
+        | 'data.export'
+        | 'cms.access'
+        | 'content.site'
+        | 'content.academy'
+        | 'content.careers'
+        | 'content.team'
+        | 'content.media'
+        | 'content.announcement'
+        | 'content.liveEdit'
+        | 'member.profile'
+        | 'member.apply'
+        | 'member.applications'
+      )[]
+    | null;
+  color?: ('blue' | 'orange' | 'violet' | 'green' | 'amber' | 'teal' | 'rose' | 'slate') | null;
+  system?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "avatars".
+ */
+export interface Avatar {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    small?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * Staff directory, managed from the Company dashboard (/office/people).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employees".
+ */
+export interface Employee {
+  id: number;
+  name: string;
+  jobTitle: string;
+  department: 'leadership' | 'engineering' | 'design' | 'academy' | 'sales' | 'operations' | 'labs';
+  employment: 'full-time' | 'part-time' | 'contract' | 'intern';
+  status: 'active' | 'on-leave' | 'left';
+  email: string;
+  phone?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  manager?: (number | null) | Employee;
+  skills?: string[] | null;
+  /**
+   * Their admin account, if any
+   */
+  user?: (number | null) | User;
+  /**
+   * HR notes (not shown to the employee)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Client projects, internal tools and products, managed from /office/projects.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  name: string;
+  /**
+   * Short code, e.g. NYB
+   */
+  code?: string | null;
+  kind: 'client' | 'internal-tool' | 'product';
+  status: 'planning' | 'active' | 'on-hold' | 'done' | 'cancelled';
+  health: 'on-track' | 'at-risk' | 'off-track';
+  summary?: string | null;
+  /**
+   * Client or owner
+   */
+  client?: string | null;
+  /**
+   * The request it came from
+   */
+  lead?: (number | null) | Lead;
+  /**
+   * For product work
+   */
+  product?: (number | null) | Product;
+  startDate?: string | null;
+  dueDate?: string | null;
+  progress?: number | null;
+  budget?: number | null;
+  currency?: ('RWF' | 'USD' | 'EUR' | 'KES' | 'UGX') | null;
+  owner?: (number | null) | Employee;
+  team?: (number | Employee)[] | null;
+  milestones?:
+    | {
+        title: string;
+        due?: string | null;
+        done?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  links?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views".
+ */
+export interface PageView {
+  id: number;
+  path: string;
+  locale?: string | null;
+  referrer?: string | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  country?: string | null;
+  device?: string | null;
+  browser?: string | null;
+  os?: string | null;
+  /**
+   * Daily-rotating hash; no IP or cookie stored
+   */
+  visitor?: string | null;
+  session?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Easier to manage in the office under Openings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "openings".
+ */
+export interface Opening {
+  id: number;
+  title: string;
+  slug: string;
+  kind: 'academy' | 'internship' | 'job' | 'partner' | 'event';
+  status: 'draft' | 'open' | 'paused' | 'closed';
+  mode?: ('onsite' | 'remote' | 'hybrid') | null;
+  opensAt?: string | null;
+  closesAt?: string | null;
+  startsAt?: string | null;
+  seats?: number | null;
+  location?: string | null;
+  summary?: string | null;
+  description?: string | null;
+  cover?: (number | null) | Media;
+  program?: (number | null) | Program;
+  intake?: (number | null) | Intake;
+  job?: (number | null) | Job;
+  event?: (number | null) | Event;
+  owner?: (number | null) | User;
+  /**
+   * Applicants sign in (or register) before applying.
+   */
+  requireAccount?: boolean | null;
+  featured?: boolean | null;
+  fields?:
+    | {
+        key: string;
+        label: string;
+        type:
+          'text' | 'textarea' | 'email' | 'tel' | 'number' | 'url' | 'date' | 'select' | 'radio' | 'checkbox' | 'file';
+        required?: boolean | null;
+        width?: ('full' | 'half') | null;
+        help?: string | null;
+        /**
+         * One per line
+         */
+        options?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Academy, internship, job and partner applications (ADM-02). Personal data.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1987,6 +2287,8 @@ export interface Application {
   name: string;
   email: string;
   phone?: string | null;
+  opening?: (number | null) | Opening;
+  member?: (number | null) | Member;
   program?: (number | null) | Program;
   intake?: (number | null) | Intake;
   job?: (number | null) | Job;
@@ -2037,11 +2339,51 @@ export interface Application {
   botCheck?: ('passed' | 'missing') | null;
   firstResponseAt?: string | null;
   /**
+   * Screening score, 1–5
+   */
+  rating?: number | null;
+  /**
    * Shortlisted, accepted, rejected and waitlisted send a short email in their language.
    */
   notifyApplicant?: boolean | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Website accounts (visitors and applicants). Personal data.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members".
+ */
+export interface Member {
+  id: number;
+  name: string;
+  phone?: string | null;
+  country?: string | null;
+  role?: (number | null) | Role;
+  avatar?: (number | null) | Avatar;
+  locale?: ('en' | 'fr' | 'rw') | null;
+  newsletter?: boolean | null;
+  lastLoginAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'members';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2123,6 +2465,21 @@ export interface Subscriber {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  user: number | User;
+  kind: 'request' | 'demo' | 'message' | 'application' | 'assignment' | 'opening' | 'project' | 'account' | 'system';
+  title: string;
+  body?: string | null;
+  href?: string | null;
+  readAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Background jobs. “dead” jobs failed 5 times and need attention.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2155,9 +2512,13 @@ export interface AuditLog {
   id: number;
   at: string;
   actor?: (number | null) | User;
+  member?: (number | null) | Member;
+  actorType?: ('staff' | 'member' | 'public' | 'system') | null;
+  actorName?: string | null;
   action: string;
   entity: string;
   entityId?: string | null;
+  label?: string | null;
   meta?:
     | {
         [k: string]: unknown;
@@ -2167,6 +2528,8 @@ export interface AuditLog {
     | number
     | boolean
     | null;
+  ip?: string | null;
+  device?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2371,6 +2734,22 @@ export interface PayloadLockedDocument {
         value: number | Lead;
       } | null)
     | ({
+        relationTo: 'employees';
+        value: number | Employee;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'page-views';
+        value: number | PageView;
+      } | null)
+    | ({
+        relationTo: 'openings';
+        value: number | Opening;
+      } | null)
+    | ({
         relationTo: 'applications';
         value: number | Application;
       } | null)
@@ -2391,6 +2770,22 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'members';
+        value: number | Member;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'avatars';
+        value: number | Avatar;
+      } | null)
+    | ({
+        relationTo: 'notifications';
+        value: number | Notification;
+      } | null)
+    | ({
         relationTo: 'outbox';
         value: number | Outbox;
       } | null)
@@ -2399,10 +2794,15 @@ export interface PayloadLockedDocument {
         value: number | AuditLog;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'members';
+        value: number | Member;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -2412,10 +2812,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'members';
+        value: number | Member;
+      };
   key?: string | null;
   value?:
     | {
@@ -3441,6 +3846,9 @@ export interface LeadsSelect<T extends boolean = true> {
   timeline?: T;
   source?: T;
   message?: T;
+  value?: T;
+  currency?: T;
+  nextFollowUpAt?: T;
   notes?:
     | T
     | {
@@ -3472,6 +3880,126 @@ export interface LeadsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "employees_select".
+ */
+export interface EmployeesSelect<T extends boolean = true> {
+  name?: T;
+  jobTitle?: T;
+  department?: T;
+  employment?: T;
+  status?: T;
+  email?: T;
+  phone?: T;
+  startDate?: T;
+  endDate?: T;
+  manager?: T;
+  skills?: T;
+  user?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  name?: T;
+  code?: T;
+  kind?: T;
+  status?: T;
+  health?: T;
+  summary?: T;
+  client?: T;
+  lead?: T;
+  product?: T;
+  startDate?: T;
+  dueDate?: T;
+  progress?: T;
+  budget?: T;
+  currency?: T;
+  owner?: T;
+  team?: T;
+  milestones?:
+    | T
+    | {
+        title?: T;
+        due?: T;
+        done?: T;
+        id?: T;
+      };
+  links?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-views_select".
+ */
+export interface PageViewsSelect<T extends boolean = true> {
+  path?: T;
+  locale?: T;
+  referrer?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  country?: T;
+  device?: T;
+  browser?: T;
+  os?: T;
+  visitor?: T;
+  session?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "openings_select".
+ */
+export interface OpeningsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  kind?: T;
+  status?: T;
+  mode?: T;
+  opensAt?: T;
+  closesAt?: T;
+  startsAt?: T;
+  seats?: T;
+  location?: T;
+  summary?: T;
+  description?: T;
+  cover?: T;
+  program?: T;
+  intake?: T;
+  job?: T;
+  event?: T;
+  owner?: T;
+  requireAccount?: T;
+  featured?: T;
+  fields?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        type?: T;
+        required?: T;
+        width?: T;
+        help?: T;
+        options?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "applications_select".
  */
 export interface ApplicationsSelect<T extends boolean = true> {
@@ -3483,6 +4011,8 @@ export interface ApplicationsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   phone?: T;
+  opening?: T;
+  member?: T;
   program?: T;
   intake?: T;
   job?: T;
@@ -3514,6 +4044,7 @@ export interface ApplicationsSelect<T extends boolean = true> {
       };
   botCheck?: T;
   firstResponseAt?: T;
+  rating?: T;
   notifyApplicant?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -3585,6 +4116,12 @@ export interface SubscribersSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   roles?: T;
+  legacyRoles?: T;
+  jobTitle?: T;
+  phone?: T;
+  avatar?: T;
+  landing?: T;
+  lastLoginAt?: T;
   mfaEnabled?: T;
   mfaEnrolledAt?: T;
   mfaSecret?: T;
@@ -3612,6 +4149,97 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members_select".
+ */
+export interface MembersSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  country?: T;
+  role?: T;
+  avatar?: T;
+  locale?: T;
+  newsletter?: T;
+  lastLoginAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "roles_select".
+ */
+export interface RolesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  audience?: T;
+  permissions?: T;
+  color?: T;
+  system?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "avatars_select".
+ */
+export interface AvatarsSelect<T extends boolean = true> {
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+  sizes?:
+    | T
+    | {
+        small?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  user?: T;
+  kind?: T;
+  title?: T;
+  body?: T;
+  href?: T;
+  readAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "outbox_select".
  */
 export interface OutboxSelect<T extends boolean = true> {
@@ -3631,10 +4259,16 @@ export interface OutboxSelect<T extends boolean = true> {
 export interface AuditLogSelect<T extends boolean = true> {
   at?: T;
   actor?: T;
+  member?: T;
+  actorType?: T;
+  actorName?: T;
   action?: T;
   entity?: T;
   entityId?: T;
+  label?: T;
   meta?: T;
+  ip?: T;
+  device?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3875,6 +4509,67 @@ export interface Announcement {
   createdAt?: string | null;
 }
 /**
+ * Easier to manage in the office under Settings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "system-settings".
+ */
+export interface SystemSetting {
+  id: number;
+  email?: {
+    fromName?: string | null;
+    fromAddress?: string | null;
+    inboxes?: {
+      sales?: string | null;
+      academy?: string | null;
+      careers?: string | null;
+      partnerships?: string | null;
+      press?: string | null;
+      support?: string | null;
+      events?: string | null;
+    };
+  };
+  accounts?: {
+    registrationOpen?: boolean | null;
+    defaultMemberRole?: (number | null) | Role;
+    applicantRole?: (number | null) | Role;
+    staffLanding?: ('office' | 'cms') | null;
+    ssoDomains?: string | null;
+  };
+  workflow?: {
+    responseHours?: number | null;
+    followUpDays?: number | null;
+    notifyApplicants?: boolean | null;
+    boardLimit?: number | null;
+    defaultCurrency?: string | null;
+  };
+  uploads?: {
+    maxMb?: number | null;
+    clamavHost?: string | null;
+  };
+  integrations?: {
+    plausibleDomain?: string | null;
+    calLink?: string | null;
+    crmWebhookUrl?: string | null;
+    teamWebhookUrl?: string | null;
+  };
+  retention?: {
+    leadsMonths?: number | null;
+    applicationsMonths?: number | null;
+    pageViewsMonths?: number | null;
+    orphanFilesDays?: number | null;
+    subscribersDays?: number | null;
+  };
+  site?: {
+    noindex?: boolean | null;
+    maintenance?: boolean | null;
+    maintenanceMessage?: string | null;
+    maintenanceUntil?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navigation_select".
  */
@@ -3991,6 +4686,81 @@ export interface AnnouncementSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "system-settings_select".
+ */
+export interface SystemSettingsSelect<T extends boolean = true> {
+  email?:
+    | T
+    | {
+        fromName?: T;
+        fromAddress?: T;
+        inboxes?:
+          | T
+          | {
+              sales?: T;
+              academy?: T;
+              careers?: T;
+              partnerships?: T;
+              press?: T;
+              support?: T;
+              events?: T;
+            };
+      };
+  accounts?:
+    | T
+    | {
+        registrationOpen?: T;
+        defaultMemberRole?: T;
+        applicantRole?: T;
+        staffLanding?: T;
+        ssoDomains?: T;
+      };
+  workflow?:
+    | T
+    | {
+        responseHours?: T;
+        followUpDays?: T;
+        notifyApplicants?: T;
+        boardLimit?: T;
+        defaultCurrency?: T;
+      };
+  uploads?:
+    | T
+    | {
+        maxMb?: T;
+        clamavHost?: T;
+      };
+  integrations?:
+    | T
+    | {
+        plausibleDomain?: T;
+        calLink?: T;
+        crmWebhookUrl?: T;
+        teamWebhookUrl?: T;
+      };
+  retention?:
+    | T
+    | {
+        leadsMonths?: T;
+        applicationsMonths?: T;
+        pageViewsMonths?: T;
+        orphanFilesDays?: T;
+        subscribersDays?: T;
+      };
+  site?:
+    | T
+    | {
+        noindex?: T;
+        maintenance?: T;
+        maintenanceMessage?: T;
+        maintenanceUntil?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -4049,10 +4819,15 @@ export interface TaskSchedulePublish {
           value: number | Job;
         } | null);
     global?: string | null;
-    user?: {
-      relationTo: 'users';
-      value: number | User;
-    } | null;
+    user?:
+      | ({
+          relationTo: 'users';
+          value: number | User;
+        } | null)
+      | ({
+          relationTo: 'members';
+          value: number | Member;
+        } | null);
   };
   output?: unknown;
 }

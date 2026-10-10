@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { PayloadRequest } from "payload";
-import { hasRole, type Role } from "@/access/roles";
+import { actingUser, can, type UserLike } from "@/access/roles";
 import { audit } from "@/lib/audit";
 import { payload } from "@/lib/cms/payload";
 import { LiveEditError, publishDoc, saveDraft, type Change } from "@/lib/live-edit/apply";
-import { LIVE_EDIT_ROLES } from "@/lib/live-edit/session";
+import { sameSiteHeaders } from "@/lib/live-edit/session";
 
 export const dynamic = "force-dynamic";
 
@@ -15,11 +15,11 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(request: NextRequest) {
   const p = await payload();
-  const { user } = await p.auth({ headers: request.headers });
+  const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
   if (
     !user ||
     user.collection !== "users" ||
-    !hasRole(user as { roles?: Role[] }, ...LIVE_EDIT_ROLES)
+    !can(actingUser(user as UserLike, request.headers), "content.liveEdit")
   ) {
     return NextResponse.json({ error: "Sign in to edit" }, { status: 401 });
   }

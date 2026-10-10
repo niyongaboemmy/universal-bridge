@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 // FR-CERT-04: academy staff download a print-ready PDF.
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const user = await staffUser(request.headers, "academy");
+  const user = await staffUser(request.headers, "content.academy");
   if (!user) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const { id } = await params;
   const p = await payload();

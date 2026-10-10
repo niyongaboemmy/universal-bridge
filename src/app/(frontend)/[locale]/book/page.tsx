@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { HoursOverlap } from "@/features/contact/ContactWidgets";
 import { getSiteSettings } from "@/lib/cms/settings";
+import { getPublicSystem } from "@/lib/cms/system";
 import { icuPluralForms } from "@/lib/i18n-plural";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { DEFAULT_OFFICE_HOURS } from "@/lib/time/office-hours";
@@ -34,7 +35,7 @@ export default async function BookPage({ params }: Props) {
     getSiteSettings(locale),
   ]);
   const overlap = icuPluralForms(ct.raw("overlapSummary") as string);
-  const calLink = process.env.NEXT_PUBLIC_CAL_LINK;
+  const calLink = (await getPublicSystem()).calLink ?? undefined;
   const status = await calLinkStatus(calLink);
   const showCalendar = Boolean(calLink) && status !== "missing";
   const whatsapp = settings.whatsapp?.enabled ? settings.whatsapp.number : null;

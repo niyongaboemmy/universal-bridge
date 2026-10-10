@@ -6,6 +6,7 @@ import { dateFmt } from "@/features/academy/format";
 import type { Locale } from "@/i18n/routing";
 import { getPressItems } from "@/lib/cms/content";
 import { getSiteSettings } from "@/lib/cms/settings";
+import { getPublicSystem } from "@/lib/cms/system";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 type Props = { params: Promise<{ locale: Locale }> };
@@ -25,11 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PressPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [items, settings, t, n] = await Promise.all([
+  const [items, settings, t, n, { pressEmail }] = await Promise.all([
     getPressItems(locale),
     getSiteSettings(locale),
     getTranslations({ locale, namespace: "s5.press" }),
     getTranslations({ locale, namespace: "nav" }),
+    getPublicSystem(),
   ]);
   const groups = [
     ["news", t("news")],
@@ -126,10 +128,10 @@ export default async function PressPage({ params }: Props) {
               <p className="mt-2 text-body-sm text-fg-secondary">{t("boilerplateText")}</p>
               <h3 className="mt-6 font-semibold">{t("contact")}</h3>
               <a
-                href={`mailto:${process.env.INBOX_PRESS ?? settings.email}`}
+                href={`mailto:${pressEmail ?? settings.email}`}
                 className="mt-1 inline-block text-body-sm font-semibold text-accent hover:underline"
               >
-                {process.env.INBOX_PRESS ?? settings.email}
+                {pressEmail ?? settings.email}
               </a>
             </section>
           </aside>

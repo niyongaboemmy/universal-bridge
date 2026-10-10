@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { nobody, roleAccess } from "@/access/roles";
+import { allow, nobody } from "@/access/roles";
 import { auditHooks } from "@/lib/audit";
 import { certificateCode, signCertificate } from "@/lib/certificates/sign";
 
@@ -15,9 +15,9 @@ export const Certificates: CollectionConfig = {
   },
   // Public lookups go through the rate-limited verify page, never the REST API.
   access: {
-    read: roleAccess("academy"),
-    create: roleAccess("academy"),
-    update: roleAccess("academy"),
+    read: allow("content.academy"),
+    create: allow("content.academy"),
+    update: allow("content.academy"),
     delete: nobody,
   },
   hooks: {

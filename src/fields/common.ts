@@ -1,6 +1,7 @@
 import type { CollectionConfig, Field } from "payload";
 import { previewFor } from "@/lib/live-edit/paths";
-import { publishedOrEditor, roleAccess, type Role } from "@/access/roles";
+import type { Permission } from "@/access/permissions";
+import { allow, publishedOrEditor } from "@/access/roles";
 import { revalidateCollection } from "@/lib/cms/revalidate";
 
 export const slugify = (input: string) =>
@@ -63,9 +64,9 @@ export const orderField: Field = {
  * (CMS-06), public read of published docs only, revalidation on publish (CMS-08).
  */
 export function contentCollection(
-  config: Omit<CollectionConfig, "access" | "versions"> & { editors?: Role[] },
+  config: Omit<CollectionConfig, "access" | "versions"> & { editors?: Permission[] },
 ): CollectionConfig {
-  const { editors = ["editor"], hooks, ...rest } = config;
+  const { editors = ["content.site"], hooks, ...rest } = config;
   const reval = revalidateCollection(config.slug);
   return {
     ...rest,
@@ -73,9 +74,9 @@ export function contentCollection(
     admin: { ...rest.admin, preview: rest.admin?.preview ?? previewFor(config.slug) },
     access: {
       read: publishedOrEditor,
-      create: roleAccess(...editors),
-      update: roleAccess(...editors),
-      delete: roleAccess("editor"),
+      create: allow(...editors),
+      update: allow(...editors),
+      delete: allow(...editors),
     },
     versions: { drafts: { schedulePublish: true, autosave: { interval: 1500 } }, maxPerDoc: 50 },
     hooks: {
@@ -93,9 +94,9 @@ export function referenceCollection(config: Omit<CollectionConfig, "access">): C
     ...config,
     access: {
       read: () => true,
-      create: roleAccess("editor"),
-      update: roleAccess("editor"),
-      delete: roleAccess("editor"),
+      create: allow("content.site"),
+      update: allow("content.site"),
+      delete: allow("content.site"),
     },
     hooks: {
       ...config.hooks,

@@ -1,6 +1,5 @@
 "use server";
 
-import { DEPARTMENTS } from "@/collections/Leads";
 import { formTranslator } from "@/emails/translator";
 import { audit } from "@/lib/audit";
 import { toE164 } from "@/lib/forms/phone";
@@ -9,16 +8,8 @@ import { isChecked } from "@/lib/forms/schema-helpers";
 import { CONSENT_VERSION, type FormState } from "@/lib/forms/types";
 import { submissionRef } from "@/lib/ids";
 import { enqueue } from "@/lib/outbox";
+import { settings } from "@/lib/settings";
 import { contactSchema } from "./schema";
-
-const INBOX: Record<(typeof DEPARTMENTS)[number], string | undefined> = {
-  sales: process.env.INBOX_SALES,
-  academy: process.env.INBOX_ACADEMY,
-  careers: process.env.INBOX_CAREERS,
-  partnerships: process.env.INBOX_PARTNERS,
-  press: process.env.INBOX_PRESS,
-  support: process.env.INBOX_SUPPORT,
-};
 
 /** Project inquiry / contact form (FR-CON-01/02, SRS §7.2). */
 export async function submitContact(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -91,6 +82,7 @@ export async function submitContact(_prev: FormState, formData: FormData): Promi
         botCheck: meta.botCheck,
       };
       const adminPath = `/admin/collections/leads/${lead.id}`;
+      const { inbox } = await settings();
       await enqueue(req, {
         kind: "send-email",
         payload: { template: "lead-confirmation", to: data.email, data: emailData },
@@ -99,7 +91,7 @@ export async function submitContact(_prev: FormState, formData: FormData): Promi
         kind: "send-email",
         payload: {
           template: "lead-notification",
-          to: INBOX[data.department] ?? process.env.INBOX_SALES ?? "hello@universalbridge.rw",
+          to: inbox[data.department] ?? inbox.sales ?? "hello@universalbridge.rw",
           replyTo: data.email,
           data: emailData,
           adminPath,

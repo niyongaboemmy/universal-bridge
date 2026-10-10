@@ -445,7 +445,7 @@ export function attach(root: HTMLElement) {
   // ---- Save / publish -------------------------------------------------------
   let busy = false;
   async function send(publish: string[], force = false) {
-    const res = await fetch("/api/live-edit/save", {
+    const init: RequestInit = {
       method: "POST",
       headers: { "content-type": "application/json" },
       credentials: "same-origin",
@@ -455,7 +455,14 @@ export function attach(root: HTMLElement) {
         publish,
         force,
       }),
-    });
+    };
+    // One retry on a dropped connection (flaky networks); a save can safely repeat.
+    const res = await fetch("/api/live-edit/save", init).catch(
+      () =>
+        new Promise<Response>((resolve, reject) =>
+          setTimeout(() => fetch("/api/live-edit/save", init).then(resolve, reject), 800),
+        ),
+    );
     const json = (await res.json().catch(() => ({}))) as {
       error?: string;
       code?: string;

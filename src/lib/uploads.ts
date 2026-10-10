@@ -33,7 +33,9 @@ export type UploadCheck =
   | { ok: false; error: "fileType" | "fileSize" };
 
 export async function checkUpload(file: File): Promise<UploadCheck> {
-  if (file.size > MAX_UPLOAD_BYTES) return { ok: false, error: "fileSize" };
+  // Limit from office → Settings → Uploads (5 MB by default).
+  const { settings } = await import("@/lib/settings");
+  if (file.size > (await settings()).maxUploadBytes) return { ok: false, error: "fileSize" };
   const data = Buffer.from(await file.arrayBuffer());
   const kind = sniff(data);
   if (!kind || data.length === 0) return { ok: false, error: "fileType" };

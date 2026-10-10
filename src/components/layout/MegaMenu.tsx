@@ -167,7 +167,7 @@ export function MegaMenu({
                   className="absolute inset-x-0 top-full pt-2"
                 >
                   <div className="container-page">
-                    <div className="acrylic grid animate-[reveal_var(--dur-base)_var(--ease-enter)] grid-cols-[1fr_300px] gap-2 rounded-xl border border-subtle p-3 text-fg shadow-4">
+                    <div className="menu-panel grid animate-[reveal_var(--dur-base)_var(--ease-enter)] grid-cols-[1fr_300px] gap-2 rounded-xl p-3 text-fg">
                       <ul className="grid grid-cols-2 gap-1">
                         {item.children!.map((child) => (
                           <li key={child.href}>

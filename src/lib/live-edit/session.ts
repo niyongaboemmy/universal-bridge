@@ -1,12 +1,9 @@
 import "server-only";
 import { draftMode, headers } from "next/headers";
 import { cache } from "react";
-import { hasRole, type Role } from "@/access/roles";
+import { actingUser, can, type UserLike } from "@/access/roles";
 import { payload } from "@/lib/cms/payload";
 import type { EditRef } from "./attrs";
-
-/** Roles that may edit pages and content on the live site. */
-export const LIVE_EDIT_ROLES: Role[] = ["editor", "academy", "hr", "sales"];
 
 /**
  * The live-edit session for this request: draft mode on AND a signed-in staff
@@ -23,14 +20,15 @@ export const liveEditSession = cache(async () => {
   }
   if (!enabled) return null;
   const p = await payload();
-  const { user } = await p.auth({ headers: await headers() });
+  const h = await headers();
+  const { user } = await p.auth({ headers: h });
   if (
     !user ||
     user.collection !== "users" ||
-    !hasRole(user as { roles?: Role[] }, ...LIVE_EDIT_ROLES)
+    !can(actingUser(user as UserLike, h), "content.liveEdit")
   )
     return null;
-  return { user: user as { id: number; email: string; name?: string; roles?: Role[] } };
+  return { user: user as { id: number; email: string; name?: string } };
 });
 
 /** Root reference for a document, or undefined when not editing. */
@@ -49,4 +47,19 @@ export async function docRef(
     version: doc.updatedAt ?? undefined,
     status: doc._status ?? undefined,
   };
+}
+
+/**
+ * Headers for checking the staff session on a live-edit API call. Payload only
+ * accepts the session cookie when Origin matches NEXT_PUBLIC_SITE_URL, which
+ * fails when the site is reached on another host name (www vs apex, a preview
+ * URL). For requests the browser itself marks as same-origin the Origin header
+ * is dropped, so Payload's own Sec-Fetch-Site check applies; cross-site requests
+ * keep their Origin and are refused as before.
+ */
+export function sameSiteHeaders(headers: Headers): Headers {
+  if (headers.get("sec-fetch-site") !== "same-origin") return headers;
+  const h = new Headers(headers);
+  h.delete("origin");
+  return h;
 }

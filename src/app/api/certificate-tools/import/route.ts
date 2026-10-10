@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
  * All rows are created in one transaction — any failure creates none.
  */
 export async function POST(request: NextRequest) {
-  const user = await staffUser(request.headers, "academy");
+  const user = await staffUser(request.headers, "content.academy");
   if (!user) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const text = (await request.text()).slice(0, 2_000_000);
   const { valid, errors } = validateCertRows(parseCsv(text));

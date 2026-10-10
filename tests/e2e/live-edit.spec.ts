@@ -31,7 +31,7 @@ test.describe("Live editing", () => {
     await expect(page.locator("[data-fx=liveedit]")).toHaveCount(0);
     // Without a staff session the switch sends people to sign in.
     const res = await page.request.get("/api/live-edit/enable?path=/services", { maxRedirects: 0 });
-    expect(res.headers().location).toContain("/admin/login");
+    expect(res.headers().location).toContain("/login");
   });
 
   test("edit a heading → draft is private → publish → visitors see it", async ({
@@ -81,7 +81,10 @@ test.describe("Live editing", () => {
 
     // Put it back.
     await page.reload();
-    await editText(page, page.locator("main p.eyebrow[data-edit]").first(), original);
+    const again = page.locator("main p.eyebrow[data-edit]").first();
+    await expect(again).toHaveText(changed);
+    await editText(page, again, original);
+    await expect(page.getByRole("toolbar")).toContainText("1 unsaved change");
     await page.getByRole("button", { name: "Publish" }).click();
     await expect(page.getByRole("toolbar")).toContainText("Published at");
     await visitor.close();

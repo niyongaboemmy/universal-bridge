@@ -22,7 +22,7 @@ export default async function MfaPage({
 }) {
   if (mfaMode() === "off") redirect("/admin"); // switched off: normal sign-in for now
   const s = await staffSession();
-  if (!s) redirect("/admin/login");
+  if (!s) redirect("/login");
   const next = safeNext((await searchParams).next);
   const { user } = s;
 

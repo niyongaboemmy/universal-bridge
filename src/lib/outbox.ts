@@ -87,14 +87,16 @@ async function scanUpload(payload: Payload, fileId: number) {
     overrideAccess: true,
   });
   let scanStatus: "clean" | "infected" | "skipped" = "skipped";
-  if (process.env.CLAMAV_HOST) {
+  const { settings } = await import("@/lib/settings");
+  const clamavHost = (await settings()).clamavHost;
+  if (clamavHost) {
     const [{ clamScan }, { readPrivateFile }] = await Promise.all([
       import("@/lib/uploads"),
       import("@/lib/storage"),
     ]);
-    scanStatus = await clamScan(await readPrivateFile(file.filename!), process.env.CLAMAV_HOST);
+    scanStatus = await clamScan(await readPrivateFile(file.filename!), clamavHost);
   } else if (process.env.NODE_ENV === "production") {
-    throw new Error("CLAMAV_HOST is not configured; uploads stay pending until it is");
+    throw new Error("No ClamAV host is configured (Settings → Uploads); uploads stay pending");
   }
   await payload.update({
     collection: "private-files",
@@ -162,7 +164,7 @@ async function run(
     }
     case "notify-team": {
       // INT-08: Slack/Teams/Telegram-compatible incoming webhook.
-      const url = process.env.TEAM_ALERT_WEBHOOK_URL;
+      const url = (await (await import("@/lib/settings")).settings()).teamWebhookUrl;
       if (!url) return;
       const res = await fetch(url, {
         method: "POST",
@@ -180,7 +182,7 @@ async function run(
     }
     case "crm-sync": {
       // INT-06: CRM webhook (HubSpot/Zoho workflow URL).
-      const url = process.env.CRM_WEBHOOK_URL;
+      const url = (await (await import("@/lib/settings")).settings()).crmWebhookUrl;
       if (!url) return;
       const res = await fetch(url, {
         method: "POST",
@@ -197,6 +199,8 @@ async function run(
         collection: "users",
         data: { email: p.email as string },
         disableEmail: false,
+        // Sent by the server, not asked for by a visitor: not subject to the reset rate limit.
+        context: { internal: true },
       });
       return;
     }

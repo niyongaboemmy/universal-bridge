@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { anyone, roleAccess } from "@/access/roles";
+import { allow, anyone } from "@/access/roles";
 
 // CMS-09: alt text required, focal point, responsive sizes, WebP/AVIF.
 export const Media: CollectionConfig = {
@@ -7,9 +7,9 @@ export const Media: CollectionConfig = {
   admin: { group: "Content", useAsTitle: "alt" },
   access: {
     read: anyone,
-    create: roleAccess("editor", "academy", "hr"),
-    update: roleAccess("editor", "academy", "hr"),
-    delete: roleAccess("editor"),
+    create: allow("content.media"),
+    update: allow("content.media"),
+    delete: allow("content.media"),
   },
   upload: {
     staticDir: ".data/media",

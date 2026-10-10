@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ClientButton as Button } from "@/components/ui/ClientButton";
 import { useLocalStorage } from "@/lib/hooks/client-stores";
 
 /**
@@ -24,15 +23,9 @@ function parse(raw: string | null | undefined): Consent | null {
   }
 }
 
-function loadPlausible(domain: string) {
-  if (document.querySelector("script[data-plausible]")) return;
-  const s = document.createElement("script");
-  s.defer = true;
-  s.dataset.domain = domain;
-  s.dataset.plausible = "";
-  s.src = "https://plausible.io/js/script.outbound-links.js";
-  document.head.appendChild(s);
-}
+/** Analytics code (Plausible and first-party page views) loads only after consent, as its own chunk. */
+const startAnalytics = (plausibleDomain?: string) =>
+  void import("@/lib/analytics/track").then((m) => m.startAnalytics(plausibleDomain));
 
 export type ConsentCopy = {
   title: string;
@@ -67,7 +60,7 @@ export function CookieConsent({
 
   // Load analytics only with consent (PRV-04). Side effect only, no setState.
   useEffect(() => {
-    if (stored?.analytics && plausibleDomain) loadPlausible(plausibleDomain);
+    if (stored?.analytics) startAnalytics(plausibleDomain);
   }, [stored?.analytics, plausibleDomain]);
 
   useEffect(() => {
@@ -81,13 +74,14 @@ export function CookieConsent({
     write(JSON.stringify(value));
     setReopened(false);
     setAnalytics(null);
-    if (allowAnalytics && plausibleDomain) loadPlausible(plausibleDomain);
+    if (allowAnalytics) startAnalytics(plausibleDomain);
     // Withdrawing consent takes effect on the next page load (script removed).
     if (!allowAnalytics) document.querySelector("script[data-plausible]")?.remove();
   }
 
   if (!open) return null;
 
+  // Styles live in globals.css (.consent*): class strings in JS count against the page budget.
   return (
     <section
       role="dialog"
@@ -95,59 +89,59 @@ export function CookieConsent({
       aria-labelledby="consent-title"
       data-no-print
       data-floating-bottom
-      className="fixed inset-x-3 bottom-3 z-[70] mx-auto max-w-xl animate-[reveal_var(--dur-slow)_var(--ease-enter)] rounded-xl border border-subtle bg-raised p-4 text-fg shadow-4 sm:inset-x-auto sm:right-5 sm:bottom-5 sm:p-5"
+      className="consent"
     >
-      {/* Phones: a compact bar (audit v2 R-2) — the title stays for screen readers. */}
-      <h2 id="consent-title" className="font-display text-heading-md max-sm:sr-only">
-        {copy.title}
-      </h2>
-      <p className="text-body-sm text-fg-secondary sm:mt-2">
-        {copy.body}{" "}
-        <a href={copy.policyHref} className="font-medium text-accent underline underline-offset-4">
-          {copy.policy}
-        </a>
-      </p>
+      <div className="consent-head">
+        <svg viewBox="0 0 24 24" aria-hidden>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <div>
+          <h2 id="consent-title">{copy.title}</h2>
+          <p>
+            {copy.body} <a href={copy.policyHref}>{copy.policy}</a>
+          </p>
+        </div>
+      </div>
       {details && (
-        <fieldset className="mt-4 space-y-3 border-t border-subtle pt-4">
-          <label className="flex items-start gap-3 opacity-80">
-            <input type="checkbox" checked disabled className="mt-1 size-4 accent-accent" />
-            <span>
-              <span className="block font-medium">{copy.essential}</span>
-              <span className="block text-body-sm text-fg-secondary">{copy.essentialHint}</span>
-            </span>
-          </label>
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={analytics}
-              onChange={(e) => setAnalytics(e.target.checked)}
-              className="mt-1 size-4 accent-accent"
-            />
-            <span>
-              <span className="block font-medium">{copy.analytics}</span>
-              <span className="block text-body-sm text-fg-secondary">{copy.analyticsHint}</span>
-            </span>
-          </label>
+        <fieldset className="consent-opts">
+          <legend className="sr-only">{copy.customise}</legend>
+          {[
+            [true, true, copy.essential, copy.essentialHint],
+            [analytics, false, copy.analytics, copy.analyticsHint],
+          ].map(([on, fixed, label, hint]) => (
+            <label key={label as string} data-fixed={fixed || undefined}>
+              <span>
+                <b>{label}</b>
+                {hint}
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={on as boolean}
+                disabled={fixed as boolean}
+                onChange={(e) => setAnalytics(e.target.checked)}
+              />
+            </label>
+          ))}
         </fieldset>
       )}
-      <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4 sm:flex sm:flex-wrap">
-        {/* Equal weight for both choices (PRV-04). */}
-        <Button size="sm" variant="secondary" onClick={() => save(false)}>
+      {/* Both choices look exactly the same (PRV-04: rejecting is as easy as accepting). */}
+      <div className="consent-actions">
+        <button type="button" onClick={() => save(false)}>
           {copy.reject}
-        </Button>
-        <Button size="sm" variant="secondary" onClick={() => save(true)}>
+        </button>
+        <button type="button" onClick={() => save(true)}>
           {copy.accept}
-        </Button>
-        {details ? (
-          <Button size="sm" variant="ghost" onClick={() => save(analytics)}>
-            {copy.save}
-          </Button>
-        ) : (
-          <Button size="sm" variant="ghost" onClick={() => setAnalytics(analytics)}>
-            {copy.customise}
-          </Button>
-        )}
+        </button>
       </div>
+      <button
+        type="button"
+        className="consent-more"
+        onClick={() => (details ? save(analytics) : setAnalytics(analytics))}
+      >
+        {details ? copy.save : copy.customise}
+      </button>
     </section>
   );
 }

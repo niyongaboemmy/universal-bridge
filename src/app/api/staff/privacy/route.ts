@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { PayloadRequest } from "payload";
-import { hasRole, type Role } from "@/access/roles";
+import { actingUser, can, type UserLike } from "@/access/roles";
 import { audit } from "@/lib/audit";
 import { payload } from "@/lib/cms/payload";
+import { sameSiteHeaders } from "@/lib/live-edit/session";
 import { emailRef, erasePerson, findPerson } from "@/lib/privacy";
 
 export const dynamic = "force-dynamic";
@@ -15,14 +16,19 @@ export const dynamic = "force-dynamic";
  */
 async function superUser(request: NextRequest) {
   const p = await payload();
-  const { user } = await p.auth({ headers: request.headers });
-  if (!user || user.collection !== "users" || !hasRole(user as { roles?: Role[] }, "super"))
+  const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
+  if (
+    !user ||
+    user.collection !== "users" ||
+    !can(actingUser(user as UserLike, request.headers), "privacy.manage")
+  )
     return null;
   return { p, req: { payload: p, user, context: {} } as unknown as PayloadRequest };
 }
 
 const validEmail = (e: unknown): e is string =>
-  typeof e === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+  // Length-capped first: the pattern can't backtrack on long input (CodeQL ReDoS).
+  typeof e === "string" && e.length <= 254 && /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)+$/.test(e.trim());
 
 export async function GET(request: NextRequest) {
   const s = await superUser(request);
