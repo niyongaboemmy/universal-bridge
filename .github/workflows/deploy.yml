@@ -86,17 +86,26 @@ jobs:
         env: { NEXT_OUTPUT: standalone }
       - run: bash deploy/cpanel/bundle.sh release
 
+      # Run it the way the cPanel server does: outside the checkout (no stray
+      # node_modules to fall back on) and with symlinked paths preserved.
       - name: Smoke test the bundle
-        working-directory: release
-        env: { PORT: "3000", HOSTNAME: 127.0.0.1 }
+        env: { PORT: "3000", HOSTNAME: localhost, NODE_PRESERVE_SYMLINKS: "1" }
         run: |
-          node server.js > ../server.log 2>&1 &
+          SMOKE="$RUNNER_TEMP/smoke" && rm -rf "$SMOKE" && cp -a release "$SMOKE"
+          (cd "$SMOKE" && node server.js > "$RUNNER_TEMP/server.log" 2>&1 &)
           for i in $(seq 1 30); do
-            curl -fsS http://127.0.0.1:3000/api/health && exit 0
+            curl -fsS http://localhost:3000/api/health | grep -q '"db":"ok"' && break
             sleep 2
           done
-          cat ../server.log
-          exit 1
+          fail=0
+          for p in /api/health / /fr /contact; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -H 'x-forwarded-proto: https' "http://localhost:3000$p")
+            echo "$code $p"
+            case "$code" in 5*|000) fail=1 ;; esac
+          done
+          if [ "$fail" = 1 ] || grep -q "Failed to proxy\|Cannot find module" "$RUNNER_TEMP/server.log"; then
+            cat "$RUNNER_TEMP/server.log"; exit 1
+          fi
 
       - run: tar -czf release.tgz -C release .
       - uses: actions/upload-artifact@v4

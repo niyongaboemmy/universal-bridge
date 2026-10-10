@@ -19,8 +19,10 @@ if (fs.existsSync(envFile)) process.loadEnvFile(envFile);
 process.env.PAYLOAD_MIGRATE_ON_START = "1";
 
 // CloudLinux sets HOSTNAME to the server's name; Next.js would try to bind to it.
-// Passenger ignores the address anyway; this matters for `node app.cjs` by hand.
-process.env.HOSTNAME = "127.0.0.1";
+// "localhost", not 127.0.0.1: Next builds the proxy (middleware) URL with
+// localhost, and a different host makes it treat locale rewrites as external
+// and proxy them to a port Passenger never listens on (500 on every page).
+process.env.HOSTNAME = "localhost";
 
 const server = path.join(fs.realpathSync(path.join(root, "current")), "server.js");
 import(pathToFileURL(server).href).catch((err) => {
