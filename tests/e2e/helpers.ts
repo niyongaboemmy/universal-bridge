@@ -61,13 +61,14 @@ export async function stubGoogleAnalytics(
   target: Page | import("@playwright/test").BrowserContext,
 ) {
   const hits: string[] = [];
-  await target.route(
-    /googletagmanager\.com|google-analytics\.com|analytics\.google\.com/,
-    (route) => {
-      hits.push(route.request().url());
-      return route.fulfill({ status: 200, contentType: "text/javascript", body: "" });
-    },
-  );
+  const isGoogle = (url: URL) =>
+    ["googletagmanager.com", "google-analytics.com", "analytics.google.com"].some(
+      (d) => url.hostname === d || url.hostname.endsWith(`.${d}`),
+    );
+  await target.route(isGoogle, (route) => {
+    hits.push(route.request().url());
+    return route.fulfill({ status: 200, contentType: "text/javascript", body: "" });
+  });
   return hits;
 }
 
