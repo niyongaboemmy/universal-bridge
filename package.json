@@ -17,6 +17,7 @@
     "test:e2e": "playwright test",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "db:migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "db:prod-sql": "bash scripts/prod-sql.sh",
     "db:migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
     "db:seed": "cross-env NODE_OPTIONS=--no-deprecation tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed.ts",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",

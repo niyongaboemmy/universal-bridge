@@ -1,0 +1,57 @@
+name: Production SQL
+
+# Runs a reviewed SQL file from db/sql/ against the production database
+# (scripts/prod-sql.sh). "write" uses the production environment, so its
+# required reviewers (if configured) must approve before it runs.
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: SQL file in this repo, e.g. db/sql/2026-10-11-fix-slugs.sql
+        required: true
+      mode:
+        description: read (read-only transaction) or write (backup + one transaction)
+        type: choice
+        options: [read, write]
+        default: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  sql:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the file
+        env: { FILE: "${{ inputs.file }}" }
+        run: |
+          case "$FILE" in db/sql/*.sql) ;; *) echo "::error::Only files under db/sql/ ending in .sql"; exit 1 ;; esac
+          [ -f "$FILE" ] || { echo "::error::$FILE not found on ${{ github.ref_name }}"; exit 1; }
+          echo "### ${{ inputs.mode }}: \`$FILE\`" >> "$GITHUB_STEP_SUMMARY"
+          { echo '```sql'; cat "$FILE"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Set up SSH
+        env:
+          SSH_KEY: ${{ secrets.CPANEL_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.CPANEL_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Run
+        env:
+          UB_SSH_TARGET: ${{ secrets.CPANEL_SSH_USER }}@${{ secrets.CPANEL_SSH_HOST }}
+          UB_SSH_PORT: ${{ secrets.CPANEL_SSH_PORT || '21098' }}
+          UB_SSH_KEY: ~/.ssh/id_deploy
+          UB_APP_DIR: ${{ vars.CPANEL_APP_DIR || 'apps/universalbridge' }}
+          FILE: ${{ inputs.file }}
+        run: |
+          export UB_SSH_KEY="$HOME/.ssh/id_deploy"
+          git config user.email "${{ github.actor }}@github-actions"
+          if [ "${{ inputs.mode }}" = write ]; then
+            bash scripts/prod-sql.sh -f "$FILE" --write --yes
+          else
+            bash scripts/prod-sql.sh -f "$FILE"
+          fi
