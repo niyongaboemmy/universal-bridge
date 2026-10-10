@@ -240,11 +240,16 @@ export function InviteButton({
   );
 }
 
-/** A strong, readable password (4 groups, no look-alike characters). */
+/** A strong, readable password (4 groups, no look-alike characters, no modulo bias). */
 function generatePassword() {
   const chars = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = crypto.getRandomValues(new Uint8Array(16));
-  const s = [...bytes].map((b) => chars[b % chars.length]).join("");
+  // Only bytes below the largest multiple of the alphabet size are used, so every
+  // character is equally likely.
+  const limit = 256 - (256 % chars.length);
+  let s = "";
+  while (s.length < 16)
+    for (const b of crypto.getRandomValues(new Uint8Array(32)))
+      if (b < limit && s.length < 16) s += chars[b % chars.length];
   return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8, 12)}-${s.slice(12, 16)}`;
 }
 
