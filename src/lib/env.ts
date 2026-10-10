@@ -12,7 +12,6 @@ const REQUIRED = [
   "RATE_LIMIT_SALT",
 ];
 const RECOMMENDED = [
-  ["RESEND_API_KEY", "emails are written to disk instead of being sent"],
   ["UPSTASH_REDIS_REST_URL", "rate limits are per server instance only"],
   ["S3_BUCKET", "uploads are stored on the server's local disk"],
   ["CLAMAV_HOST", "uploaded CVs stay 'pending' until a virus scanner is configured"],
@@ -42,6 +41,12 @@ export function checkEnv(env: NodeJS.ProcessEnv = process.env): {
     errors.push("UPSTASH_REDIS_REST_TOKEN is missing");
   if (env.RATE_LIMIT_SCALE && env.RATE_LIMIT_SCALE !== "1")
     warnings.push("RATE_LIMIT_SCALE is ignored in production");
+  if (!env.RESEND_API_KEY && !env.SMTP_HOST)
+    warnings.push(
+      "RESEND_API_KEY / SMTP_HOST is not set: emails are written to disk instead of being sent",
+    );
+  if (env.SMTP_HOST && env.SMTP_USER && !env.SMTP_PASSWORD)
+    errors.push("SMTP_USER is set without SMTP_PASSWORD");
   for (const [key, effect] of RECOMMENDED)
     if (!env[key]) warnings.push(`${key} is not set: ${effect}`);
   return { errors, warnings };

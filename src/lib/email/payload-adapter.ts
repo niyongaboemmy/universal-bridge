@@ -3,7 +3,7 @@ import { sendEmail } from "./send-core";
 
 /**
  * Payload's own emails (password reset, staff invitations) go through the same
- * sender as the site: Resend in deployed environments, .data/mail locally.
+ * sender as the site: Resend or SMTP in deployed environments, .data/mail locally.
  */
 export const ubEmailAdapter: EmailAdapter = () => ({
   name: "ub-email",
