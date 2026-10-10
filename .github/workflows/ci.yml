@@ -6,9 +6,10 @@ on:
     branches: [main, develop]
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # Superseded PR runs are cancelled; pushes to main never are (a cancelled run
-  # would stop a deploy halfway).
+  # PRs: one group per branch, superseded runs are cancelled. Pushes: one group
+  # per commit, so they never wait behind (or get replaced by) another run.
+  # Deploy order is kept by deploy.yml (only the newest commit on main deploys).
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
