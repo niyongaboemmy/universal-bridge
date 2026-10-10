@@ -15,14 +15,14 @@ on:
         options: [read, write]
         default: read
 
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
-
 jobs:
   sql:
     runs-on: ubuntu-latest
     environment: production
+    # Never at the same time as a deploy.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
       - name: Check the file
