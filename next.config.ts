@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Lets a second production build run beside the dev server (bundle checks).
   ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
+  // cPanel deploys ship a self-contained server.js bundle (docs/DEPLOYMENT.md).
+  // Off by default: `next start` refuses to run a standalone build.
+  ...(process.env.NEXT_OUTPUT === "standalone" ? { output: "standalone" as const } : {}),
+  // Local uploads and dev mail (personal data) must never be traced into a bundle.
+  outputFileTracingExcludes: { "/*": [".data/**/*"] },
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],

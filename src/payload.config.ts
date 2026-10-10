@@ -28,6 +28,7 @@ import { storagePlugins } from "./lib/storage";
 import { Announcement } from "./globals/Announcement";
 import { Navigation } from "./globals/Navigation";
 import { SiteSettings } from "./globals/SiteSettings";
+import { migrations } from "./migrations";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -87,6 +88,10 @@ export default buildConfig({
     // Dev pushes schema changes automatically; staging/prod use migrations (pnpm db:migrate).
     push: process.env.NODE_ENV !== "production" && process.env.PAYLOAD_PUSH !== "0",
     migrationDir: path.resolve(dirname, "migrations"),
+    // The cPanel server applies pending migrations on start: its bundle has no
+    // Payload CLI (docs/DEPLOYMENT.md). Never during `next build`, which would
+    // migrate (or stop at a prompt on) whatever database the build points at.
+    ...(process.env.PAYLOAD_MIGRATE_ON_START === "1" ? { prodMigrations: migrations } : {}),
   }),
   // CMS-05: per-field localisation with English fallback.
   localization: {
