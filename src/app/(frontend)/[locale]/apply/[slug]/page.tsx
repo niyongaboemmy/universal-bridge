@@ -9,6 +9,7 @@ import { ApplyForm } from "@/features/openings/ApplyForm";
 import { getOpening, isAccepting } from "@/features/openings/data";
 import { localizePath, type Locale } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 type Props = { params: Promise<{ locale: Locale; slug: string }> };
 
@@ -147,15 +148,12 @@ export default async function OpeningPage({ params }: Props) {
               <div className="mt-4 grid gap-5">
                 <p className="text-body-lg text-fg-secondary">{t("signInFirst")}</p>
                 <div className="flex flex-wrap gap-3">
-                  <a
-                    href={loginHref}
-                    className="inline-flex h-12 items-center rounded-full bg-[var(--accent-spark)] px-7 font-semibold text-[var(--ub-navy-900)]"
-                  >
+                  <a href={loginHref} className={buttonVariants({ size: "lg" })}>
                     {t("signIn")}
                   </a>
                   <a
                     href={registerHref}
-                    className="inline-flex h-12 items-center rounded-full border border-strong px-7 font-semibold"
+                    className={buttonVariants({ variant: "secondary", size: "lg" })}
                   >
                     {t("register")}
                   </a>

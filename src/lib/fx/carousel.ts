@@ -3,7 +3,8 @@
  * wires the arrows and counter, and auto-advances. The dwell timer is the CSS
  * ring animation itself: it pauses on hover, off screen and when paused, and
  * its animationend moves to the next slide. Any manual navigation pauses
- * auto-advance (WCAG 2.2.2); reduced motion starts paused.
+ * auto-advance (WCAG 2.2.2); reduced motion and lite mode (phones, slow links)
+ * start paused: swiping, the arrows and the play button still work.
  */
 export function attach(root: HTMLElement) {
   const track = root.querySelector<HTMLElement>(".svc-pairs__track");
@@ -93,7 +94,7 @@ export function attach(root: HTMLElement) {
   ring.addEventListener("animationend", onRingEnd);
 
   sync();
-  setPaused(reduced);
+  setPaused(reduced || document.documentElement.dataset.lite === "on");
   root.setAttribute("data-ready", "");
 
   return () => {

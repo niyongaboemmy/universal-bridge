@@ -549,7 +549,7 @@ html[data-theme-switching]::view-transition-new(root) {
   min-height: 44px;
   align-items: center;
   gap: 0.375rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border-strong);
   background: var(--bg-surface);
   padding-inline: 1rem;
@@ -573,7 +573,6 @@ html[data-theme-switching]::view-transition-new(root) {
     opacity var(--dur-fast);
 }
 .chip input:checked + .chip__body {
-  border-radius: var(--radius-full);
   border-color: var(--accent-primary);
   background: var(--accent-primary);
   color: var(--on-accent);
@@ -3206,9 +3205,9 @@ html.nav-pending * {
     margin-top: 1rem;
   }
   .consent-actions button {
-    height: 2.5rem;
+    height: 2.75rem;
     border: 1px solid var(--border-strong);
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     background: var(--bg-surface);
     font-size: 0.875rem;
     font-weight: 600;
@@ -3226,7 +3225,7 @@ html.nav-pending * {
     width: 100%;
     margin-top: 0.5rem;
     padding: 0.35rem;
-    border-radius: 999px;
+    border-radius: var(--radius-md);
     font-size: 0.8125rem;
     font-weight: 500;
     color: var(--text-secondary);
@@ -3238,5 +3237,36 @@ html.nav-pending * {
   .consent :is(button, input, a):focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
+  }
+}
+
+/*
+ * Phones: content first. Lite mode (layout.tsx) already stops the decorative loops;
+ * this also stops scroll-linked reveals and remaining pulses, which shift content
+ * while a thumb scrolls. Menus, dialogs and button feedback keep their short motion.
+ */
+@media (max-width: 767px) {
+  .reveal,
+  .lab-card,
+  .cta-chip,
+  .academy-row,
+  .academy-photo,
+  .seat-fill,
+  .story-code-line,
+  .map-pulse,
+  .circuit-art__trace,
+  .circuit-art__spark,
+  .connected__trace,
+  .connected__node,
+  .connected__check,
+  .svc-pairs__track article,
+  .animate-ping,
+  .animate-pulse,
+  :is(.svc-visual, .story__visual) * {
+    animation: none !important;
+  }
+  /* Hover lifts stick after a tap on touch screens. */
+  :is(.lab-card, .cta-band, .cta-ring, .cta-pill):hover {
+    transform: none;
   }
 }

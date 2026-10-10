@@ -78,7 +78,7 @@ export default async function LeadershipPage({ params }: Props) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={t("linkedin", { name: p.name })}
-                      className="inline-flex size-11 items-center justify-center rounded-full text-fg-secondary hover:bg-accent-soft hover:text-accent"
+                      className="inline-flex size-11 items-center justify-center rounded-md text-fg-secondary hover:bg-accent-soft hover:text-accent"
                     >
                       <SocialIcon network="linkedin" />
                     </a>

@@ -9,13 +9,13 @@ import {
   saveMemberProfile,
   type AccountState,
 } from "./actions";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export type AccountCopy = Record<string, string>;
 
 export const inputCls =
   "h-11 w-full rounded-lg border border-strong bg-surface px-3 text-body-sm text-fg outline-none transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--accent-primary)_16%,transparent)]";
-const btnCls =
-  "inline-flex h-12 w-full items-center justify-center rounded-full bg-[var(--accent-spark)] px-8 font-semibold text-[var(--ub-navy-900)] transition-[translate,opacity] hover:-translate-y-0.5 disabled:opacity-70";
+const btnCls = `${buttonVariants({ size: "lg" })} w-full`;
 
 function ErrorBox({ state, copy }: { state: AccountState; copy: AccountCopy }) {
   if (!state?.error) return null;
@@ -241,11 +241,7 @@ export function MemberProfileForm({
         {copy.newsletter}
       </label>
       <div className="flex items-center gap-3 sm:col-span-2">
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex h-11 items-center rounded-full bg-[var(--accent-primary)] px-6 font-semibold text-white disabled:opacity-70"
-        >
+        <button type="submit" disabled={pending} className={buttonVariants()}>
           {pending ? "…" : copy.save}
         </button>
         {state?.ok && (

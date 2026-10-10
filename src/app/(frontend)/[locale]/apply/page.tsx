@@ -8,6 +8,7 @@ import { localizePath, type Locale } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { nowMs } from "@/lib/time/office-hours";
 import type { Opening } from "@/payload-types";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 type Props = { params: Promise<{ locale: Locale }> };
 
@@ -50,7 +51,7 @@ export default async function ApplyIndex({ params }: Props) {
               <a
                 key={k}
                 href={`#${k}`}
-                className="rounded-full border border-strong px-4 py-1.5 text-body-sm font-medium transition-colors hover:border-accent hover:text-accent"
+                className={buttonVariants({ variant: "secondary", size: "sm" })}
               >
                 {t(`kinds.${k}`)}
                 <span className="ml-1.5 text-fg-muted">

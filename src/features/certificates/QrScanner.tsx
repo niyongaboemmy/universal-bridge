@@ -2,6 +2,7 @@
 
 import { Camera, X } from "lucide-react";
 import { useRef, useState, useSyncExternalStore } from "react";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 type Detector = { detect: (source: CanvasImageSource) => Promise<{ rawValue: string }[]> };
 const supported = () =>
@@ -69,11 +70,7 @@ export function QrScanner({
   return (
     <div className="mt-4">
       {!active ? (
-        <button
-          type="button"
-          onClick={start}
-          className="inline-flex min-h-11 items-center gap-2 rounded-md border border-strong px-4 font-medium hover:border-accent hover:text-accent"
-        >
+        <button type="button" onClick={start} className={buttonVariants({ variant: "secondary" })}>
           <Camera aria-hidden className="size-5" />
           {copy.scan}
         </button>
@@ -88,11 +85,7 @@ export function QrScanner({
             playsInline
             className="aspect-square w-full max-w-sm rounded-lg bg-black object-cover"
           />
-          <button
-            type="button"
-            onClick={stop}
-            className="inline-flex min-h-11 items-center gap-2 rounded-md px-3 font-medium text-fg-secondary hover:text-danger"
-          >
+          <button type="button" onClick={stop} className={buttonVariants({ variant: "ghost" })}>
             <X aria-hidden className="size-4" />
             {copy.stop}
           </button>

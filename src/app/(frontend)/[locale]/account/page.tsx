@@ -10,6 +10,7 @@ import { localizePath, type Locale } from "@/i18n/routing";
 import { payload } from "@/lib/cms/payload";
 import { cn } from "@/lib/utils";
 import type { Application, Role } from "@/payload-types";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 type Props = { params: Promise<{ locale: Locale }>; searchParams: Promise<{ reset?: string }> };
 
@@ -68,7 +69,7 @@ export default async function AccountHome({ params, searchParams }: Props) {
               <input type="hidden" name="locale" value={locale} />
               <button
                 type="submit"
-                className="inline-flex h-10 items-center gap-2 rounded-full border border-strong px-4 text-body-sm font-medium hover:border-accent"
+                className={buttonVariants({ variant: "secondary", size: "sm" })}
               >
                 <LogOut className="size-4" aria-hidden /> {t("signOut")}
               </button>

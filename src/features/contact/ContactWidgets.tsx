@@ -28,7 +28,7 @@ export function CopyButton({
         } catch {}
       }}
       aria-label={`${label}: ${value}`}
-      className="inline-flex size-10 items-center justify-center rounded-full text-fg-secondary transition-colors hover:bg-accent-soft hover:text-accent"
+      className="inline-flex size-10 items-center justify-center rounded-md text-fg-secondary transition-colors hover:bg-accent-soft hover:text-accent"
     >
       {copied ? (
         <Check aria-hidden className="size-4 text-success" />

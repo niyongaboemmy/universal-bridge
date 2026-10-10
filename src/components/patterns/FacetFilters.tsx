@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useSyncExternalStore } from "react";
 import { cx as cn } from "@/lib/cx";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 /** A server-rendered item and the facet values it has, e.g. { mode: ["online"] }. */
 export type Facet = { id: string; values: Record<string, string[]> };
@@ -117,7 +118,7 @@ export function FacetFilters({
           <button
             type="button"
             onClick={() => update(new URLSearchParams())}
-            className="inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-body-sm font-semibold text-accent hover:bg-accent-soft"
+            className={cn(buttonVariants({ variant: "ghost" }), "text-accent")}
           >
             <X aria-hidden className="size-4" />
             {copy.clear}
