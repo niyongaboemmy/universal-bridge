@@ -60,7 +60,7 @@ jobs:
           [ -n "$NEXT_PUBLIC_TURNSTILE_SITE_KEY" ] || { echo "::error::Set NEXT_PUBLIC_TURNSTILE_SITE_KEY"; exit 1; }
       - id: meta
         run: echo "release=$(date -u +%Y%m%d%H%M%S)-$(git rev-parse --short=8 HEAD)" >> "$GITHUB_OUTPUT"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v4
         with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
       - run: pnpm install --frozen-lockfile
