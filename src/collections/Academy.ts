@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { anyone, roleAccess } from "@/access/roles";
+import { allow, anyone } from "@/access/roles";
 import { contentCollection, orderField, seoField, slugField } from "@/fields/common";
 import { revalidateCollection } from "@/lib/cms/revalidate";
 import { ICON_NAMES } from "@/lib/icons";
@@ -19,7 +19,7 @@ export const PROGRAM_CATEGORIES = [
 // SRS §11 Program + FR-ACA-02/03.
 export const Programs: CollectionConfig = contentCollection({
   slug: "programs",
-  editors: ["editor", "academy"],
+  editors: ["content.academy"],
   admin: {
     group: "Academy",
     useAsTitle: "title",
@@ -134,9 +134,9 @@ export const Intakes: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: roleAccess("academy"),
-    update: roleAccess("academy"),
-    delete: roleAccess("academy"),
+    create: allow("content.academy"),
+    update: allow("content.academy"),
+    delete: allow("content.academy"),
   },
   hooks: {
     afterChange: [
@@ -200,9 +200,9 @@ export const TeamMembers: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: roleAccess("editor", "hr"),
-    update: roleAccess("editor", "hr"),
-    delete: roleAccess("editor", "hr"),
+    create: allow("content.team"),
+    update: allow("content.team"),
+    delete: allow("content.team"),
   },
   hooks: {
     afterChange: [revalidateCollection("team-members").afterChange],

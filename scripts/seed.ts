@@ -68,7 +68,7 @@ async function seedAdmin(payload: Payload) {
   if (!password) throw new Error("Set SEED_ADMIN_PASSWORD to seed an admin in production.");
   await payload.create({
     collection: "users",
-    data: { email, password, name: "UB Admin", roles: ["super"] },
+    data: { email, password, name: "UB Admin", roles: ["super"] as never },
   });
   console.log(`✓ admin ${email} created`);
 }

@@ -1,12 +1,13 @@
 import "server-only";
-import { hasRole, type Role } from "@/access/roles";
+import type { Permission } from "@/access/permissions";
+import { actingUser, can, type UserLike } from "@/access/roles";
 import { payload } from "@/lib/cms/payload";
 
 /** Resolve the logged-in admin user from request headers (Payload cookie/JWT). */
-export async function staffUser(headers: Headers, ...roles: Role[]) {
+export async function staffUser(headers: Headers, ...perms: Permission[]) {
   const p = await payload();
   const { user } = await p.auth({ headers });
-  if (!user || user.collection !== "users" || !hasRole(user as { roles?: Role[] }, ...roles))
+  if (!user || user.collection !== "users" || !can(actingUser(user as UserLike, headers), ...perms))
     return null;
   return user;
 }

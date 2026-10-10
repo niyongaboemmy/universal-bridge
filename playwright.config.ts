@@ -18,14 +18,21 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : "list",
   use: { baseURL, trace: "retain-on-failure", locale: "en-GB" },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    { name: "chromium", use: { ...devices["Desktop Chrome"] }, testIgnore: /maintenance\.spec/ },
+    { name: "mobile", use: { ...devices["Pixel 7"] }, testIgnore: /maintenance\.spec/ },
     ...(all
       ? [
-          { name: "webkit", use: { ...devices["Desktop Safari"] } },
-          { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+          { name: "webkit", use: { ...devices["Desktop Safari"] }, testIgnore: /maintenance\.spec/ },
+          { name: "firefox", use: { ...devices["Desktop Firefox"] }, testIgnore: /maintenance\.spec/ },
         ]
       : []),
+    // Maintenance mode takes the whole public site down: run it alone, after everything else.
+    {
+      name: "maintenance",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: /maintenance\.spec/,
+      dependencies: ["chromium", "mobile"],
+    },
   ],
   webServer: process.env.E2E_BASE_URL
     ? undefined

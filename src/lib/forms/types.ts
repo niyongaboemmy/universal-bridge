@@ -1,5 +1,5 @@
 // Shared by server actions and client forms.
-export type FormErrorCode = "generic" | "rateLimited" | "botCheckFailed";
+export type FormErrorCode = "generic" | "rateLimited" | "botCheckFailed" | "closed" | "signIn";
 
 export type FormState = {
   status: "idle" | "success" | "error";

@@ -111,6 +111,8 @@ describe("outbox", () => {
   it("retries failures with backoff instead of losing them", async () => {
     const { enqueue, processOutbox } = await import("@/lib/outbox");
     process.env.TEAM_ALERT_WEBHOOK_URL = "http://127.0.0.1:9/unreachable";
+    // Settings fall back to the environment; drop the copy cached by earlier tests.
+    (await import("@/lib/settings")).clearSettingsCache();
     const req = await createLocalReq({}, payload);
     await initTransaction(req);
     await enqueue(req, { kind: "notify-team", payload: { text: "will fail" } });

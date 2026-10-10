@@ -163,7 +163,8 @@
     position: fixed;
     inset-inline: 0;
     top: var(--announcement-h, 0px);
-    z-index: 50;
+    /* Above every page layer (sticky bars, trace lines, cards), so menus are never covered. */
+    z-index: 80;
     color: var(--text-primary);
     border-bottom: 1px solid transparent;
     transition:
@@ -248,6 +249,17 @@
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
+  }
+
+  /* Header menus (mega menu, language): solid, raised and clearly in front. A glass
+     panel inside the glass header can't blur the page (nested backdrop), so it's opaque. */
+  .menu-panel {
+    background: var(--bg-surface-raised);
+    border: 1px solid var(--border-subtle);
+    box-shadow:
+      0 1px 2px rgb(2 8 23 / 0.08),
+      0 28px 64px -20px rgb(2 8 23 / 0.45),
+      0 0 0 1px rgb(255 255 255 / 0.02) inset;
   }
 
   /* Native popover menus (Popover API). Anchored to their trigger where CSS
@@ -1593,3 +1605,279 @@ body:has([data-floating-bottom]:not([hidden])) .wa-fab { display: none; }
    jump when the edited text grows a line. */
 html.ub-live-edit { overflow-anchor: none; scroll-behavior: auto; }
 .ub-live-edit [data-edit][data-editing] { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------------------------
+   Staff app (Company dashboard): its own compact, friendly type scale and motion.
+   Scoped to body.office-ui so the public site is untouched.
+   ------------------------------------------------------------------------------ */
+.office-ui {
+  /* Same typefaces as the website: Inter for text, Plus Jakarta Sans for headings. */
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-feature-settings: "tnum" 1, "cv11" 1;
+  letter-spacing: -0.003em;
+}
+.office-ui .font-display, .office-ui h1, .office-ui h2, .office-ui h3 { font-family: var(--font-display); letter-spacing: -0.015em; }
+.office-ui .text-display-lg { font-size: 2rem; line-height: 1.1; font-weight: 700; }
+.office-ui .text-heading-lg { font-size: 1.375rem; line-height: 1.25; font-weight: 700; }
+.office-ui .text-heading-md { font-size: 1.0625rem; line-height: 1.35; font-weight: 650; }
+.office-ui .text-body-lg { font-size: 0.9375rem; }
+.office-ui .text-body-sm { font-size: 0.8125rem; }
+.office-ui .text-eyebrow { font-size: 0.6875rem; }
+@media (min-width: 1024px) {
+  .office-ui .text-heading-lg { font-size: 1.5rem; }
+}
+
+/* Motion: pages fade up on navigation, cards rise one after another, bars fill. */
+@media (prefers-reduced-motion: no-preference) {
+  .office-page { animation: office-in 0.45s var(--ease-standard) both; }
+  .office-stagger > * { animation: office-in 0.5s var(--ease-standard) both; animation-delay: calc(min(var(--i, 0), 12) * 45ms); }
+  .office-stagger > *:nth-child(1) { --i: 0; } .office-stagger > *:nth-child(2) { --i: 1; } .office-stagger > *:nth-child(3) { --i: 2; }
+  .office-stagger > *:nth-child(4) { --i: 3; } .office-stagger > *:nth-child(5) { --i: 4; } .office-stagger > *:nth-child(6) { --i: 5; }
+  .office-stagger > *:nth-child(7) { --i: 6; } .office-stagger > *:nth-child(8) { --i: 7; } .office-stagger > *:nth-child(9) { --i: 8; }
+  .office-stagger > *:nth-child(n + 10) { --i: 9; }
+  .office-bar { animation: office-bar 0.9s var(--ease-emphasized, var(--ease-standard)) both; transform-origin: left; }
+  .office-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: office-draw 1.1s var(--ease-standard) 0.1s forwards; }
+}
+@keyframes office-in { from { opacity: 0; translate: 0 8px; } }
+@keyframes office-bar { from { scale: 0 1; } }
+@keyframes office-draw { to { stroke-dashoffset: 0; } }
+/* Loading placeholders. */
+.office-skeleton {
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--bg-sunken) 0%, color-mix(in oklab, var(--bg-sunken) 60%, var(--bg-surface)) 50%, var(--bg-sunken) 100%) 0 0 / 200% 100%;
+  animation: office-shimmer 1.4s linear infinite;
+}
+@keyframes office-shimmer { to { background-position: -200% 0; } }
+/* Dark theme: the sidebar sits a step darker than the page. */
+[data-theme="dark"] .office-sidebar { background: #050b1c; border-right: 1px solid rgb(255 255 255 / 0.06); }
+/* Staff app dark theme: very dark, blue-tinted surfaces (deeper than the site's navy). */
+[data-theme="dark"] .office-ui {
+  --bg-canvas: #050913;
+  --bg-surface: #0a1120;
+  --bg-surface-raised: #101a2f;
+  --bg-sunken: #070d1a;
+  --border-subtle: rgb(148 170 230 / 0.09);
+  --border-strong: rgb(148 170 230 / 0.17);
+  background: var(--bg-canvas);
+}
+[data-theme="dark"] .office-ui .office-sidebar { background: #03060e; border-right: 1px solid rgb(148 170 230 / 0.08); }
+[data-theme="dark"] .office-ui .office-palette { background: #0a1120; }
+
+/* Staff app: tighter, more professional corners than the marketing site. */
+.office-ui {
+  --radius-xs: 5px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 11px;
+  --radius-xl: 13px;
+  --radius-2xl: 16px;
+  --radius-3xl: 18px;
+}
+/* Buttons, inputs, tabs and segmented controls: 10px instead of pills. Status
+   badges, counters, avatars and dots stay round. */
+.office-ui :is(a, button, input, select, textarea, [role="radiogroup"], [role="search"]).rounded-full { border-radius: 10px; }
+.office-ui [role="radiogroup"] > button.rounded-full { border-radius: 8px; }
+.office-ui nav.rounded-xl > a { border-radius: 9px; }
+.office-ui .office-palette { border-radius: 18px; }
+.office-ui .office-skeleton { border-radius: 14px; }
+
+/* Staff sign-in: drifting light, a self-drawing pipeline, floating cards, a shake on error. */
+.login-aurora { background: radial-gradient(60% 50% at 20% 15%, rgb(1 69 184 / 0.75), transparent 70%), radial-gradient(45% 40% at 85% 80%, rgb(254 118 13 / 0.35), transparent 70%), radial-gradient(50% 45% at 70% 20%, rgb(56 120 255 / 0.35), transparent 70%), #030817; }
+.login-grid { background-image: linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(70% 60% at 50% 40%, #000, transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .login-aurora { background-size: 140% 140%; animation: login-drift 18s ease-in-out infinite alternate; }
+  .login-float { animation: login-float 7s ease-in-out infinite; }
+  .login-float:nth-child(2) { animation-delay: -2.3s; }
+  .login-float:nth-child(3) { animation-delay: -4.6s; }
+  .login-path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: office-draw 2.4s var(--ease-standard) 0.3s forwards; }
+  .login-pulse { animation: login-pulse 2.4s ease-in-out infinite; }
+  .login-in > * { animation: office-in 0.6s var(--ease-standard) both; }
+  .login-in > *:nth-child(2) { animation-delay: 60ms; } .login-in > *:nth-child(3) { animation-delay: 120ms; }
+  .login-in > *:nth-child(4) { animation-delay: 180ms; } .login-in > *:nth-child(5) { animation-delay: 240ms; }
+  .login-shake { animation: login-shake 0.42s ease-in-out; }
+}
+@keyframes login-drift { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+@keyframes login-float { 50% { translate: 0 -10px; } }
+@keyframes login-pulse { 50% { opacity: 0.35; scale: 1.6; } }
+@keyframes login-shake { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+
+/* ---- Office form controls: one size, one look (inputs, selects, textareas) ---- */
+@layer components {
+  .office-ui .ui-field {
+    height: 2.5rem;
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    background-color: var(--bg-surface);
+    padding: 0 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--text-primary);
+    box-shadow: 0 1px 0 rgb(15 23 42 / 0.03);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+  }
+  .office-ui .ui-field:hover:not(:disabled) { border-color: color-mix(in oklab, var(--accent-primary) 40%, var(--border-strong)); }
+  .office-ui .ui-field:focus, .office-ui .ui-field:focus-within, .office-ui select.ui-field:open {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent-primary) 16%, transparent);
+  }
+  .office-ui .ui-field:disabled { opacity: 0.6; cursor: not-allowed; }
+  .office-ui .ui-field[aria-invalid="true"] { border-color: var(--danger); }
+  .office-ui textarea.ui-field { height: auto; padding: 0.5rem 0.75rem; line-height: 1.5; }
+  .office-ui .ui-field::placeholder { color: var(--text-muted); }
+  .office-ui .ui-field.is-active { border-color: var(--accent-primary); color: var(--accent-primary); background-color: var(--accent-primary-soft); }
+
+  /* Selects: the closed control matches inputs; the list floats in the top layer. */
+  .office-ui select.ui-field {
+    cursor: pointer;
+    padding-right: 2.25rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @supports (appearance: base-select) {
+    .office-ui select.ui-field, .office-ui select.ui-field::picker(select) { appearance: base-select; }
+    .office-ui select.ui-field { position: relative; display: inline-flex; align-items: center; background-image: none; }
+    .office-ui select.ui-field::picker-icon {
+      content: "";
+      width: 1rem;
+      height: 1rem;
+      margin-left: auto;
+      background: currentColor;
+      color: var(--text-muted);
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") center / contain no-repeat;
+      transition: rotate 0.2s;
+      position: absolute;
+      right: 0.7rem;
+    }
+    .office-ui select.ui-field:open::picker-icon { rotate: 180deg; }
+    .office-ui select.ui-field::picker(select) {
+      margin-block: 6px;
+      min-width: anchor-size(width);
+      max-height: min(22rem, 60vh);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 4px;
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: 0 1px 2px rgb(2 8 23 / 0.06), 0 18px 40px -12px rgb(2 8 23 / 0.35);
+      opacity: 1;
+      translate: 0 0;
+      transition: opacity 0.16s, translate 0.16s, display 0.16s allow-discrete, overlay 0.16s allow-discrete;
+    }
+    @starting-style {
+      .office-ui select.ui-field:open::picker(select) { opacity: 0; translate: 0 -6px; }
+    }
+    .office-ui select.ui-field option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-radius: 8px;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8125rem;
+      cursor: pointer;
+    }
+    .office-ui select.ui-field option:hover, .office-ui select.ui-field option:focus-visible {
+      background: var(--accent-primary-soft);
+      outline: none;
+    }
+    .office-ui select.ui-field option:checked { font-weight: 600; color: var(--accent-primary); }
+    .office-ui select.ui-field option::checkmark { order: 1; margin-left: auto; content: "✓"; }
+  }
+  [data-theme="dark"] .office-ui select.ui-field::picker(select) { background: var(--bg-surface-raised); }
+}
+
+/* Top-of-page progress line while the next page loads (src/lib/ui/nav-progress.ts). */
+.nav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483000;
+  width: 0;
+  height: 3px;
+  pointer-events: none;
+  border-radius: 0 999px 999px 0;
+  background: linear-gradient(90deg, #0145b8, #3b7bff 35%, #fe760d 60%, #3b7bff 80%, #0145b8) 0 0 / 200% 100%;
+  box-shadow: 0 0 12px rgb(59 123 255 / 0.55), 0 1px 3px rgb(1 69 184 / 0.35);
+  opacity: 0;
+  transition: width 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s ease;
+}
+/* The glowing tip, like a comet at the leading edge. */
+.nav-progress::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  width: 90px;
+  height: 11px;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, rgb(254 118 13 / 0.95), rgb(254 118 13 / 0.35) 55%, transparent);
+  filter: blur(1.5px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nav-progress { animation: nav-shimmer 1.1s linear infinite; }
+  .nav-progress::after { animation: nav-glow 0.9s ease-in-out infinite alternate; }
+  /* While waiting: the page eases back a little and the clicked link pulses. */
+  html.nav-pending :is(#main, main) { opacity: 0.62; filter: saturate(0.85); transition: opacity 0.3s ease, filter 0.3s ease; }
+  [data-nav-pending] { animation: nav-link 0.9s ease-in-out infinite; }
+}
+html.nav-pending, html.nav-pending * { cursor: progress; }
+:is(#main, main) { transition: opacity 0.25s ease, filter 0.25s ease; }
+@keyframes nav-shimmer { to { background-position: -200% 0; } }
+@keyframes nav-glow { from { opacity: 0.65; } to { opacity: 1; } }
+@keyframes nav-link { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: no-preference) {
+  .office-pop { animation: office-pop 0.16s var(--ease-standard) both; }
+}
+@keyframes office-pop { from { opacity: 0; scale: 0.97; translate: 0 -4px; } }
+@media (prefers-reduced-motion: no-preference) {
+  .office-drawer[open] { animation: office-drawer-in 0.28s var(--ease-standard) both; }
+  .office-drawer[open]::backdrop { animation: office-fade 0.28s ease both; }
+}
+@keyframes office-drawer-in { from { translate: -100% 0; } }
+@keyframes office-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .office-ring { animation: office-ring 2.4s ease-in-out infinite; transform-origin: 50% 10%; }
+}
+@keyframes office-ring { 0%, 76%, 100% { rotate: 0deg; } 80% { rotate: 14deg; } 86% { rotate: -12deg; } 92% { rotate: 6deg; } }
+@media (prefers-reduced-motion: no-preference) {
+  .office-donut { animation: office-donut 0.9s var(--ease-standard) both; }
+  .office-gauge { animation: office-gauge 1.1s var(--ease-standard) both; }
+  .office-fade-in { animation: office-fade 0.8s ease 0.3s both; }
+}
+@keyframes office-donut { from { stroke-dasharray: 0 100; } }
+@keyframes office-gauge { from { stroke-dasharray: 0 100; } }
+
+/* Cookie consent (FR-GL-10): a quiet card; on phones a bottom sheet. */
+@layer components {
+  .consent { position: fixed; inset: auto 0 0 0; z-index: 70; padding: 1rem 1rem max(1rem, env(safe-area-inset-bottom)); color: var(--text-primary); background: color-mix(in oklab, var(--bg-surface-raised, var(--bg-surface)) 92%, transparent); border-top: 1px solid var(--border-subtle); box-shadow: 0 -10px 40px -18px rgb(2 8 23 / 0.35); backdrop-filter: blur(18px); animation: reveal var(--dur-slow) var(--ease-enter); }
+  @media (min-width: 640px) { .consent { inset: auto 1.25rem 1.25rem auto; width: 25rem; padding: 1.25rem; border: 1px solid var(--border-subtle); border-radius: 1rem; box-shadow: 0 1px 2px rgb(2 8 23 / 0.06), 0 24px 56px -20px rgb(2 8 23 / 0.45); } }
+  .consent-head { display: flex; align-items: flex-start; gap: 0.75rem; }
+  .consent-head > svg { flex: none; width: 2.25rem; height: 2.25rem; padding: 0.55rem; border-radius: 0.75rem; color: var(--accent-primary); background: color-mix(in oklab, var(--accent-primary) 14%, transparent); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .consent-head h2 { font-family: var(--font-display); font-size: 1.0625rem; font-weight: 700; line-height: 1.25; }
+  .consent-head p { margin-top: 0.25rem; font-size: 0.875rem; line-height: 1.55; color: var(--text-secondary); }
+  .consent-head a { font-weight: 500; white-space: nowrap; color: var(--accent-primary); text-decoration: underline; text-underline-offset: 3px; }
+  .consent-opts { display: grid; gap: 0.5rem; margin-top: 1rem; }
+  .consent-opts label { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: 0.75rem; cursor: pointer; font-size: 0.8125rem; color: var(--text-secondary); transition: border-color 0.15s; }
+  .consent-opts label:hover { border-color: var(--border-strong); }
+  .consent-opts label[data-fixed] { opacity: 0.75; cursor: default; }
+  .consent-opts label > span { flex: 1; min-width: 0; }
+  .consent-opts b { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+  .consent-opts input { position: relative; flex: none; width: 2.5rem; height: 1.5rem; appearance: none; border-radius: 999px; cursor: pointer; background: color-mix(in oklab, var(--text-primary) 18%, transparent); transition: background-color 0.2s; }
+  .consent-opts input::before { content: ""; position: absolute; top: 2px; left: 2px; width: 1.25rem; height: 1.25rem; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 0.25); transition: translate 0.2s cubic-bezier(.3, 1.5, .5, 1); }
+  .consent-opts input:checked { background: var(--accent-primary); }
+  .consent-opts input:checked::before { translate: 1rem 0; }
+  .consent-opts input:disabled { cursor: default; }
+  .consent-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem; }
+  .consent-actions button { height: 2.5rem; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--bg-surface); font-size: 0.875rem; font-weight: 600; color: var(--text-primary); transition: border-color 0.15s, translate 0.15s; }
+  .consent-actions button:hover { border-color: var(--accent-primary); translate: 0 -1px; }
+  .consent-more { display: block; width: 100%; margin-top: 0.5rem; padding: 0.35rem; border-radius: 999px; font-size: 0.8125rem; font-weight: 500; color: var(--text-secondary); transition: color 0.15s; }
+  .consent-more:hover { color: var(--accent-primary); }
+  .consent :is(button, input, a):focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+}

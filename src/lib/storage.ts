@@ -27,7 +27,7 @@ export function storagePlugins(): Plugin[] {
     s3Storage({
       bucket: process.env.S3_BUCKET!,
       config,
-      collections: { media: { prefix: "media" } },
+      collections: { media: { prefix: "media" }, avatars: { prefix: "avatars" } },
     }),
   ];
   plugins.push(

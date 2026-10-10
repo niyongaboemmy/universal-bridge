@@ -43,7 +43,7 @@ export function LanguageSwitcher({
       <div
         id={id}
         popover="auto"
-        className="anchored-popover acrylic min-w-48 rounded-lg border border-subtle p-1.5 text-fg shadow-4"
+        className="anchored-popover menu-panel min-w-48 rounded-lg p-1.5 text-fg"
         style={{ positionAnchor: anchor } as React.CSSProperties}
       >
         <p className="px-3 py-1.5 text-body-sm text-fg-muted">{label}</p>

@@ -16,10 +16,12 @@ import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { liveEditSession } from "@/lib/live-edit/session";
 import { localizePath } from "@/i18n/routing";
 import { getSiteSettings } from "@/lib/cms/settings";
+import { getPublicSystem } from "@/lib/cms/system";
 import { JsonLd } from "@/lib/seo/json-ld";
 import { organizationLd } from "@/lib/seo/schema";
 import { inter, jakarta, jetbrains } from "../fonts";
-import { Providers } from "../providers";
+import { InlineScript, Providers } from "../providers";
+import { navProgressScript } from "@/lib/ui/nav-progress";
 import "@/styles/globals.css";
 
 export function generateStaticParams() {
@@ -40,7 +42,7 @@ export async function generateMetadata({
     applicationName: t("siteName"),
     openGraph: { siteName: t("siteName"), type: "website", locale },
     twitter: { card: "summary_large_image" },
-    robots: process.env.NOINDEX === "1" ? { index: false, follow: false } : undefined,
+    robots: (await getPublicSystem()).noindex ? { index: false, follow: false } : undefined,
   };
 }
 
@@ -100,7 +102,8 @@ export default async function LocaleLayout({
       className={`${jakarta.variable} ${inter.variable} ${jetbrains.variable}`}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: liteModeScript }} />
+        <InlineScript code={liteModeScript} />
+        <InlineScript code={navProgressScript} />
         {/* SEO-04: Organization + LocalBusiness + WebSite */}
         <JsonLd data={organizationLd(settings)} />
       </head>
@@ -127,7 +130,7 @@ export default async function LocaleLayout({
           <Fx />
           <CookieConsent
             copy={consentCopy}
-            plausibleDomain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || undefined}
+            plausibleDomain={(await getPublicSystem()).plausibleDomain ?? undefined}
           />
         </Providers>
       </body>

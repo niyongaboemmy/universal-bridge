@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { nobody, roleAccess } from "@/access/roles";
+import { isSuper, nobody } from "@/access/roles";
 
 // ADR-002: transactional outbox for emails, CRM sync and team alerts.
 export const Outbox: CollectionConfig = {
@@ -12,9 +12,9 @@ export const Outbox: CollectionConfig = {
     description: "Background jobs. “dead” jobs failed 5 times and need attention.",
   },
   access: {
-    read: roleAccess("super"),
-    update: roleAccess("super"),
-    delete: roleAccess("super"),
+    read: isSuper,
+    update: isSuper,
+    delete: isSuper,
     create: nobody,
   },
   fields: [

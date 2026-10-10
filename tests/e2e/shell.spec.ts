@@ -89,7 +89,7 @@ test.describe("S2 site shell", () => {
     await page.getByRole("button", { name: "Accept all" }).click();
     await expect.poll(() => analytics.length).toBeGreaterThan(0);
     await page.getByRole("button", { name: "Cookie settings" }).click();
-    await expect(page.getByRole("checkbox", { name: /Analytics/ })).toBeChecked();
+    await expect(page.getByRole("switch", { name: /Analytics/ })).toBeChecked();
   });
 });
 

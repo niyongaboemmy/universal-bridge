@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { localizePath } from "@/i18n/routing";
 import { getAnnouncement } from "@/lib/cms/globals";
+import { InlineScript } from "@/app/(frontend)/providers";
 import { DismissAnnouncement } from "./DismissAnnouncement";
 
 /**
@@ -16,10 +17,8 @@ export async function AnnouncementBar({ locale }: { locale: Locale }) {
   const key = `ub-ann-${a.version ?? "1"}`;
   return (
     <>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `try{if(localStorage.getItem(${JSON.stringify(key)}))document.documentElement.dataset.annDismissed="1";else document.documentElement.style.setProperty("--announcement-h","40px")}catch(e){document.documentElement.style.setProperty("--announcement-h","40px")}`,
-        }}
+      <InlineScript
+        code={`try{if(localStorage.getItem(${JSON.stringify(key)}))document.documentElement.dataset.annDismissed="1";else document.documentElement.style.setProperty("--announcement-h","40px")}catch(e){document.documentElement.style.setProperty("--announcement-h","40px")}`}
       />
       <div
         data-announcement

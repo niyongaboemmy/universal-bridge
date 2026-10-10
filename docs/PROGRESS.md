@@ -268,3 +268,100 @@ Staff edit text and images directly on the live site instead of in admin forms. 
 Fixed during testing: the page could jump while typing when the pointer rested on the edited text. Text being edited now wraps in place and the page holds still.
 
 Not on the page (admin only): adding, removing or reordering sections, rich text, links and URLs, SEO settings, navigation and site settings.
+
+## Company dashboard (`/office`, done)
+
+A second staff app, next to the content admin, for running the company. It's built on the same data and sign-in. Sections are listed in the README. ADM-02/03/04/05/06 and ADM-10 (KPI dashboard) are delivered here in a modern form.
+
+**Data model**
+- Leads stay one inbox, viewed three ways: service requests (sales department, no product), demo requests (a product is set) and messages (other departments). New fields: estimated `value` and `currency`, and `nextFollowUpAt`.
+- Applications gain a 1–5 `rating`.
+- New collections: `employees` (HR only), `projects` (client projects, internal tools, products; milestones, team, budget, link to the lead and product) and `page-views` (cookieless analytics).
+
+**Interactivity**
+- Drag-and-drop pipelines with optimistic moves (a menu on each card does the same by keyboard or touch).
+- Saves happen on change, with no Save buttons on records.
+- Notes are signed automatically.
+- Charts have hover and keyboard tooltips and a toggleable legend; visitor counts update live.
+- Milestones drive project progress.
+- Saves from one page are queued: Payload writes whole records, so overlapping saves could otherwise drop a note. The E2E tests caught this.
+
+**Analytics**
+- `/api/collect` receives page views from a tracker loaded only after consent, as a separate chunk.
+- It drops bots, staff sessions and cross-site requests, applies rate limits, and stores a daily visitor hash (no IP).
+- Aggregates are SQL queries over `page_views`, which retention purges after 13 months.
+
+**Tests**: 4 unit (user-agent classification, bots, deltas, formatting) and 8 E2E:
+- sign-in redirect;
+- role gating (hr and sales accounts);
+- request stage, value, follow-up, notes, and the board move;
+- applicant stage, rating and the email toggle;
+- project creation and milestone progress;
+- adding an employee;
+- analytics only with consent, never for bots or staff, with no IP stored.
+
+All dashboard pages fit a phone screen without sideways scrolling.
+
+Development-only sample data: six sample employees and two projects were created in the local database to review the screens. They aren't in the seed.
+
+## Office administration (done)
+
+**Sign-in.** A new staff sign-in page at `/login` replaces Payload's screen:
+- Animated brand panel, show/hide password, Caps Lock warning, inline "forgot password", SSO buttons when enabled.
+- The `/admin/login` route redirects to it.
+- After sign-in, staff land in the office or the CMS (their choice, or the default in Settings).
+- `/office` now passes the same MFA gate as `/admin`.
+
+**Roles & permissions (RBAC).**
+- `roles` collection; `users.roles` is now a relationship to it, loaded with the user (`auth.depth: 1`).
+- 39 permissions cover the office, administration, website content and member accounts.
+- Access checks now use permissions instead of role names. This covers every collection and global, plus exports, live editing, privacy and the office areas.
+- Leads are scoped per kind: service requests, demo requests and messages.
+- Applications are scoped per type through `applicants.<type>`.
+- Built-in roles are created at start-up if missing.
+- Seeds and tests may still pass role slugs; they are resolved to ids.
+
+**Settings.**
+- `system-settings` global, edited in office → Settings.
+- Holds what used to sit in env: sender and inboxes, analytics domain, booking link, webhooks, ClamAV host, SSO domains, retention periods, upload limit, noindex, registration, member roles, staff landing, reply target, board size, currency.
+- Env values remain as fallbacks; secrets stay in env.
+- Public pages read settings through a cache tag; server code through a 30-second in-memory copy that clears on save.
+
+**System logs.**
+- Audit entries now also store: the actor's name and type (staff, member, public, system), a non-personal label (ref or title, never a person's name), from → to for status changes, a shortened IP, and the device.
+- The office page shows them as a readable timeline, with charts, filters and CSV export.
+
+**Openings and website accounts.**
+- `openings` collection with a form builder.
+- Public pages `/apply` and `/apply/{slug}` reuse the existing submit pipeline (honeypot, rate limits, validation, transaction, outbox), with server-side validation built from each opening's questions.
+- `members` auth collection with register, sign-in, reset and an account page with a progress stepper per application.
+- A member's first application promotes them from visitor to applicant.
+- Strings are in en/fr/rw. **Kinyarwanda strings for `openings` and `account` need native review.**
+
+**Boards everywhere.** Requests, messages, applicants, openings, projects and employees all follow the same layout: summary, category cards with stage bars, then a drag-and-drop status board. Board size and the reply-time colours come from Settings.
+
+**Migration.** The pre-launch initial migration was regenerated (`20261010_162618_initial`, 228 tables, checked on a fresh database). Local databases created before this change need the old `users_roles` table dropped before Payload's dev push. Without that, push stops at a data-loss prompt; staff role links are restored by slug.
+
+**Tests.**
+- Unit: permissions, settings fallbacks, log sentences, IP anonymising (100 unit + integration in total).
+- E2E (`access.spec.ts`): the one sign-in page; a custom role gets exactly what the matrix grants; only super admins can grant super; settings save and appear in the logs; an opening goes live, a visitor registers, applies (required questions enforced, CV upload) and sees "Applicant" with the application on their account; staff see it on the opening's funnel.
+
+## Office workspace round (done)
+
+- **Forms and dropdowns.** One `ui-field` style for every input, select and text area (40 px, same padding and radius). Selects use the browser's customizable-select styling: the list floats, is animated, and has a checkmark, with a styled fallback in older browsers. Popovers render in a portal, so tables can't clip them.
+- **Navigation.**
+  - The sidebar is an accordion with its state remembered; phones get a drawer.
+  - Every page has a loading skeleton; the editor, matrix and charts load lazily.
+  - A top progress line appears on navigation. It is inline JS on the website and the office, so the bundle cost is zero.
+- **Role switching.** An `ub-act` cookie names the active role (`userId:roleId`). It is applied in every access function (`actingFromReq`), the office session and the API routes. It never touches stored roles; Payload's session refresh writes the whole user, so narrowing at read time would lose roles.
+- **Notifications.**
+  - New `notifications` collection, written from lead and application hooks: new items go to everyone holding the permission, assignments to the assignee.
+  - "Upcoming" items are computed live.
+  - Bell, page, and an API to mark items read.
+- **Deep search.** SQL over the record tables and the website's localised content tables, scoped by the active role's permissions, with match snippets.
+- **Settings audit.** "Follow-up after" now sets a follow-up date when a request leaves New. The default currency now fills new requests and projects, which can use KES and UGX too. "Email applicants" now really switches the emails off. Board size and reply target now also apply to demo pipelines and the overview. Maintenance mode was added.
+- **Overview.** Rebuilt per role with animated SVG charts: KPI sparklines, donuts, gauges, funnels and rings.
+- **Tests.**
+  - `workspace.spec.ts`: role switching across the office, the API and search; the assignment notification through the bell; deep search inside notes; sidebar memory; role-based overview; follow-up from settings; the phone drawer and folding filters.
+  - `maintenance.spec.ts`: runs last, as its own project, because it takes the site down.
+  - Unit tests for role narrowing.

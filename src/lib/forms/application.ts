@@ -5,16 +5,17 @@ import { formTranslator } from "@/emails/translator";
 import { audit } from "@/lib/audit";
 import { submissionRef } from "@/lib/ids";
 import { enqueue } from "@/lib/outbox";
+import { settings } from "@/lib/settings";
 import { storePrivateFile, type UploadCheck } from "@/lib/uploads";
 import type { SubmissionMeta } from "./submit";
 import { CONSENT_VERSION } from "./types";
 
 const INBOX = {
-  academy: () => process.env.INBOX_ACADEMY,
-  internship: () => process.env.INBOX_ACADEMY,
-  job: () => process.env.INBOX_CAREERS,
-  partner: () => process.env.INBOX_PARTNERS,
-  event: () => process.env.INBOX_EVENTS ?? process.env.INBOX_ACADEMY,
+  academy: "academy",
+  internship: "academy",
+  job: "careers",
+  partner: "partnerships",
+  event: "events",
 } as const;
 
 /**
@@ -35,6 +36,9 @@ export async function saveApplication(args: {
   intake?: number;
   job?: number;
   event?: number;
+  /** The opening applied through, and the member account that applied (if signed in). */
+  opening?: number;
+  member?: number;
   waitlisted?: boolean;
   guardian?: string;
   summary: [string, string][];
@@ -64,6 +68,8 @@ export async function saveApplication(args: {
       intake: args.intake,
       job: args.job,
       event: args.event,
+      opening: args.opening,
+      member: args.member,
       data: args.data,
       files: fileIds,
       botCheck: meta.botCheck === "missing" ? "missing" : "passed",
@@ -97,7 +103,7 @@ export async function saveApplication(args: {
     kind: "send-email",
     payload: {
       template: "application-notification",
-      to: INBOX[args.type]() ?? "hello@universalbridge.rw",
+      to: (await settings()).inbox[INBOX[args.type]] ?? "hello@universalbridge.rw",
       replyTo: args.email,
       data: emailData,
       adminPath,
@@ -114,7 +120,8 @@ export async function saveApplication(args: {
     action: "submit",
     entity: "applications",
     entityId: doc.id,
-    meta: { ref, type: args.type },
+    label: ref,
+    meta: { ref, type: args.type, ...(args.opening ? { opening: args.opening } : {}) },
   });
   return { ref, waitlisted: args.waitlisted };
 }

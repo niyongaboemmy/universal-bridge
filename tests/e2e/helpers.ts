@@ -106,3 +106,39 @@ export const visitorIp = () =>
 export async function staffHeaders(request: import("@playwright/test").APIRequestContext) {
   return { Authorization: `JWT ${await adminToken(request)}` };
 }
+
+/**
+ * Test sign-ins come from one machine; production rate-limits sign-ins per client IP
+ * (20 per 15 minutes). Each test sign-in presents its own forwarded address, as
+ * traffic through a proxy does, so the suite doesn't trip the limit meant for attackers.
+ */
+export function testClientIp() {
+  const n = () => Math.floor(Math.random() * 250) + 1;
+  return { "x-forwarded-for": `10.${n()}.${n()}.${n()}` };
+}
+
+/**
+ * Sign in a freshly created staff account. Creating an account queues its invitation,
+ * which updates the user record right away and can drop a session made at the same
+ * moment; confirm the token works and sign in again if it doesn't.
+ */
+export async function loginStaff(
+  request: import("@playwright/test").APIRequestContext,
+  email: string,
+  password: string,
+): Promise<string> {
+  for (let i = 0; i < 4; i++) {
+    const res = await request.post("/api/users/login", {
+      data: { email, password },
+      headers: testClientIp(),
+    });
+    const token = ((await res.json().catch(() => ({}))) as { token?: string }).token;
+    if (token) {
+      await new Promise((r) => setTimeout(r, 400));
+      const me = await request.get("/api/users/me", { headers: { Authorization: `JWT ${token}` } });
+      if (((await me.json().catch(() => ({}))) as { user?: unknown }).user) return token;
+    }
+    await new Promise((r) => setTimeout(r, 600));
+  }
+  throw new Error(`Could not sign in ${email}`);
+}

@@ -20,14 +20,21 @@ import { Products } from "./collections/Products";
 import { Services } from "./collections/Services";
 import { Clients, Faqs, Stats, Technologies, Testimonials } from "./collections/taxonomy";
 import { Leads } from "./collections/Leads";
+import { Employees, PageViews, Projects } from "./collections/Company";
 import { Media } from "./collections/Media";
 import { Outbox } from "./collections/Outbox";
+import { Avatars, ensureSystemRoles, Roles } from "./collections/Roles";
 import { Users } from "./collections/Users";
+import { Members } from "./collections/Members";
+import { Notifications } from "./collections/Notifications";
+import { Openings } from "./collections/Openings";
+import { SystemSettings } from "./globals/SystemSettings";
 import { ubEmailAdapter } from "./lib/email/payload-adapter";
 import { storagePlugins } from "./lib/storage";
 import { Announcement } from "./globals/Announcement";
 import { Navigation } from "./globals/Navigation";
 import { SiteSettings } from "./globals/SiteSettings";
+import { migrations } from "./migrations";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -36,6 +43,9 @@ export default buildConfig({
     user: Users.slug,
     importMap: { baseDir: path.resolve(dirname) },
     meta: { titleSuffix: " · UB Admin" },
+    // Browser extensions (e.g. Scribe) add attributes to <html> before React loads;
+    // this only ignores differences on <html> itself, as on the website and the office.
+    suppressHydrationWarning: true,
     // ADM-01: SSO buttons on the login screen; link to two-step verification in the nav.
     components: {
       afterLogin: ["@/components/admin/SsoButtons#SsoButtons"],
@@ -67,15 +77,23 @@ export default buildConfig({
     Clients,
     Media,
     Leads,
+    Employees,
+    Projects,
+    PageViews,
+    Openings,
     Applications,
     PrivateFiles,
     Certificates,
     Subscribers,
     Users,
+    Members,
+    Roles,
+    Avatars,
+    Notifications,
     Outbox,
     AuditLog,
   ],
-  globals: [Navigation, SiteSettings, Announcement],
+  globals: [Navigation, SiteSettings, Announcement, SystemSettings],
   editor: lexicalEditor(),
   email: ubEmailAdapter,
   plugins: [...storagePlugins()],
@@ -87,6 +105,10 @@ export default buildConfig({
     // Dev pushes schema changes automatically; staging/prod use migrations (pnpm db:migrate).
     push: process.env.NODE_ENV !== "production" && process.env.PAYLOAD_PUSH !== "0",
     migrationDir: path.resolve(dirname, "migrations"),
+    // The cPanel server applies pending migrations on start: its bundle has no
+    // Payload CLI (docs/DEPLOYMENT.md). Never during `next build`, which would
+    // migrate (or stop at a prompt on) whatever database the build points at.
+    ...(process.env.PAYLOAD_MIGRATE_ON_START === "1" ? { prodMigrations: migrations } : {}),
   }),
   // CMS-05: per-field localisation with English fallback.
   localization: {
@@ -101,4 +123,12 @@ export default buildConfig({
   sharp,
   graphQL: { disable: true },
   telemetry: false,
+  // Built-in roles (super, editor, …, visitor, applicant) exist on every database.
+  onInit: async (payload) => {
+    try {
+      await ensureSystemRoles(payload);
+    } catch (err) {
+      payload.logger.warn({ err }, "Could not create the built-in roles yet (run migrations).");
+    }
+  },
 });

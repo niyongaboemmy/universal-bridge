@@ -49,3 +49,7 @@ next-env.d.ts
 
 # separate production build for bundle checks
 /.next-*/
+
+# Local-only production runbook with live credentials (never commit)
+docs/DEPLOYMENT.private.md
+*.private.md

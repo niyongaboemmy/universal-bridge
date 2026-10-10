@@ -1,5 +1,5 @@
 import type { Access, CollectionConfig, Where } from "payload";
-import { nobody, roleAccess, type Role } from "@/access/roles";
+import { isSuper, nobody, actingFromReq } from "@/access/roles";
 import { APPLICATION_TYPES, applicationTypesFor } from "./Applications";
 
 /**
@@ -9,7 +9,7 @@ import { APPLICATION_TYPES, applicationTypesFor } from "./Applications";
  * With S3 configured they live in a private bucket behind 5-minute signed URLs.
  */
 const scopedRead: Access = ({ req }) => {
-  const types = applicationTypesFor(req.user as { roles?: Role[] } | null);
+  const types = applicationTypesFor(actingFromReq(req));
   if (types === "all") return true;
   if (!types.length) return false;
   const where: Where = {
@@ -29,8 +29,8 @@ export const PrivateFiles: CollectionConfig = {
   access: {
     read: scopedRead,
     create: nobody,
-    update: roleAccess("super"),
-    delete: roleAccess("super"),
+    update: isSuper,
+    delete: isSuper,
   },
   upload: {
     staticDir: ".data/private",

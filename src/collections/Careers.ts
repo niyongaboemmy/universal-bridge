@@ -4,7 +4,7 @@ import { contentCollection, seoField, slugField } from "@/fields/common";
 // SRS §11 Job + FR-CAR-01/02.
 export const Jobs: CollectionConfig = contentCollection({
   slug: "jobs",
-  editors: ["editor", "hr"],
+  editors: ["content.careers"],
   admin: {
     group: "Company",
     useAsTitle: "title",

@@ -2,6 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import { sql } from "@payloadcms/db-postgres";
 import type { Payload, PayloadRequest } from "payload";
+import { settings, type Settings } from "@/lib/settings";
 import { audit } from "@/lib/audit";
 
 /**
@@ -12,7 +13,8 @@ import { audit } from "@/lib/audit";
  * - unsuccessful applications (rejected, waitlisted) and their CVs: 12 months;
  * - CVs no application points to (abandoned uploads): 30 days;
  * - newsletter sign-ups never confirmed, or unsubscribed: 30 days;
- * - finished outbox jobs (they hold names and emails): 30 days; dead jobs: 90 days.
+ * - finished outbox jobs (they hold names and emails): 30 days; dead jobs: 90 days;
+ * - anonymous page views (Company dashboard analytics): 13 months.
  * Certificates are kept permanently, as the privacy policy states.
  */
 const MONTH = 30 * 24 * 60 * 60 * 1000;
@@ -73,23 +75,35 @@ async function filesOf(payload: Payload, applicationIds: Ids): Promise<Ids> {
   );
 }
 
-export async function runRetention(payload: Payload, { dryRun = false } = {}) {
-  const leads = await ids(payload, "leads", { updatedAt: { less_than: ago(24 * MONTH) } });
+export async function runRetention(
+  payload: Payload,
+  { dryRun = false, periods }: { dryRun?: boolean; periods?: Settings["retention"] } = {},
+) {
+  // Periods come from office → Settings (defaults above).
+  const r = periods ?? (await settings()).retention;
+  const leads = await ids(payload, "leads", { updatedAt: { less_than: ago(r.leadsMonths * MONTH) } });
   const applications = await ids(payload, "applications", {
     and: [
       { status: { in: ["rejected", "waitlisted"] } },
-      { updatedAt: { less_than: ago(12 * MONTH) } },
+      { updatedAt: { less_than: ago(r.applicationsMonths * MONTH) } },
     ],
   });
   const applicationFiles = await filesOf(payload, applications);
   const referenced = await referencedFileIds(payload);
   const orphanFiles = (
-    await ids(payload, "private-files", { createdAt: { less_than: ago(30 * DAY) } })
+    await ids(payload, "private-files", {
+      createdAt: { less_than: ago(r.orphanFilesDays * DAY) },
+    })
   ).filter((id) => !referenced.has(String(id)));
   const subscribers = await ids(payload, "subscribers", {
     or: [
-      { and: [{ confirmedAt: { exists: false } }, { createdAt: { less_than: ago(30 * DAY) } }] },
-      { unsubscribedAt: { less_than: ago(30 * DAY) } },
+      {
+        and: [
+          { confirmedAt: { exists: false } },
+          { createdAt: { less_than: ago(r.subscribersDays * DAY) } },
+        ],
+      },
+      { unsubscribedAt: { less_than: ago(r.subscribersDays * DAY) } },
     ],
   });
   const outboxRows = await payload.db.drizzle.execute(
@@ -108,6 +122,9 @@ export async function runRetention(payload: Payload, { dryRun = false } = {}) {
     await deleteAll(payload, "applications", applications);
     await deleteAll(payload, "private-files", [...new Set([...applicationFiles, ...orphanFiles])]);
     await deleteAll(payload, "subscribers", subscribers);
+    await payload.db.drizzle.execute(
+      sql`delete from page_views where created_at < now() - make_interval(months => ${r.pageViewsMonths})`,
+    );
     await payload.db.drizzle.execute(
       sql`delete from outbox where (status = 'done' and updated_at < now() - interval '30 days') or (status = 'dead' and updated_at < now() - interval '90 days')`,
     );

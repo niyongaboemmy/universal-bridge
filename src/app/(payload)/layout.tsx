@@ -5,6 +5,7 @@ import type { ServerFunctionClient } from "payload";
 import { handleServerFunctions, RootLayout } from "@payloadcms/next/layouts";
 import React from "react";
 
+import { inter, jakarta, jetbrains } from "../(frontend)/fonts";
 import { importMap } from "./admin/importMap.js";
 import "./custom.css";
 
@@ -22,7 +23,13 @@ const serverFunction: ServerFunctionClient = async function (args) {
 };
 
 const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
+  <RootLayout
+    config={config}
+    importMap={importMap}
+    serverFunction={serverFunction}
+    // The CMS uses the website's typefaces (see custom.css).
+    htmlProps={{ className: `${inter.variable} ${jakarta.variable} ${jetbrains.variable}` }}
+  >
     {children}
   </RootLayout>
 );

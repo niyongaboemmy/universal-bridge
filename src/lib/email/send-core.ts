@@ -15,7 +15,8 @@ export type OutgoingEmail = {
  * Throws on failure so the outbox retries (NFR-REL-02).
  */
 export async function sendEmail(email: OutgoingEmail): Promise<{ id: string }> {
-  const from = process.env.EMAIL_FROM ?? "Universal Bridge <hello@universalbridge.rw>";
+  const { settings } = await import("@/lib/settings");
+  const from = (await settings()).emailFrom;
   if (process.env.RESEND_API_KEY) {
     const { Resend } = await import("resend");
     const resend = new Resend(process.env.RESEND_API_KEY);

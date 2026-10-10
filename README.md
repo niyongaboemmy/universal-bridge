@@ -214,6 +214,92 @@ Defined in `src/styles/globals.css` with Tailwind's `@theme`. Full rules are in 
 - Testimonials need written client approval. Stats must be accurate and dated.
 - Concept renders (AI images) must be labelled as concepts. Use real photos for real offices and people.
 
+### Company dashboard (`/office`)
+
+The admin (`/admin`) manages content. The office runs the company. Staff sign in once at **`/login`** (`/admin/login` redirects there) and land in the office; each person can choose the CMS instead under **My profile → Open after sign-in** (default for everyone: Settings → Accounts). The CMS is one click away in the sidebar. Each section appears only for people whose role grants it (see **Roles & permissions** below):
+
+| Section           | What it's for                                                                                                                                                                                                                    | Roles                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Overview          | This week's numbers against last week, open pipeline value, average first-reply time, a 30-day activity chart, "Needs attention" (requests unanswered for 24 h, overdue follow-ups, applicants waiting 3+ days), latest activity | everyone                                             |
+| Service requests  | Drag-and-drop pipeline (New → Contacted → Qualified → Proposal → Won/Lost), cards coloured by reply urgency, list view, "only mine", CSV                                                                                         | sales                                                |
+| Demo requests     | "Request a demo" submissions grouped by product                                                                                                                                                                                  | sales                                                |
+| Messages          | Contact-form messages for the Academy, careers, partnerships, press and support, with department tabs and unread state                                                                                                           | sales                                                |
+| Request detail    | Message and details, Email / Call / WhatsApp, stage, owner, estimated value, next follow-up, team notes, "Start a project" once won                                                                                              | sales                                                |
+| Applicants        | Pipeline boards for trainees, interns, job seekers, partners and event sign-ups, plus seats per intake. Detail pages show answers, CVs (only after the virus scan), guardian consent, a 1–5 screening score, reviewer and notes  | academy, hr, sales, editor (each sees its own types) |
+| Projects & tools  | Client projects, internal tools and products: progress, health, due dates, team, milestones that update progress, budget, and demand per product                                                                                 | sales (edit), hr (read)                              |
+| Employees         | Directory, headcount by department, joiners and leavers, reporting lines, skills, HR notes, the projects each person is on                                                                                                       | hr                                                   |
+| Website analytics | Visitors now (live), visitors, page views, sessions, bounce rate, pages per session, conversion rate, trend chart, top pages, sources and campaigns, countries, devices, browsers and languages, over 7, 30 or 90 days           | everyone with a staff role                           |
+
+Every board page follows the same three steps:
+
+1. Summary numbers.
+2. Category cards: requests by service, messages by department, applicants by type, openings by kind, projects by type, employees by department. Each card has a bar of its items by stage.
+3. A status board where cards are dragged, or moved from their menu, to another stage. A list (or card) view is one click away.
+
+| Admin section       | What it's for                                                                                                                                                                                                                                                                                                                        | Permission                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| Openings            | Intakes, internships, jobs, partner programmes and events people apply to: dates, seats, status board, and a drag-and-drop **form builder** (11 question types, suggested questions per kind, live preview). Each opening gets a public page at `/apply/{slug}`, and applications link back to it.                                   | `openings.view` / `openings.manage` |
+| Accounts            | Staff (invite, roles, unlock, remove) and website members (role).                                                                                                                                                                                                                                                                    | `users.manage` / `members.manage`   |
+| Roles & permissions | Every role × every permission as a switch matrix, with coverage per group; create, rename, colour and delete roles. Built-in roles (super, editor, academy, hr, sales, visitor, applicant) are created at start-up and can't be deleted.                                                                                             | `roles.manage`                      |
+| System logs         | Who did what, to which record, and when, written as sentences ("Grace moved L-8K2 from new → contacted"). Includes a 14-day chart by category, the most active people, alerts (deletions, blocked sign-ins, erasures), filters, the anonymised network and device in the details, and a CSV export.                                  | `audit.view`                        |
+| Settings            | Email sender and inboxes, registration and member roles, workflow (reply target, follow-up, board size, currency, applicant emails), upload limits and virus scanner, integrations (analytics, booking, CRM and team webhooks), retention periods, search-engine visibility, plus a read-only check of which server secrets are set. | `settings.manage`                   |
+| My profile          | Name, title, phone, profile picture (drag and drop), password change with a strength meter, signed-in devices (sign out the others), permissions held, an 18-week activity heatmap and recent actions.                                                                                                                               | everyone                            |
+
+**Roles & permissions.** Access is permission-based. A role (the `roles` collection) is a named set of permissions from `src/access/permissions.ts`. Collections, office pages, CSV exports, live editing and the CMS itself (`cms.access`) all check permissions, and super admins hold all of them. Only a super admin can give or take away the super admin role.
+
+**Website accounts.** People can register at `/account/register` (switch: Settings → Accounts). New accounts get the **visitor** role, and their first application promotes them to **applicant**. At `/account` they follow each application through its stages and edit their profile. Member accounts (`members` collection) are separate from staff accounts and never reach the office or the CMS.
+
+**Working in the office.**
+
+- **Overview by role.** The home page shows only what the person's role covers:
+  - KPI tiles with 14-day sparklines;
+  - incoming work over 30 days;
+  - "Your day" (overdue replies, follow-ups due, openings closing, intakes starting, projects due, applicants waiting);
+  - the sales funnel with values, request sources, win rate and reply-time gauges;
+  - applicants by stage and type, open openings with seats filled;
+  - project health and delivery, the team by department;
+  - website visitors and top pages;
+  - recent activity.
+
+  Each section streams in on its own.
+
+- **Several roles?** The role switcher in the top bar lets someone work as one of their roles (or all of them). The office, the CMS and the API then follow only that role's permissions. Switching can only narrow access, never widen it.
+- **Notifications.** The bell shows new requests, applicants and assignments for your role, plus "Upcoming" items worked out live (follow-ups due, replies past the target, openings closing, intakes starting, projects due). It checks every 45 seconds. The full list is at `/office/notifications`.
+- **Search everything.** Press `/` or ⌘K for the command palette, or open `/office/search`. Search covers:
+  - requests, including messages and notes;
+  - applicants, including form answers and notes;
+  - openings, projects, people, staff and member accounts, roles, subscribers and certificates;
+  - website content in every language.
+
+  Every word must match. Results show where the match was, highlighted, and only include what the active role may open.
+
+- **Navigation.** Sidebar sections fold, and the current one stays open. On phones and tablets the menu is a drawer, filters fold behind a "Filters" button, and category cards scroll sideways. A thin progress line at the top shows a page is loading, and skeletons fill each page until its data arrives.
+- **Forms.** All inputs, selects and text areas share one size and style. Select lists open as floating panels, and menus render above tables and cards so nothing clips them.
+
+**Maintenance mode** (Settings → Website): visitors get a "back soon" page with your message and expected time (HTTP 503 with `Retry-After`, so search engines wait). Signed-in staff still see the site, and the office shows a red banner while it's on. The switch takes effect within 15 seconds.
+
+**Lists.** Every list has instant search, filters, sorting, page size (10/25/50/100) and pagination, all kept in the URL so a filtered view can be bookmarked or shared. "Clear" resets the filters. Boards apply the same filters, and long boards link to the full list.
+
+| List                        | Filters                                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Service requests            | stage, owner (me / unassigned / person), service, budget, follow-up (overdue / this week / none), received from–to |
+| Demo pipeline (per product) | stage, owner, received from–to                                                                                     |
+| Messages                    | department tabs, state (unread / in progress / closed), owner, received from–to                                    |
+| Applicants                  | type tabs, stage, program / role / event, intake, minimum score, reviewer, under 18, applied from–to               |
+| Projects & tools            | type tabs, status (finished hidden by default), health, lead, due (overdue / next 30 days / none)                  |
+| Employees                   | department, status (former hidden by default), employment, reports to, skill                                       |
+
+**Working faster:**
+
+- Press **⌘K / Ctrl+K** (or **/**) anywhere to search requests, applicants, projects and people, jump to a page, or run an action.
+- Press **g** then a letter to jump straight to a section: **o** overview, **r** requests, **d** demos, **m** messages, **a** applicants, **e** employees, **p** projects, **w** analytics.
+- The theme switch in the top bar offers light, dark (a deep blue-tinted dark) or system. The choice is shared with the website.
+- The office and the CMS use the website's typefaces (Inter for text, Plus Jakarta Sans for headings), with a compact type scale suited to a working tool.
+
+Changes go through Payload as the signed-in person, so access rules, the audit log and applicant status emails behave exactly as in the admin.
+
+**Analytics and privacy.** Page views are first-party and recorded only after a visitor accepts analytics in the cookie banner. No cookie is set and no IP address is stored. Unique visitors are counted with a hash that changes every day, so nobody can be followed across days. Bots and signed-in staff aren't counted. Raw page views are deleted after 13 months by the monthly retention job.
+
 ### Editing on the page (live editing, CMS-07)
 
 Staff with an editing role can change text and images directly on the site, seeing exactly what visitors will see:
@@ -321,12 +407,12 @@ The site handles personal data (applications, CVs, leads), so it must follow **R
 
 ### Staff accounts and sign-in (ADM-01, NFR-SEC-05)
 
-- **Invitations.** A super admin creates the account (Settings → Users). The person gets an email to set their own password. Passwords need at least 12 characters and can't be common or contain the person's name or email.
+- **Invitations.** Someone with `users.manage` invites them (office → Accounts → Invite staff). The person gets an email to set their own password. Passwords need at least 12 characters and can't be common or contain the person's name or email.
 - **Sign-in** is email and password for now. Two-step verification and Google/Microsoft SSO are built but **switched off** until UB decides to roll them out:
   - Two-step verification: set `MFA_ENFORCEMENT=required` (every account) or `enrolled` (opt-in). Staff then enrol at `/staff/mfa` with an authenticator app and get 10 recovery codes; sessions that haven't passed the step can't open the admin or the API (`401 MFA_REQUIRED`). A super admin resets it by unticking "Two-step verification" on the user.
   - SSO: set `SSO_ENABLED=1` plus the Google and/or Microsoft client id and secret, and register `{NEXT_PUBLIC_SITE_URL}/api/sso/{google|microsoft}/callback` with the provider. It signs in existing staff accounts only (optionally limited by `SSO_ALLOWED_DOMAINS`).
 - **Limits.** Sessions last 8 hours. Accounts lock for 15 minutes after 5 wrong passwords, and sign-in and password resets are rate limited per IP and per email.
-- **Audit.** Sign-ins, user and role changes, CSV exports and privacy requests are in the audit log (Settings → Audit log).
+- **Audit.** Sign-ins, record changes (with from → to), role and permission changes, settings, CSV exports and privacy requests are in the office's **System logs**. IP addresses are shortened (the last block is dropped) before they are stored.
 
 ### Personal data tools (ADM-06, ADM-09)
 

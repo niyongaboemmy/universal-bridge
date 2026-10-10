@@ -7,7 +7,7 @@ import { createStaffSession, finishSignIn, provider } from "@/lib/auth/sso";
 export const dynamic = "force-dynamic";
 
 function fail(request: NextRequest, reason: string) {
-  const url = new URL("/admin/login", request.url);
+  const url = new URL("/login", request.url);
   url.searchParams.set("sso", reason);
   return NextResponse.redirect(url);
 }

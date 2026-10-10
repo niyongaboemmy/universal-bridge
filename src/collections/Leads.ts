@@ -1,6 +1,8 @@
-import type { CollectionConfig } from "payload";
-import { roleAccess, nobody } from "@/access/roles";
+import type { Access, CollectionConfig, Where } from "payload";
+import { can, isSuper, nobody, type UserLike, actingFromReq } from "@/access/roles";
 import { auditHooks } from "@/lib/audit";
+import { CURRENCIES } from "@/lib/currencies";
+import { notifyLead } from "@/lib/notify-hooks";
 
 // SRS §11 Lead + ADM-02/03 inbox and status workflow.
 export const LEAD_STATUSES = ["new", "contacted", "qualified", "proposal", "won", "lost"] as const;
@@ -12,6 +14,40 @@ export const DEPARTMENTS = [
   "press",
   "support",
 ] as const;
+
+export type LeadKind = "service" | "demo" | "message";
+const noProduct: Where = { or: [{ product: { exists: false } }, { product: { equals: "" } }] };
+
+/** Filter for one kind of lead: service requests, demo requests or department messages. */
+export const leadWhere = (kind: LeadKind): Where =>
+  kind === "demo"
+    ? { product: { exists: true } }
+    : kind === "service"
+      ? { and: [{ department: { equals: "sales" } }, noProduct] }
+      : { and: [{ department: { not_equals: "sales" } }, noProduct] };
+
+const KIND_PERMS = {
+  service: ["requests.view", "requests.manage"],
+  demo: ["demos.view", "demos.manage"],
+  message: ["messages.view", "messages.manage"],
+} as const;
+
+/** Lead kinds the user may see (`manage`: may also change them). */
+export function leadKindsFor(user: UserLike, manage = false): LeadKind[] | "all" {
+  const kinds = (Object.keys(KIND_PERMS) as LeadKind[]).filter((k) =>
+    can(user, ...(manage ? [KIND_PERMS[k][1]] : KIND_PERMS[k])),
+  );
+  return kinds.length === 3 ? "all" : kinds;
+}
+
+const scoped =
+  (manage: boolean): Access =>
+  ({ req }) => {
+    if (req.user?.collection !== "users") return false;
+    const kinds = leadKindsFor(actingFromReq(req), manage);
+    if (kinds === "all") return true;
+    return kinds.length ? { or: kinds.map(leadWhere) } : false;
+  };
 
 export const Leads: CollectionConfig = {
   slug: "leads",
@@ -26,12 +62,32 @@ export const Leads: CollectionConfig = {
       "Project inquiries and contact messages (ADM-02). Personal data — handle under the privacy policy.",
   },
   access: {
-    read: roleAccess("sales"),
-    update: roleAccess("sales"),
-    delete: roleAccess("super"),
+    read: scoped(false),
+    update: scoped(true),
+    delete: isSuper,
     create: nobody, // only the public form (server action) creates leads
   },
-  hooks: auditHooks("leads"),
+  hooks: {
+    ...auditHooks("leads"),
+    beforeChange: [
+      ...auditHooks("leads").beforeChange,
+      // Settings → Workflow: default currency, and a follow-up date once someone replies.
+      async ({ data, originalDoc, operation }) => {
+        const { settings } = await import("@/lib/settings");
+        const s = await settings();
+        if (!data.currency && !originalDoc?.currency) data.currency = s.currency;
+        const leavingNew =
+          operation === "update" &&
+          originalDoc?.status === "new" &&
+          data.status &&
+          !["new", "won", "lost"].includes(data.status);
+        if (leavingNew && !data.nextFollowUpAt && !originalDoc?.nextFollowUpAt)
+          data.nextFollowUpAt = new Date(Date.now() + s.followUpDays * 86_400_000).toISOString();
+        return data;
+      },
+    ],
+    afterChange: [...auditHooks("leads").afterChange, notifyLead],
+  },
   fields: [
     {
       type: "row",
@@ -100,6 +156,19 @@ export const Leads: CollectionConfig = {
       ],
     },
     { name: "message", type: "textarea", required: true },
+    {
+      // Company dashboard: pipeline value and the next agreed contact.
+      type: "row",
+      fields: [
+        { name: "value", type: "number", min: 0, admin: { description: "Estimated deal value" } },
+        {
+          name: "currency",
+          type: "select",
+          options: CURRENCIES.map((v) => ({ label: v, value: v })),
+        },
+        { name: "nextFollowUpAt", type: "date", index: true, label: "Next follow-up" },
+      ],
+    },
     {
       name: "notes",
       type: "array",

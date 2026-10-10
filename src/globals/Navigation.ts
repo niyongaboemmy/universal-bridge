@@ -1,5 +1,5 @@
 import type { GlobalConfig, Field } from "payload";
-import { anyone, roleAccess } from "@/access/roles";
+import { allow, anyone } from "@/access/roles";
 import { ICON_NAMES } from "@/lib/icons";
 import { revalidateGlobal } from "@/lib/cms/revalidate";
 
@@ -17,7 +17,7 @@ const link: Field[] = [
 export const Navigation: GlobalConfig = {
   slug: "navigation",
   admin: { group: "Settings" },
-  access: { read: anyone, update: roleAccess("editor") },
+  access: { read: anyone, update: allow("content.site") },
   hooks: { afterChange: [revalidateGlobal("navigation")] },
   fields: [
     {

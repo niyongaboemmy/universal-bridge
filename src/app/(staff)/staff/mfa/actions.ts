@@ -30,7 +30,7 @@ async function guard(userId: string | number) {
 /** Step 1 of set-up: create a secret (kept encrypted until confirmed). */
 export async function startSetup() {
   const s = await staffSession();
-  if (!s) redirect("/admin/login");
+  if (!s) redirect("/login");
   if (s.user.mfaEnabled) redirect("/staff/mfa");
   await s.p.update({
     collection: "users",
@@ -44,7 +44,7 @@ export async function startSetup() {
 /** Step 2: the first code proves the app is set up; recovery codes are shown once. */
 export async function confirmSetup(_: MfaState, form: FormData): Promise<MfaState> {
   const s = await staffSession();
-  if (!s) redirect("/admin/login");
+  if (!s) redirect("/login");
   if (!s.user.mfaPendingSecret) return { error: "Start the set-up again." };
   if (!(await guard(s.user.id)).success)
     return { error: "Too many attempts. Wait a few minutes and try again." };
@@ -81,7 +81,7 @@ export async function confirmSetup(_: MfaState, form: FormData): Promise<MfaStat
 /** After the codes are saved: the session that just enrolled continues without another code. */
 export async function finishSetup(form: FormData) {
   const s = await staffSession();
-  if (!s) redirect("/admin/login");
+  if (!s) redirect("/login");
   const enrolledAt = s.user.mfaEnrolledAt ? new Date(s.user.mfaEnrolledAt).getTime() : 0;
   const recent = Date.now() - enrolledAt < 30 * 60 * 1000;
   if (!s.user.mfaEnabled || s.user.mfaEnrolledSid !== s.sid || !recent) redirect("/staff/mfa");
@@ -92,7 +92,7 @@ export async function finishSetup(form: FormData) {
 /** Sign-in step: a code from the app, or one recovery code. */
 export async function verify(_: MfaState, form: FormData): Promise<MfaState> {
   const s = await staffSession();
-  if (!s) redirect("/admin/login");
+  if (!s) redirect("/login");
   if (!s.user.mfaEnabled || !s.user.mfaSecret) redirect("/staff/mfa");
   const next = safeNext(form.get("next"));
   const req = staffReq(s.p, s.user);
@@ -100,7 +100,7 @@ export async function verify(_: MfaState, form: FormData): Promise<MfaState> {
   if (!limit.success) {
     await audit(req, { action: "auth.mfa-locked", entity: "users", entityId: s.user.id });
     await endSession(s.user, s.sid);
-    redirect("/admin/login");
+    redirect("/login");
   }
   const input = String(form.get("code") ?? "").trim();
   let ok = false;

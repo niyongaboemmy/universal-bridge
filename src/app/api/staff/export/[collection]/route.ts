@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type { PayloadRequest, Where } from "payload";
+import { actingUser, can, type UserLike } from "@/access/roles";
 import { audit } from "@/lib/audit";
 import { payload } from "@/lib/cms/payload";
+import { sameSiteHeaders } from "@/lib/live-edit/session";
 import { toCsv } from "@/lib/privacy";
 
 export const dynamic = "force-dynamic";
@@ -58,9 +60,11 @@ export async function GET(
   if (!(collection in EXPORTS))
     return NextResponse.json({ error: "Not exportable" }, { status: 404 });
   const p = await payload();
-  const { user } = await p.auth({ headers: request.headers });
+  const { user } = await p.auth({ headers: sameSiteHeaders(request.headers) });
   if (!user || user.collection !== "users")
     return NextResponse.json({ error: "Sign in first" }, { status: 401 });
+  if (!can(actingUser(user as UserLike, request.headers), "data.export"))
+    return NextResponse.json({ error: "Exports are not part of your role" }, { status: 403 });
 
   const q = request.nextUrl.searchParams;
   const and: Where[] = [];
@@ -85,7 +89,7 @@ export async function GET(
       depth: 0,
       sort: "-createdAt",
       overrideAccess: false,
-      user,
+      user: actingUser(user as UserLike, request.headers) as never,
     });
     docs = res.docs as unknown as Record<string, unknown>[];
   } catch {

@@ -131,11 +131,20 @@ export async function finishSignIn(
   if (!id_token) throw new Error("No id_token");
   if (!jwks.has(p.id)) jwks.set(p.id, createRemoteJWKSet(new URL(d.jwks_uri)));
   const { payload: claims } = await jwtVerify(id_token, jwks.get(p.id)!, { audience: p.clientId });
-  return emailFromClaims(p, claims, saved.nonce);
+  const { settings } = await import("@/lib/settings");
+  return emailFromClaims(p, claims, saved.nonce, (await settings()).ssoDomains);
 }
 
 /** Exported for tests: the identity checks applied to a verified id token. */
-export function emailFromClaims(p: Provider, claims: JWTPayload, nonce: string): string {
+export function emailFromClaims(
+  p: Provider,
+  claims: JWTPayload,
+  nonce: string,
+  allowed: string[] = (process.env.SSO_ALLOWED_DOMAINS ?? "")
+    .split(",")
+    .map((d) => d.trim().toLowerCase())
+    .filter(Boolean),
+): string {
   if (!claims.iss || !p.issuerOk(claims.iss, claims)) throw new Error("Unexpected issuer");
   if (claims.nonce !== nonce) throw new Error("Nonce mismatch");
   const email = String(
@@ -143,10 +152,6 @@ export function emailFromClaims(p: Provider, claims: JWTPayload, nonce: string):
   ).toLowerCase();
   if (!email.includes("@")) throw new Error("No email in token");
   if (p.id === "google" && claims.email_verified !== true) throw new Error("Email not verified");
-  const allowed = (process.env.SSO_ALLOWED_DOMAINS ?? "")
-    .split(",")
-    .map((d) => d.trim().toLowerCase())
-    .filter(Boolean);
   if (allowed.length && !allowed.includes(email.split("@")[1]!))
     throw new Error("Domain not allowed");
   return email;
