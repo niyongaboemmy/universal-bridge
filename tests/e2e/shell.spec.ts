@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { expectAccessible, presetConsent } from "./helpers";
+import { expectAccessible, presetConsent, stubGoogleAnalytics } from "./helpers";
 
 test.describe("S2 site shell", () => {
   test("mega-menu works with mouse and keyboard (FR-GL-02)", async ({ page, isMobile }) => {
@@ -63,6 +63,7 @@ test.describe("S2 site shell", () => {
   });
 
   test("rejecting cookies fires no analytics (journey 10, PRV-04)", async ({ page }) => {
+    const google = await stubGoogleAnalytics(page);
     const analytics: string[] = [];
     await page.route("https://plausible.io/**", (route) => {
       analytics.push(route.request().url());
@@ -76,10 +77,13 @@ test.describe("S2 site shell", () => {
     await page.goto("/contact");
     await page.waitForLoadState("networkidle");
     expect(analytics).toEqual([]);
+    expect(google).toEqual([]);
+    expect(await page.evaluate(() => "gtag" in window)).toBe(false);
     await expect(page.getByRole("dialog", { name: "Your privacy" })).toBeHidden();
   });
 
   test("accepting loads analytics; settings can be reopened from the footer", async ({ page }) => {
+    const google = await stubGoogleAnalytics(page);
     const analytics: string[] = [];
     await page.route("https://plausible.io/**", (route) => {
       analytics.push(route.request().url());
@@ -88,8 +92,41 @@ test.describe("S2 site shell", () => {
     await page.goto("/");
     await page.getByRole("button", { name: "Accept all" }).click();
     await expect.poll(() => analytics.length).toBeGreaterThan(0);
+    // Google Analytics 4: Google's gtag.js for the company stream, ads features off.
+    await expect
+      .poll(() => google.find((u) => u.includes("/gtag/js?id=G-")) ?? "")
+      .toContain("googletagmanager.com/gtag/js?id=G-110J66XQ0H");
+    const config = await page.evaluate(() =>
+      JSON.stringify(
+        ((window as unknown as { dataLayer: IArguments[] }).dataLayer ?? []).map((a) =>
+          Array.from(a),
+        ),
+      ),
+    );
+    expect(config).toContain('"config","G-110J66XQ0H"');
+    expect(config).toContain('"allow_google_signals":false');
+    expect(config).toContain('"ad_storage":"denied"');
+
     await page.getByRole("button", { name: "Cookie settings" }).click();
     await expect(page.getByRole("switch", { name: /Analytics/ })).toBeChecked();
+
+    // Withdrawing consent stops Google Analytics at once and deletes its cookies.
+    await page.evaluate(() => {
+      document.cookie = "_ga=GA1.1.123.456; path=/";
+      document.cookie = "_ga_110J66XQ0H=GS1.1.1; path=/";
+    });
+    await page.getByRole("switch", { name: /Analytics/ }).uncheck();
+    await page.getByRole("button", { name: "Save choices" }).click();
+    await expect
+      .poll(async () => (await page.context().cookies()).map((c) => c.name))
+      .not.toContain("_ga");
+    expect((await page.context().cookies()).map((c) => c.name)).not.toContain("_ga_110J66XQ0H");
+    expect(
+      await page.evaluate(
+        () => (window as unknown as Record<string, unknown>)["ga-disable-G-110J66XQ0H"],
+      ),
+    ).toBe(true);
+    await expect(page.locator("script[data-gtag]")).toHaveCount(0);
   });
 });
 

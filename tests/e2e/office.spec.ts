@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
-import { adminToken, staffHeaders, uniqueEmail, loginStaff } from "./helpers";
+import { adminToken, loginStaff, staffHeaders, stubGoogleAnalytics, uniqueEmail } from "./helpers";
 
 // Company dashboard (/office): access, pipelines, records, projects, people, analytics.
 
@@ -265,6 +265,7 @@ test.describe("Company dashboard", () => {
     await declined.close();
 
     const consented = await browser.newContext();
+    await stubGoogleAnalytics(consented);
     await consented.addInitScript(() =>
       localStorage.setItem(
         "ub-consent",

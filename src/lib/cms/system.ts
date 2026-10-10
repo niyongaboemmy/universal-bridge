@@ -8,6 +8,7 @@ export const getPublicSystem = cached(
     const s = await settings();
     return {
       plausibleDomain: s.plausibleDomain ?? null,
+      gaMeasurementId: s.gaMeasurementId ?? null,
       calLink: s.calLink ?? null,
       pressEmail: s.inbox.press ?? null,
       noindex: s.noindex,

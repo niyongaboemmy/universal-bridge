@@ -18,7 +18,7 @@ import { Card, PageHeader } from "@/components/office/ui";
 import { requireArea } from "@/features/office/session";
 import { mfaMode, ssoEnabled } from "@/lib/auth/mfa-proof";
 import { payload } from "@/lib/cms/payload";
-import { resolveSettings } from "@/lib/settings";
+import { GA_DEFAULT_ID, resolveSettings } from "@/lib/settings";
 import { cn } from "@/lib/utils";
 import type { Role, SystemSetting } from "@/payload-types";
 
@@ -259,6 +259,24 @@ export default async function Settings({
           half: true,
         },
         {
+          name: "gaEnabled",
+          label: "Google Analytics",
+          type: "checkbox",
+          value: doc.integrations?.gaEnabled ?? true,
+          help: "Loads only for visitors who accept analytics in the cookie banner.",
+          half: true,
+        },
+        {
+          name: "gaMeasurementId",
+          label: "Google Analytics measurement ID",
+          type: "text",
+          value: doc.integrations?.gaMeasurementId,
+          fallback: fromEnv.gaMeasurementId ?? GA_DEFAULT_ID,
+          placeholder: GA_DEFAULT_ID,
+          help: "GA4 web stream. Leave empty to use the company's stream.",
+          half: true,
+        },
+        {
           name: "calLink",
           label: "Booking link (Cal.com)",
           type: "text",
@@ -287,7 +305,8 @@ export default async function Settings({
       aside: (
         <ul className="grid gap-2 text-body-sm">
           {[
-            ["Analytics", live.plausibleDomain],
+            ["Plausible", live.plausibleDomain],
+            ["Google Analytics", live.gaMeasurementId],
             ["Booking", live.calLink],
             ["CRM", live.crmWebhookUrl],
             ["Team alerts", live.teamWebhookUrl],

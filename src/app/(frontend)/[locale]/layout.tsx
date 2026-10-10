@@ -80,6 +80,7 @@ export default async function LocaleLayout({
   const t = await getTranslations({ locale, namespace: "a11y" });
   const c = await getTranslations({ locale, namespace: "consent" });
   const settings = await getSiteSettings(locale);
+  const system = await getPublicSystem();
   const consentCopy = {
     title: c("title"),
     body: c("body"),
@@ -130,7 +131,8 @@ export default async function LocaleLayout({
           <Fx />
           <CookieConsent
             copy={consentCopy}
-            plausibleDomain={(await getPublicSystem()).plausibleDomain ?? undefined}
+            plausibleDomain={system.plausibleDomain ?? undefined}
+            gaMeasurementId={system.gaMeasurementId ?? undefined}
           />
         </Providers>
       </body>

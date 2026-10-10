@@ -4,6 +4,11 @@ export const THIRD_PARTY_ORIGINS = {
   turnstile: "https://challenges.cloudflare.com",
   plausible: "https://plausible.io",
   cal: "https://app.cal.com",
+  // Google Analytics 4 (Google's CSP guide): the gtag.js loader and the collection endpoints.
+  googleTag: "https://www.googletagmanager.com",
+  googleTagAll: "https://*.googletagmanager.com",
+  googleAnalytics: "https://*.google-analytics.com",
+  googleAnalyticsRegion: "https://*.analytics.google.com",
 } as const;
 
 export function buildCsp({ dev = false }: { dev?: boolean } = {}): string {
@@ -15,12 +20,20 @@ export function buildCsp({ dev = false }: { dev?: boolean } = {}): string {
       "'unsafe-inline'",
       t.turnstile,
       t.plausible,
+      t.googleTag,
       ...(dev ? ["'unsafe-eval'"] : []),
     ],
     "style-src": ["'self'", "'unsafe-inline'"],
-    "img-src": ["'self'", "data:", "blob:"],
+    "img-src": ["'self'", "data:", "blob:", t.googleAnalytics, t.googleTagAll],
     "font-src": ["'self'", "data:"],
-    "connect-src": ["'self'", t.plausible, ...(dev ? ["ws:"] : [])],
+    "connect-src": [
+      "'self'",
+      t.plausible,
+      t.googleAnalytics,
+      t.googleAnalyticsRegion,
+      t.googleTagAll,
+      ...(dev ? ["ws:"] : []),
+    ],
     "frame-src": [t.turnstile, t.cal],
     "media-src": ["'self'"],
     "object-src": ["'none'"],

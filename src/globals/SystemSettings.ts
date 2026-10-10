@@ -114,6 +114,15 @@ export const SystemSettings: GlobalConfig = {
       type: "group",
       fields: [
         { name: "plausibleDomain", type: "text" },
+        // Google Analytics 4: on by default with the company's web stream (GA_DEFAULT_ID).
+        { name: "gaEnabled", type: "checkbox", defaultValue: true },
+        {
+          // Another GA4 web stream (G-XXXXXXX); empty = NEXT_PUBLIC_GA_MEASUREMENT_ID, else the default.
+          name: "gaMeasurementId",
+          type: "text",
+          validate: (v: unknown) =>
+            !v || /^G-[A-Z0-9]{4,20}$/.test(String(v)) || "Use the GA4 measurement ID (G-XXXXXXX).",
+        },
         { name: "calLink", type: "text" },
         { name: "crmWebhookUrl", type: "text" },
         { name: "teamWebhookUrl", type: "text" },

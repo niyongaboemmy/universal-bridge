@@ -88,13 +88,13 @@
   },
   "consent": {
     "title": "Your privacy",
-    "body": "Cookieless analytics, only if you agree. Everything else works either way.",
+    "body": "Analytics only if you agree. It shows us which pages are useful. Everything else works either way.",
     "accept": "Accept all",
     "reject": "Reject all",
     "customise": "Choose",
     "save": "Save choices",
     "analytics": "Analytics",
-    "analyticsHint": "Anonymous visit counts (Plausible). No cookies, no ads.",
+    "analyticsHint": "Visit statistics (Google Analytics). Uses cookies; never for ads.",
     "essential": "Essential",
     "essentialHint": "Language, theme, security and form protection. Always on.",
     "policy": "Read the cookie policy"

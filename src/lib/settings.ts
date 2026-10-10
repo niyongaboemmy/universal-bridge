@@ -26,6 +26,7 @@ export type Settings = {
   maxUploadBytes: number;
   clamavHost?: string;
   plausibleDomain?: string;
+  gaMeasurementId?: string;
   calLink?: string;
   crmWebhookUrl?: string;
   teamWebhookUrl?: string;
@@ -41,6 +42,8 @@ export type Settings = {
 };
 
 const env = (k: string) => process.env[k] || undefined;
+/** Universal Bridge's Google Analytics 4 web stream (public: it is in every page that loads GA). */
+export const GA_DEFAULT_ID = "G-110J66XQ0H";
 const id = (v: unknown) =>
   typeof v === "number" ? v : typeof v === "object" && v ? (v as { id: number }).id : undefined;
 
@@ -80,6 +83,11 @@ export function resolveSettings(s: Partial<SystemSetting> | null | undefined): S
     maxUploadBytes: (s?.uploads?.maxMb ?? 5) * 1024 * 1024,
     clamavHost: s?.uploads?.clamavHost || env("CLAMAV_HOST"),
     plausibleDomain: s?.integrations?.plausibleDomain || env("NEXT_PUBLIC_PLAUSIBLE_DOMAIN"),
+    // Google Analytics loads only after a visitor accepts analytics (CookieConsent).
+    gaMeasurementId:
+      s?.integrations?.gaEnabled === false
+        ? undefined
+        : s?.integrations?.gaMeasurementId || env("NEXT_PUBLIC_GA_MEASUREMENT_ID") || GA_DEFAULT_ID,
     calLink: s?.integrations?.calLink || env("NEXT_PUBLIC_CAL_LINK"),
     crmWebhookUrl: s?.integrations?.crmWebhookUrl || env("CRM_WEBHOOK_URL"),
     teamWebhookUrl: s?.integrations?.teamWebhookUrl || env("TEAM_ALERT_WEBHOOK_URL"),
