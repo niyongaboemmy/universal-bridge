@@ -1,24 +1,22 @@
 name: Deploy (cPanel)
 
 # Production deploy to the Namecheap cPanel account (docs/DEPLOYMENT.md).
-# Runs after CI passes on main, or by hand (Actions → Deploy (cPanel) → Run
-# workflow) to deploy or roll back to any commit.
+# Called by CI on every push to main once static checks and unit/integration
+# tests pass (ci.yml, job "Deploy"), or run by hand (Actions → Deploy (cPanel)
+# → Run workflow) to deploy or roll back to any commit.
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to deploy
+        type: string
+        required: true
   workflow_dispatch:
     inputs:
       ref:
         description: Commit SHA, tag or branch to deploy
         required: true
         default: main
-
-# One deploy at a time; a newer merge waits instead of cancelling a running one.
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
 
 env:
   NODE_VERSION: ${{ vars.NODE_VERSION || '22' }}
@@ -40,9 +38,6 @@ jobs:
   build:
     name: Build release
     # Only successful CI runs of pushes (merges) to main, or a manual run.
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     outputs:
       release: ${{ steps.meta.outputs.release }}
@@ -55,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || inputs.ref }}
+          ref: ${{ inputs.ref }}
       - name: Check production settings
         run: |
           case "$NEXT_PUBLIC_SITE_URL" in
@@ -118,6 +113,10 @@ jobs:
     name: Deploy to cPanel
     needs: build
     runs-on: ubuntu-latest
+    # One deploy at a time; a newer one waits instead of cancelling this one.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     # Add required reviewers to this environment for a manual approval gate.
     environment:
       name: production
