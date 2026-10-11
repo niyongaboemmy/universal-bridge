@@ -468,7 +468,7 @@ Universal Bridge Ltd, 1st floor, Maison Voisin Building, 11 KN 89 St, Kigali, Rw
 - **Enquiries** (contact and demo forms): your name, email, company, country, optional phone and your message, to reply to you. Legal basis: your consent.
 - **Applications** (Academy, internships, jobs, partners, events): the answers and documents you send, to assess your application. Legal basis: your consent and steps before a contract.
 - **Newsletter**: your email and language, only after you confirm your subscription.
-- **Analytics**: anonymous visit counts (Plausible, no cookies), only if you agree in the cookie banner.
+- **Analytics**: visit statistics (Google Analytics, and Plausible where enabled), only if you agree in the cookie banner. Google Analytics uses cookies and a pseudonymous identifier; we turn off its advertising features and Google signals.
 We store the wording and version of the consent you gave, and when.
 ## How long we keep it
 - Enquiries: 24 months after our last contact.
@@ -476,7 +476,7 @@ We store the wording and version of the consent you gave, and when.
 - Certificates: permanently, so they can be verified.
 Expired records are deleted automatically every month.
 ## Who processes data for us
-These providers process data on our behalf under contract: Vercel (website hosting), Resend (email delivery), Sentry (error monitoring) and Cloudflare Turnstile (bot protection). Where data leaves Rwanda, we rely on NCSA authorisation and contractual safeguards. Personal data is stored in Rwanda unless the National Cyber Security Authority (NCSA) authorises storage elsewhere.
+These providers process data on our behalf under contract: Vercel (website hosting), Google (Google Analytics, only with your consent), Resend (email delivery), Sentry (error monitoring) and Cloudflare Turnstile (bot protection). Where data leaves Rwanda, we rely on NCSA authorisation and contractual safeguards. Personal data is stored in Rwanda unless the National Cyber Security Authority (NCSA) authorises storage elsewhere.
 ## Your rights
 You can ask to access, correct or delete your data, or object to how we use it. Email hello@universalbridge.rw and we will reply within the legal deadline. You can also complain to the NCSA.
 ## Security
@@ -491,7 +491,9 @@ Uploads are stored privately and checked for viruses; staff access is limited by
 - **Security**: bot protection on forms (Cloudflare Turnstile).
 These are needed for the site to work and are always on.
 ## Optional
-- **Analytics**: Plausible counts visits without cookies and without identifying you. It only loads if you choose "Accept" in the cookie banner.
+- **Google Analytics** (_ga, _ga_*): counts visits and the pages people read, for up to 2 years. Advertising features and Google signals are off.
+- **Plausible** (where enabled): counts visits without cookies and without identifying you.
+Both load only if you choose "Accept" in the cookie banner. If you later reject, Google Analytics stops at once and its cookies are deleted.
 ## Changing your choice
 Use "Cookie settings" at the bottom of any page. Rejecting is as easy as accepting.`,
   ),

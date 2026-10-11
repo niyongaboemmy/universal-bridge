@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { AnalyticsConfig } from "@/lib/analytics/track";
 import { useLocalStorage } from "@/lib/hooks/client-stores";
 
 /**
@@ -23,9 +24,12 @@ function parse(raw: string | null | undefined): Consent | null {
   }
 }
 
-/** Analytics code (Plausible and first-party page views) loads only after consent, as its own chunk. */
-const startAnalytics = (plausibleDomain?: string) =>
-  void import("@/lib/analytics/track").then((m) => m.startAnalytics(plausibleDomain));
+/**
+ * Analytics code (Plausible, Google Analytics and first-party page views) loads only
+ * after consent, as its own chunk.
+ */
+const startAnalytics = (config: AnalyticsConfig) =>
+  void import("@/lib/analytics/track").then((m) => m.startAnalytics(config));
 
 export type ConsentCopy = {
   title: string;
@@ -45,9 +49,11 @@ export type ConsentCopy = {
 export function CookieConsent({
   copy,
   plausibleDomain,
+  gaMeasurementId,
 }: {
   copy: ConsentCopy;
   plausibleDomain?: string;
+  gaMeasurementId?: string;
 }) {
   const [raw, write] = useLocalStorage(KEY);
   const stored = parse(raw);
@@ -60,8 +66,8 @@ export function CookieConsent({
 
   // Load analytics only with consent (PRV-04). Side effect only, no setState.
   useEffect(() => {
-    if (stored?.analytics) startAnalytics(plausibleDomain);
-  }, [stored?.analytics, plausibleDomain]);
+    if (stored?.analytics) startAnalytics({ plausibleDomain, gaMeasurementId });
+  }, [stored?.analytics, plausibleDomain, gaMeasurementId]);
 
   useEffect(() => {
     const reopen = () => setReopened(true);
@@ -74,9 +80,13 @@ export function CookieConsent({
     write(JSON.stringify(value));
     setReopened(false);
     setAnalytics(null);
-    if (allowAnalytics) startAnalytics(plausibleDomain);
-    // Withdrawing consent takes effect on the next page load (script removed).
-    if (!allowAnalytics) document.querySelector("script[data-plausible]")?.remove();
+    if (allowAnalytics) startAnalytics({ plausibleDomain, gaMeasurementId });
+    if (!allowAnalytics) {
+      // Withdrawing consent: Google Analytics stops at once and its cookies go;
+      // Plausible and page views stop from the next page load (script removed).
+      document.querySelector("script[data-plausible]")?.remove();
+      void import("@/lib/analytics/track").then((m) => m.stopGoogleAnalytics(gaMeasurementId));
+    }
   }
 
   if (!open) return null;

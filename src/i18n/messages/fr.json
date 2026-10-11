@@ -88,13 +88,13 @@
   },
   "consent": {
     "title": "Votre vie privée",
-    "body": "Mesure d'audience sans cookies, seulement avec votre accord. Le reste fonctionne dans tous les cas.",
+    "body": "Mesure d'audience seulement avec votre accord, pour savoir quelles pages sont utiles. Le reste fonctionne dans tous les cas.",
     "accept": "Tout accepter",
     "reject": "Tout refuser",
     "customise": "Choisir",
     "save": "Enregistrer mes choix",
     "analytics": "Mesure d'audience",
-    "analyticsHint": "Comptage anonyme des visites (Plausible). Sans cookies, sans publicité.",
+    "analyticsHint": "Statistiques de visite (Google Analytics). Utilise des cookies ; jamais à des fins publicitaires.",
     "essential": "Essentiels",
     "essentialHint": "Langue, thème, sécurité et protection des formulaires. Toujours actifs.",
     "policy": "Lire la politique relative aux cookies"

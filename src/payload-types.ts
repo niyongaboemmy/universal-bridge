@@ -4551,6 +4551,8 @@ export interface SystemSetting {
   };
   integrations?: {
     plausibleDomain?: string | null;
+    gaEnabled?: boolean | null;
+    gaMeasurementId?: string | null;
     calLink?: string | null;
     crmWebhookUrl?: string | null;
     teamWebhookUrl?: string | null;
@@ -4736,6 +4738,8 @@ export interface SystemSettingsSelect<T extends boolean = true> {
     | T
     | {
         plausibleDomain?: T;
+        gaEnabled?: T;
+        gaMeasurementId?: T;
         calLink?: T;
         crmWebhookUrl?: T;
         teamWebhookUrl?: T;

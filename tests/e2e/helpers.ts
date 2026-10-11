@@ -53,6 +53,25 @@ export async function presetConsent(page: Page, analytics = false) {
   }, analytics);
 }
 
+/**
+ * Answer Google Analytics requests locally so test runs never reach the real GA
+ * property. Returns the URLs that were requested (gtag.js and any hits).
+ */
+export async function stubGoogleAnalytics(
+  target: Page | import("@playwright/test").BrowserContext,
+) {
+  const hits: string[] = [];
+  const isGoogle = (url: URL) =>
+    ["googletagmanager.com", "google-analytics.com", "analytics.google.com"].some(
+      (d) => url.hostname === d || url.hostname.endsWith(`.${d}`),
+    );
+  await target.route(isGoogle, (route) => {
+    hits.push(route.request().url());
+    return route.fulfill({ status: 200, contentType: "text/javascript", body: "" });
+  });
+  return hits;
+}
+
 /** Replace the Turnstile script with a stub that injects Cloudflare's dummy token. */
 export async function stubTurnstile(page: Page) {
   await page.route("https://challenges.cloudflare.com/**", (route) =>

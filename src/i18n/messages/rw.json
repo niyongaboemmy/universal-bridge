@@ -88,13 +88,13 @@
   },
   "consent": {
     "title": "Ibanga ryawe",
-    "body": "Ibarura ritagira cookies, ari uko ubyemeye. Ibindi byose bikora uko byagenda kose.",
+    "body": "Ibarura ry'abasura ari uko ubyemeye, ritwereka paji zifite akamaro. Ibindi byose bikora uko byagenda kose.",
     "accept": "Emera byose",
     "reject": "Wanga byose",
     "customise": "Hitamo",
     "save": "Bika amahitamo",
     "analytics": "Ibarura ry'abasura",
-    "analyticsHint": "Kubara abasura nta mazina (Plausible). Nta cookies, nta matangazo.",
+    "analyticsHint": "Imibare y'abasura (Google Analytics). Ikoresha cookies; ntikoreshwa mu kwamamaza.",
     "essential": "By'ingenzi",
     "essentialHint": "Ururimi, insanganyamatsiko, umutekano no kurinda amafishi. Bihora bikora.",
     "policy": "Soma politiki ya cookies"
