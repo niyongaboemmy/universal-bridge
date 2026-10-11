@@ -93,13 +93,19 @@ test.describe("S2 project inquiry (journey 1 partial)", () => {
     await expect(page.getByLabel("Budget (USD)")).toHaveCount(0);
   });
 
-  test("keyboard-only user completes the form (journey 9)", async ({ page, isMobile }) => {
+  test("keyboard-only user completes the form (journey 9)", async ({
+    page,
+    isMobile,
+    browserName,
+  }) => {
     test.skip(isMobile, "keyboard journey");
+    // Safari moves between text fields only with Tab; Option+Tab reaches every control.
+    const tab = browserName === "webkit" ? "Alt+Tab" : "Tab";
     const email = uniqueEmail("kbd");
     await page.goto("/contact");
     await page.getByLabel("Full name").focus();
     await page.keyboard.type("Jean Mugisha");
-    await page.keyboard.press("Tab");
+    await page.keyboard.press(tab);
     await page.keyboard.type(email);
     // Jump to the message field and consent via Tab only.
     for (
@@ -110,7 +116,7 @@ test.describe("S2 project inquiry (journey 1 partial)", () => {
         .evaluate((el) => el === document.activeElement));
       i++
     ) {
-      await page.keyboard.press("Tab");
+      await page.keyboard.press(tab);
     }
     await page.keyboard.type("Please quote a support retainer for our 40 office computers.");
     for (
@@ -121,7 +127,7 @@ test.describe("S2 project inquiry (journey 1 partial)", () => {
         .evaluate((el) => el === document.activeElement));
       i++
     ) {
-      await page.keyboard.press("Tab");
+      await page.keyboard.press(tab);
     }
     await page.keyboard.press("Space");
     await page.getByRole("button", { name: "Send" }).focus();

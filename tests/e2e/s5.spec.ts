@@ -217,6 +217,11 @@ test.describe("S5 signature interactions", () => {
   test("globe and living circuit run on capable desktops", async ({ page, isMobile }) => {
     test.skip(isMobile, "Desktop-only effects");
     await page.goto("/");
+    // The living circuit and globe need WebGL2; headless Firefox has none (the static art stays).
+    const webgl2 = await page.evaluate(
+      () => !!document.createElement("canvas").getContext("webgl2"),
+    );
+    test.skip(!webgl2, "No WebGL2 in this browser: the static frame is covered elsewhere");
     await expect(page.locator("canvas[data-active=true]")).toBeAttached();
     await page.goto("/company/about");
     await page.locator("[data-globe]").scrollIntoViewIfNeeded();

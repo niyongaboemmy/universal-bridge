@@ -34,15 +34,19 @@ export async function ProductSpotlight({
           aria-hidden
           className="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,var(--glow),transparent)]"
         />
-        <div
-          aria-hidden
-          className="product-orbit absolute inset-[6%] rounded-full border border-dashed border-[var(--border-strong)]"
-        />
-        <div
-          aria-hidden
-          className="product-orbit product-orbit--rev absolute inset-[20%] rounded-full border border-subtle"
-        >
-          <span className="absolute top-1/2 -left-1.5 size-3 -translate-y-1/2 rounded-full bg-spark shadow-[0_0_12px_var(--accent-spark)]" />
+        {/* Rotating rings: a turning box is wider than its circle, so clip to the round stage
+            (otherwise phones get a sliver of sideways scroll). */}
+        <div aria-hidden className="absolute inset-0 overflow-hidden rounded-full">
+          <div
+            aria-hidden
+            className="product-orbit absolute inset-[6%] rounded-full border border-dashed border-[var(--border-strong)]"
+          />
+          <div
+            aria-hidden
+            className="product-orbit product-orbit--rev absolute inset-[20%] rounded-full border border-subtle"
+          >
+            <span className="absolute top-1/2 -left-1.5 size-3 -translate-y-1/2 rounded-full bg-spark shadow-[0_0_12px_var(--accent-spark)]" />
+          </div>
         </div>
         <div
           className="showcase-layer absolute inset-0 flex items-center justify-center"

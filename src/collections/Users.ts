@@ -4,6 +4,7 @@ import { allow, allowField, can, isSuperUser, superFieldOnly, actingFromReq } fr
 import { audit } from "@/lib/audit";
 import { passwordProblem } from "@/lib/auth/password";
 import { roleIds } from "./Roles";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 const siteUrl = () =>
   (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -47,7 +48,7 @@ export const Users: CollectionConfig = {
     tokenExpiration: 60 * 60 * 8,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
-    cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    cookies: { sameSite: "Lax", secure: secureCookies() },
     forgotPassword: {
       expiration: 60 * 60 * 1000,
       generateEmailSubject: () => "Set your Universal Bridge admin password",

@@ -25,10 +25,11 @@ test.describe("S1 foundation", () => {
     });
   }
 
-  test("skip link moves focus to main content", async ({ page, isMobile }) => {
+  test("skip link moves focus to main content", async ({ page, isMobile, browserName }) => {
     test.skip(isMobile, "keyboard journey");
     await page.goto("/");
-    await page.keyboard.press("Tab");
+    // Safari's Tab skips links by default; Option+Tab is how its keyboard users reach them.
+    await page.keyboard.press(browserName === "webkit" ? "Alt+Tab" : "Tab");
     const skip = page.getByRole("link", { name: "Skip to content" });
     await expect(skip).toBeFocused();
     await page.keyboard.press("Enter");

@@ -8,6 +8,7 @@ import {
   staffHeaders,
   stubTurnstile,
   uniqueEmail,
+  testClientIp,
 } from "./helpers";
 
 // Sign-in, roles & permissions, settings, system logs, openings and website accounts.
@@ -254,6 +255,9 @@ test.describe("Openings and website accounts", () => {
     try {
       await presetConsent(page);
       await stubTurnstile(page);
+      // A visitor from their own address: registration allows 5 accounts per hour per IP,
+      // and every browser in the run (plus retries) registers from this one machine.
+      await page.setExtraHTTPHeaders(testClientIp());
       // The list is cached and refreshed in the background after a change.
       await expect
         .poll(
@@ -293,6 +297,9 @@ test.describe("Openings and website accounts", () => {
 
       // Staff see it on the opening's own funnel.
       if (!isMobile) {
+        // Same browser, new person: drop the visitor's session first. WebKit would keep both
+        // payload-token cookies (server-set and test-set) and send the visitor's.
+        await page.context().clearCookies();
         await asStaff(page, await adminToken(request));
         await page.goto(`/office/openings/${openingId}`);
         await expect(page.getByRole("link", { name: /Applicants \(1\)/ })).toBeVisible();

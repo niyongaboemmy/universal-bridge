@@ -24,7 +24,8 @@ env:
   TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
   EMAIL_FROM: "Universal Bridge <hello@universalbridge.rw>"
   # Test-only signing key (never used outside CI).
-  CERT_SIGNING_KEY: 4c0c3e1f2a6b7d8e9f00112233445566778899aabbccddeeff0011223344556677
+  CERT_SIGNING_KEY: 4c0c3e1f2a6b7d8e9f00112233445566778899aabbccddeeff00112233445566 # gitleaks:allow (test-only)
+  # ^ exactly 64 hex characters (32 bytes); a wrong length makes certificate issuing fail.
 
 jobs:
   static:

@@ -14,6 +14,16 @@ describe("CSP (ADR-006)", () => {
     expect(csp).not.toContain("unsafe-eval");
     expect(buildCsp({ dev: true })).toContain("unsafe-eval");
   });
+  it("upgrades insecure requests only on an https site", () => {
+    expect(buildCsp({ siteUrl: "https://universalbridge.rw" })).toContain(
+      "upgrade-insecure-requests",
+    );
+    // A production build on http://localhost (CI, local checks): WebKit would upgrade
+    // its own stylesheets and scripts to https and fail to load them.
+    expect(buildCsp({ siteUrl: "http://localhost:3000" })).not.toContain(
+      "upgrade-insecure-requests",
+    );
+  });
   it("sends HSTS only in production", () => {
     expect(securityHeaders().some((h) => h.key === "Strict-Transport-Security")).toBe(true);
     expect(securityHeaders({ dev: true }).some((h) => h.key === "Strict-Transport-Security")).toBe(

@@ -3,6 +3,7 @@ import { cookies, headers } from "next/headers";
 import type { PayloadRequest } from "payload";
 import { payload } from "@/lib/cms/payload";
 import { MFA_COOKIE, signMfaProof, verifyMfaProof } from "./mfa-proof";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 export type StaffDoc = {
   id: number | string;
@@ -46,7 +47,7 @@ export async function setMfaCookie(userId: StaffDoc["id"], sid: string) {
   (await cookies()).set(MFA_COOKIE, await signMfaProof(userId, sid), {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     maxAge: 60 * 60 * 8,
   });
