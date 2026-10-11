@@ -44,7 +44,7 @@ export function ShareLinks({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${copy.share}: ${l.name}`}
-              className="inline-flex size-11 items-center justify-center rounded-md border border-subtle hover:border-accent hover:text-accent"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-subtle hover:border-accent hover:text-accent"
             >
               <SocialIcon network={l.network} />
             </a>
@@ -61,7 +61,7 @@ export function ShareLinks({
                 setTimeout(() => setCopied(false), 1600);
               } catch {}
             }}
-            className="inline-flex size-11 items-center justify-center rounded-md border border-subtle hover:border-accent hover:text-accent"
+            className="inline-flex size-11 items-center justify-center rounded-full border border-subtle hover:border-accent hover:text-accent"
           >
             {copied ? (
               <Check aria-hidden className="size-5 text-success" />

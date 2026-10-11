@@ -143,7 +143,7 @@ export function RoleMatrix({ roles, canEdit }: { roles: RoleRow[]; canEdit: bool
           <button
             type="button"
             onClick={() => setEditing("new")}
-            className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
           >
             <Plus className="size-4" aria-hidden /> New role
           </button>
@@ -198,7 +198,7 @@ export function RoleMatrix({ roles, canEdit }: { roles: RoleRow[]; canEdit: bool
                     type="button"
                     onClick={() => setEditing(r)}
                     aria-label={`Edit ${r.name}`}
-                    className="grid size-8 place-items-center rounded-lg text-fg-muted opacity-0 transition-opacity group-hover:opacity-100 hover:bg-[var(--bg-sunken)] hover:text-fg focus-visible:opacity-100"
+                    className="grid size-8 place-items-center rounded-full text-fg-muted opacity-0 transition-opacity group-hover:opacity-100 hover:bg-[var(--bg-sunken)] hover:text-fg focus-visible:opacity-100"
                   >
                     <Pencil className="size-3.5" />
                   </button>
@@ -402,7 +402,7 @@ function RoleDialog({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="grid size-8 place-items-center rounded-lg hover:bg-[var(--bg-sunken)]"
+            className="grid size-8 place-items-center rounded-full hover:bg-[var(--bg-sunken)]"
           >
             <X className="size-4" />
           </button>
@@ -462,7 +462,7 @@ function RoleDialog({
                   if (r.ok) onClose();
                 });
               }}
-              className="inline-flex h-10 items-center gap-1.5 rounded-xl px-3 text-body-sm font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
+              className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-body-sm font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
             >
               <Trash2 className="size-4" aria-hidden /> Delete
             </button>

@@ -34,7 +34,7 @@ export function LanguageSwitcher({
         type="button"
         popoverTarget={id}
         aria-label={`${changeLabel} (${localeLabels[locale].native})`}
-        className="inline-flex h-11 items-center gap-1.5 rounded-md px-3 text-body-sm font-medium text-fg transition-colors hover:bg-accent-soft hover:text-accent"
+        className="inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-body-sm font-medium text-fg transition-colors hover:bg-accent-soft hover:text-accent"
         style={{ anchorName: anchor } as React.CSSProperties}
       >
         <Globe aria-hidden className="size-4" />

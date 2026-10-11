@@ -78,7 +78,7 @@ export async function InsightsListing({
                   href={localizePath(c.slug ? `/insights/category/${c.slug}` : "/insights", locale)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "inline-flex min-h-11 items-center rounded-md border px-4 text-body-sm font-medium transition-colors",
+                    "inline-flex min-h-11 items-center rounded-full border px-4 text-body-sm font-medium transition-colors",
                     active
                       ? "border-accent bg-accent text-on-accent"
                       : "border-subtle hover:border-accent hover:text-accent",
@@ -114,7 +114,7 @@ export async function InsightsListing({
               <a
                 href={pageHref(page - 1)}
                 rel="prev"
-                className="inline-flex min-h-11 items-center rounded-md border border-subtle px-4 text-body-sm font-medium hover:border-accent hover:text-accent"
+                className="inline-flex min-h-11 items-center rounded-full border border-subtle px-4 text-body-sm font-medium hover:border-accent hover:text-accent"
               >
                 {t("prev")}
               </a>
@@ -139,7 +139,7 @@ export async function InsightsListing({
               <a
                 href={pageHref(page + 1)}
                 rel="next"
-                className="inline-flex min-h-11 items-center rounded-md border border-subtle px-4 text-body-sm font-medium hover:border-accent hover:text-accent"
+                className="inline-flex min-h-11 items-center rounded-full border border-subtle px-4 text-body-sm font-medium hover:border-accent hover:text-accent"
               >
                 {t("next")}
               </a>

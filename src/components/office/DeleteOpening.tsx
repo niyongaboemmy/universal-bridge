@@ -21,7 +21,7 @@ export function DeleteOpening({ id }: { id: number }) {
           if (r.ok) router.push("/office/openings");
         });
       }}
-      className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-body-sm font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
+      className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-body-sm font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
     >
       <Trash2 className="size-4" aria-hidden /> Delete
     </button>

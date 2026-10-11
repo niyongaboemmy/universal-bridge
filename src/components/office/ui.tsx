@@ -243,7 +243,7 @@ export function Tabs({
           key={t.href}
           href={t.href}
           aria-current={t.href === current ? "page" : undefined}
-          className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-body-sm font-medium text-fg-secondary transition-colors hover:text-fg aria-[current=page]:bg-accent aria-[current=page]:text-on-accent"
+          className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-body-sm font-medium text-fg-secondary transition-colors hover:text-fg aria-[current=page]:bg-accent aria-[current=page]:text-on-accent"
         >
           {t.label}
           {t.count !== undefined && <span className="tabular-nums opacity-70">{t.count}</span>}

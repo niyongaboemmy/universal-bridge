@@ -386,7 +386,7 @@ export function OpeningEditor({ opening, siteUrl }: { opening: OpeningInput; sit
                     ...TEMPLATES[kind]!.map((f) => ({ ...f, key: "", uid: uid() })),
                   ])
                 }
-                className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-[0.8125rem] font-medium text-accent hover:bg-accent-soft"
+                className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[0.8125rem] font-medium text-accent hover:bg-accent-soft"
               >
                 <Wand2 className="size-3.5" aria-hidden /> Suggested questions for{" "}
                 {KIND_LABELS[kind]?.toLowerCase()}
@@ -456,7 +456,7 @@ export function OpeningEditor({ opening, siteUrl }: { opening: OpeningInput; sit
                         ...x.slice(i + 1),
                       ])
                     }
-                    className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+                    className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
                   >
                     <Copy className="size-3.5" />
                   </button>
@@ -464,7 +464,7 @@ export function OpeningEditor({ opening, siteUrl }: { opening: OpeningInput; sit
                     type="button"
                     aria-label="Remove"
                     onClick={() => setFields((x) => x.filter((y) => y.uid !== f.uid))}
-                    className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)] hover:text-danger"
+                    className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)] hover:text-danger"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
@@ -551,7 +551,7 @@ export function OpeningEditor({ opening, siteUrl }: { opening: OpeningInput; sit
                 key={t.type}
                 type="button"
                 onClick={() => add(t.type)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-strong px-2.5 py-1.5 text-[0.8125rem] text-fg-secondary transition-colors hover:border-accent hover:text-accent [&_svg]:size-3.5"
+                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-strong px-2.5 py-1.5 text-[0.8125rem] text-fg-secondary transition-colors hover:border-accent hover:text-accent [&_svg]:size-3.5"
               >
                 <Plus className="size-3" aria-hidden />
                 {t.icon}
@@ -606,7 +606,7 @@ export function OpeningEditor({ opening, siteUrl }: { opening: OpeningInput; sit
                 href={`${siteUrl}/apply/${slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex h-10 items-center gap-1.5 rounded-xl px-3 text-body-sm font-medium text-accent hover:bg-accent-soft"
+                className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-body-sm font-medium text-accent hover:bg-accent-soft"
               >
                 <ExternalLink className="size-4" aria-hidden /> View page
               </a>

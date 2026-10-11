@@ -207,7 +207,7 @@ export function ApplyForm({
                   {opts.map((o) => (
                     <label
                       key={o}
-                      className="cursor-pointer rounded-md border border-strong px-3.5 py-1.5 text-body-sm transition-colors has-checked:border-accent has-checked:bg-accent-soft has-checked:text-accent"
+                      className="cursor-pointer rounded-full border border-strong px-3.5 py-1.5 text-body-sm transition-colors has-checked:border-accent has-checked:bg-accent-soft has-checked:text-accent"
                     >
                       <input
                         type="radio"

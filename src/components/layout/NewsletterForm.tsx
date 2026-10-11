@@ -40,7 +40,7 @@ export function NewsletterForm({
       </p>
       <p className="mt-1 text-body-sm text-fg-secondary">{copy.lead}</p>
       {/* One pill: the field and the button share a border, which lights up on focus. */}
-      <div className="mt-5 flex items-center gap-1 rounded-[calc(var(--radius-md)+4px)] border border-strong bg-surface p-1 pl-5 transition-[border-color,box-shadow] duration-300 focus-within:border-accent focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent-primary)_18%,transparent)]">
+      <div className="mt-5 flex items-center gap-1 rounded-full border border-strong bg-surface p-1 pl-5 transition-[border-color,box-shadow] duration-300 focus-within:border-accent focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent-primary)_18%,transparent)]">
         <label className="sr-only" htmlFor="newsletter-email">
           {copy.label}
         </label>

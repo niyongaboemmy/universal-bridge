@@ -17,7 +17,7 @@ import { toast } from "./Toaster";
 export const field = "ui-field";
 export const labelCls = "grid gap-1.5 text-[0.8125rem] font-medium text-fg-secondary";
 export const primary =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#0145b8] px-4 text-body-sm font-semibold text-white transition-[translate,opacity] hover:-translate-y-px disabled:opacity-60";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#0145b8] px-4 text-body-sm font-semibold text-white transition-[translate,opacity] hover:-translate-y-px disabled:opacity-60";
 
 /** Toast the result of a form action once. */
 export function useToastResult(state: ActionResult | null) {
@@ -177,7 +177,7 @@ export function PasswordForm({
             type="button"
             onClick={() => setShow((s) => !s)}
             aria-label={show ? "Hide password" : "Show password"}
-            className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-fg-muted hover:text-fg"
+            className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full text-fg-muted hover:text-fg"
           >
             {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
@@ -307,7 +307,7 @@ export function AvatarUploader({ current, name }: { current: string | null; name
           <button
             type="button"
             onClick={() => input.current?.click()}
-            className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
           >
             <Upload className="size-4" aria-hidden /> Upload
           </button>
@@ -321,7 +321,7 @@ export function AvatarUploader({ current, name }: { current: string | null; name
                   toast(r.ok ? (r.message ?? "Removed") : r.error, r.ok ? undefined : "error");
                 })
               }
-              className="inline-flex h-9 items-center gap-1.5 rounded-xl px-3 text-[0.8125rem] font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-[0.8125rem] font-medium text-danger hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
             >
               <Trash2 className="size-4" aria-hidden /> Remove
             </button>
@@ -345,7 +345,7 @@ export function EndSessions({ others }: { others: number }) {
           toast(r.ok ? (r.message ?? "Done") : r.error, r.ok ? undefined : "error");
         })
       }
-      className="inline-flex h-9 items-center gap-1.5 rounded-xl border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
+      className="inline-flex h-9 items-center gap-1.5 rounded-full border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
     >
       {pending ? (
         <Loader2 className="size-4 animate-spin" />

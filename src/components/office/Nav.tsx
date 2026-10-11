@@ -106,7 +106,7 @@ export function OfficeNav({ groups, onNavigate }: { groups: NavGroup[]; onNaviga
                         onClick={onNavigate}
                         aria-current={active ? "page" : undefined}
                         className={cn(
-                          "relative flex items-center gap-3 rounded-xl px-3 py-2 text-body-sm whitespace-nowrap text-white/75 transition-colors hover:bg-white/8 hover:text-white [&_svg]:size-4",
+                          "relative flex items-center gap-3 rounded-full px-3 py-2 text-body-sm whitespace-nowrap text-white/75 transition-colors hover:bg-white/8 hover:text-white [&_svg]:size-4",
                           active && "bg-white/12 text-white",
                         )}
                       >
@@ -143,7 +143,7 @@ export function MobileNav({ groups, footer }: { groups: NavGroup[]; footer?: Rea
         type="button"
         onClick={() => ref.current?.showModal()}
         aria-label="Open the menu"
-        className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-subtle bg-surface lg:hidden"
+        className="grid size-10 shrink-0 place-items-center rounded-full border border-subtle bg-surface lg:hidden"
       >
         <Menu className="size-5" aria-hidden />
       </button>
@@ -161,7 +161,7 @@ export function MobileNav({ groups, footer }: { groups: NavGroup[]; footer?: Rea
             type="button"
             onClick={() => ref.current?.close()}
             aria-label="Close the menu"
-            className="grid size-9 place-items-center rounded-lg hover:bg-white/10"
+            className="grid size-9 place-items-center rounded-full hover:bg-white/10"
           >
             <X className="size-5" aria-hidden />
           </button>

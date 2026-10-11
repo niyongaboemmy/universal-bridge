@@ -113,7 +113,7 @@ export default async function LocaleLayout({
       <body className="min-h-dvh">
         <a
           href="#main"
-          className="fixed top-3 left-3 z-[100] -translate-y-24 rounded-md bg-accent px-4 py-3 font-medium text-on-accent shadow-3 transition-transform focus:translate-y-0"
+          className="fixed top-3 left-3 z-[100] -translate-y-24 rounded-full bg-accent px-4 py-3 font-medium text-on-accent shadow-3 transition-transform focus:translate-y-0"
         >
           {t("skipToContent")}
         </a>

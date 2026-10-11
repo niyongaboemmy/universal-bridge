@@ -92,7 +92,7 @@ export async function ProofOfWork({ locale }: { locale: Locale }) {
           <p className="mt-2 max-w-xl">{t("referenceBody")}</p>
           <a
             href={localizePath("/contact?topic=sales", locale)}
-            className="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-md bg-[var(--ub-navy-950)] px-5 font-semibold text-white transition-transform hover:-translate-y-px"
+            className="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-full bg-[var(--ub-navy-950)] px-5 font-semibold text-white transition-transform hover:-translate-y-px"
           >
             <PhoneCall aria-hidden className="size-4" />
             {t("referenceCta")}

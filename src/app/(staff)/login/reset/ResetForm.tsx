@@ -65,7 +65,7 @@ export function ResetForm({
         </div>
         <Link
           href="/login?forgot=1"
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc]"
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc]"
         >
           Send me a new link
         </Link>
@@ -154,7 +154,7 @@ export function ResetForm({
               onClick={() => setShow((s) => !s)}
               aria-label={show ? "Hide password" : "Show password"}
               aria-pressed={show}
-              className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+              className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
             >
               {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
@@ -225,7 +225,7 @@ export function ResetForm({
         <button
           type="submit"
           disabled={pending}
-          className="group mt-1 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#0145b8] font-semibold text-white shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--accent-primary)_70%,transparent)] transition-[translate,box-shadow,opacity] hover:-translate-y-0.5 hover:bg-[#0a52cc] disabled:opacity-70"
+          className="group mt-1 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#0145b8] font-semibold text-white shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--accent-primary)_70%,transparent)] transition-[translate,box-shadow,opacity] hover:-translate-y-0.5 hover:bg-[#0a52cc] disabled:opacity-70"
         >
           {pending ? (
             <Loader2 className="size-4.5 animate-spin" aria-hidden />

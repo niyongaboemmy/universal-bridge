@@ -549,7 +549,7 @@ html[data-theme-switching]::view-transition-new(root) {
   min-height: 44px;
   align-items: center;
   gap: 0.375rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-strong);
   background: var(--bg-surface);
   padding-inline: 1rem;
@@ -2665,17 +2665,10 @@ html.ub-live-edit {
   --radius-2xl: 16px;
   --radius-3xl: 18px;
 }
-/* Buttons, inputs, tabs and segmented controls: 10px instead of pills. Status
-   badges, counters, avatars and dots stay round. */
-.office-ui
-  :is(a, button, input, select, textarea, [role="radiogroup"], [role="search"]).rounded-full {
+/* Buttons, tabs and segmented controls are pills, like the website. Text fields
+   keep 10px corners; status badges, counters, avatars and dots stay round. */
+.office-ui :is(input, select, textarea, [role="search"]).rounded-full {
   border-radius: 10px;
-}
-.office-ui [role="radiogroup"] > button.rounded-full {
-  border-radius: 8px;
-}
-.office-ui nav.rounded-xl > a {
-  border-radius: 9px;
 }
 .office-ui .office-palette {
   border-radius: 18px;
@@ -3207,7 +3200,7 @@ html.nav-pending * {
   .consent-actions button {
     height: 2.75rem;
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     background: var(--bg-surface);
     font-size: 0.875rem;
     font-weight: 600;
@@ -3225,7 +3218,7 @@ html.nav-pending * {
     width: 100%;
     margin-top: 0.5rem;
     padding: 0.35rem;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-full);
     font-size: 0.8125rem;
     font-weight: 500;
     color: var(--text-secondary);

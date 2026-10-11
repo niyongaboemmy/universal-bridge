@@ -30,7 +30,7 @@ export function PillarFilter({
       <div
         role="radiogroup"
         aria-label={label}
-        className="mt-10 inline-flex flex-wrap gap-1 rounded-md border border-subtle bg-surface p-1"
+        className="mt-10 inline-flex flex-wrap gap-1 rounded-full border border-subtle bg-surface p-1"
       >
         {all.map((o) => (
           <button
@@ -40,7 +40,7 @@ export function PillarFilter({
             aria-checked={active === o.value}
             onClick={() => select(o.value)}
             className={cn(
-              "min-h-11 rounded-sm px-4 text-body-sm font-medium transition-colors duration-[var(--dur-fast)]",
+              "min-h-11 rounded-full px-4 text-body-sm font-medium transition-colors duration-[var(--dur-fast)]",
               active === o.value ? "bg-accent text-on-accent" : "text-fg-secondary hover:text-fg",
             )}
           >
