@@ -28,12 +28,20 @@ function duration(seconds: number) {
 export default async function Analytics({
   searchParams,
 }: {
-  searchParams: Promise<{ range?: string }>;
+  searchParams: Promise<{ range?: string; staff?: string }>;
 }) {
   await requireArea("analytics");
-  const r = Number((await searchParams).range);
+  const sp = await searchParams;
+  const r = Number(sp.range);
   const range: Range = r === 7 || r === 90 ? r : 30;
-  const [a, live] = await Promise.all([analytics(range), realtimeVisitors()]);
+  // Everyone by default (staff included, labelled); "Exclude staff" leaves them out.
+  const staff = sp.staff !== "0";
+  const href = (next: { range?: number; staff?: boolean }) => {
+    const q = new URLSearchParams({ range: String(next.range ?? range) });
+    if (!(next.staff ?? staff)) q.set("staff", "0");
+    return `/office/analytics?${q}`;
+  };
+  const [a, live] = await Promise.all([analytics(range, { staff }), realtimeVisitors({ staff })]);
   const { totals, previous } = a;
   const conversions = a.conversions.leads + a.conversions.applications;
   const site = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
@@ -45,22 +53,29 @@ export default async function Analytics({
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheck className="size-4 text-success" aria-hidden /> First-party and cookieless:
             counted only for visitors who accept analytics. No IP addresses stored; the country
-            comes from the browser&apos;s time zone. Days are Kigali days.
+            comes from the browser&apos;s time zone. Days are Kigali days. Signed-in staff are
+            counted and labelled; &ldquo;Exclude staff&rdquo; hides them.
           </span>
         }
         actions={
-          <Tabs
-            current={`/office/analytics?range=${range}`}
-            items={[7, 30, 90].map((d) => ({
-              href: `/office/analytics?range=${d}`,
-              label: `${d} days`,
-            }))}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <Tabs
+              current={href({})}
+              items={[
+                { href: href({ staff: true }), label: "Everyone" },
+                { href: href({ staff: false }), label: "Exclude staff" },
+              ]}
+            />
+            <Tabs
+              current={href({})}
+              items={[7, 30, 90].map((d) => ({ href: href({ range: d }), label: `${d} days` }))}
+            />
+          </div>
         }
       />
       <div className="office-stagger grid gap-4 sm:grid-cols-2 xl:grid-cols-[16rem_repeat(3,minmax(0,1fr))]">
         <Card className="xl:row-span-2">
-          <Realtime initial={live} />
+          <Realtime initial={live} staff={staff} />
         </Card>
         <Stat
           label="Visitors"

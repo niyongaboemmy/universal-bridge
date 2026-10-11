@@ -379,6 +379,64 @@ test.describe("Company dashboard", () => {
     }
   });
 
+  test("analytics: signed-in staff are counted as staff, and can be excluded", async ({
+    browser,
+    request,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "one run is enough");
+    const headers = await staffHeaders(request);
+    const staffBrowser = await browser.newContext({
+      extraHTTPHeaders: testClientIp(),
+      timezoneId: "Africa/Kigali",
+      userAgent:
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    });
+    await stubGoogleAnalytics(staffBrowser);
+    await staffBrowser.addCookies([
+      { name: "payload-token", value: await adminToken(request), url: SITE },
+    ]);
+    await staffBrowser.addInitScript(() =>
+      localStorage.setItem(
+        "ub-consent",
+        JSON.stringify({ v: 1, analytics: true, at: new Date().toISOString() }),
+      ),
+    );
+    const page = await staffBrowser.newPage();
+    try {
+      await page.goto(`${SITE}/company/about`);
+      const sid = await expect
+        .poll(() =>
+          page.evaluate(() => (sessionStorage.getItem("ub-sid") ?? "").split(":")[0] ?? ""),
+        )
+        .not.toBe("")
+        .then(() =>
+          page.evaluate(() => (sessionStorage.getItem("ub-sid") ?? "").split(":")[0] ?? ""),
+        );
+      const stored = async () =>
+        (
+          await (
+            await request.get(`/api/page-views?limit=5&where[session][equals]=${sid}`, {
+              headers,
+            })
+          ).json()
+        ).docs as { path: string; audience: string }[];
+      await expect.poll(async () => (await stored()).map((v) => v.audience)).toEqual(["staff"]);
+      const live = async (q = "") =>
+        (await (await request.get(`/api/office/realtime${q}`, { headers })).json()) as {
+          staff: number;
+          pages: { path: string }[];
+        };
+      // Everyone (default): the staff member is on the site, and labelled.
+      await expect.poll(async () => (await live()).staff).toBeGreaterThan(0);
+      expect((await live()).pages.map((p) => p.path)).toContain("/company/about");
+      // Exclude staff: gone from the live count.
+      expect((await live("?staff=0")).staff).toBe(0);
+    } finally {
+      await staffBrowser.close();
+    }
+  });
+
   test("lists: search, filters, sort, page size, pagination and clear (URL-driven)", async ({
     page,
     request,

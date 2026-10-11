@@ -741,22 +741,27 @@ export function EmployeeForm({
 /** "On the site now": polls every 15 s while the tab is visible. */
 export function Realtime({
   initial,
+  staff = true,
 }: {
-  initial: { now: number; pages: { path: string; n: number }[] };
+  initial: { now: number; staff: number; pages: { path: string; n: number }[] };
+  /** false: staff visits are left out (the page's "Exclude staff" filter). */
+  staff?: boolean;
 }) {
   const [data, setData] = useState(initial);
   useEffect(() => {
     let timer = 0;
     const tick = async () => {
       if (document.visibilityState === "visible") {
-        const res = await fetch("/api/office/realtime", { cache: "no-store" }).catch(() => null);
+        const res = await fetch(`/api/office/realtime${staff ? "" : "?staff=0"}`, {
+          cache: "no-store",
+        }).catch(() => null);
         if (res?.ok) setData(await res.json());
       }
       timer = window.setTimeout(tick, 10000);
     };
     timer = window.setTimeout(tick, 10000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [staff]);
   return (
     <div>
       <p className="flex items-center gap-2 text-body-sm text-fg-secondary">
@@ -776,6 +781,11 @@ export function Realtime({
       <p className="mt-1 font-display text-display-lg tabular-nums" aria-live="polite">
         {data.now}
       </p>
+      {data.staff > 0 && (
+        <p className="text-[0.75rem] text-fg-muted">
+          incl. {data.staff} staff {data.staff === 1 ? "member" : "members"}
+        </p>
+      )}
       {data.pages.length > 0 ? (
         <ul className="mt-2 space-y-1 text-[0.8125rem] text-fg-secondary">
           {data.pages.map((p) => (

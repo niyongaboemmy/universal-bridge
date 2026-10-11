@@ -1,7 +1,12 @@
 import { createHash } from "node:crypto";
 import { sql } from "@payloadcms/db-postgres";
 import { NextResponse, type NextRequest } from "next/server";
-import { externalReferrer, ownHosts, visitorCountry } from "@/lib/analytics/collect";
+import {
+  audienceFromToken,
+  externalReferrer,
+  ownHosts,
+  visitorCountry,
+} from "@/lib/analytics/collect";
 import { BOT, classify } from "@/lib/analytics/ua";
 import { payload } from "@/lib/cms/payload";
 import { rateLimit } from "@/lib/security/rate-limit";
@@ -17,11 +22,13 @@ const clip = (v: unknown, n: number) => (typeof v === "string" ? v.slice(0, n) :
  * zone, never an IP lookup), device class and a visitor hash that changes daily
  * (salted IP + browser) so nobody can be followed across days. A "ping" while the
  * page stays open refreshes updated_at of the session's latest view: that drives
- * "on the site now" and time on site. Bots, staff and other sites are ignored.
+ * "on the site now" and time on site. Signed-in staff and website members are
+ * counted and labelled (audience), so the office can include or exclude staff.
+ * Bots and other sites are ignored.
  */
 export async function POST(request: NextRequest) {
   const ua = request.headers.get("user-agent") ?? "";
-  if (!ua || BOT.test(ua) || request.cookies.has("payload-token")) return ok();
+  if (!ua || BOT.test(ua)) return ok();
   if (request.headers.get("sec-fetch-site") === "cross-site") return ok();
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
@@ -67,11 +74,12 @@ export async function POST(request: NextRequest) {
   const referrer = externalReferrer(body?.r, ownHosts(request.headers, request.nextUrl.host));
   const { device, browser, os } = classify(ua);
   const country = visitorCountry(request.headers, body?.z);
+  const audience = audienceFromToken(request.cookies.get("payload-token")?.value);
 
   await p.db.drizzle.execute(sql`
-    insert into page_views (path, locale, referrer, utm_source, utm_medium, utm_campaign, country, device, browser, os, visitor, session, created_at, updated_at)
+    insert into page_views (path, locale, referrer, utm_source, utm_medium, utm_campaign, country, device, browser, os, visitor, session, audience, created_at, updated_at)
     values (${path}, ${clip(body?.l, 5)}, ${referrer || null}, ${query.get("utm_source")?.slice(0, 80) ?? null},
             ${query.get("utm_medium")?.slice(0, 80) ?? null}, ${query.get("utm_campaign")?.slice(0, 120) ?? null},
-            ${country || null}, ${device}, ${browser}, ${os}, ${visitor}, ${session || null}, now(), now())`);
+            ${country || null}, ${device}, ${browser}, ${os}, ${visitor}, ${session || null}, ${audience}, now(), now())`);
   return ok();
 }

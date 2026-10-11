@@ -2216,6 +2216,7 @@ export interface PageView {
    */
   visitor?: string | null;
   session?: string | null;
+  audience?: ('visitor' | 'member' | 'staff') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3956,6 +3957,7 @@ export interface PageViewsSelect<T extends boolean = true> {
   os?: T;
   visitor?: T;
   session?: T;
+  audience?: T;
   updatedAt?: T;
   createdAt?: T;
 }

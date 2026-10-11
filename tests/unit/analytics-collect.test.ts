@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { externalReferrer, ownHosts, visitorCountry } from "@/lib/analytics/collect";
+import {
+  audienceFromToken,
+  externalReferrer,
+  ownHosts,
+  visitorCountry,
+} from "@/lib/analytics/collect";
 
 // Website analytics: country without IP lookups, and the site never counts as its own source.
 
@@ -55,5 +60,17 @@ describe("referrer", () => {
     expect(externalReferrer("", own)).toBe("");
     expect(externalReferrer("not a url", own)).toBe("");
     expect(externalReferrer(null, own)).toBe("");
+  });
+});
+
+describe("audience", () => {
+  const jwt = (payload: object) =>
+    `x.${Buffer.from(JSON.stringify(payload)).toString("base64url")}.sig`;
+  it("labels signed-in staff and website members; everyone else is a visitor", () => {
+    expect(audienceFromToken(jwt({ collection: "users", id: 1 }))).toBe("staff");
+    expect(audienceFromToken(jwt({ collection: "members", id: 9 }))).toBe("member");
+    expect(audienceFromToken(undefined)).toBe("visitor");
+    expect(audienceFromToken("not-a-token")).toBe("visitor");
+    expect(audienceFromToken(jwt({ collection: "other" }))).toBe("visitor");
   });
 });
