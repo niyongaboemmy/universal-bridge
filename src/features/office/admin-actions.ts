@@ -8,6 +8,7 @@ import { passwordProblem } from "@/lib/auth/password";
 import { payload } from "@/lib/cms/payload";
 import { allowed, officeUser, type OfficeUser } from "./session";
 import type { ActionResult } from "./actions";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 /**
  * Office administration: own profile, roles & permissions, accounts, system settings
@@ -471,7 +472,7 @@ export async function switchRole(roleId: number | null): Promise<ActionResult> {
   jar.set(ACT_COOKIE, `${user.id}:${roleId}`, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     maxAge: 60 * 60 * 12,
   });

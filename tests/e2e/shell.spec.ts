@@ -85,6 +85,10 @@ test.describe("S2 site shell", () => {
       analytics.push(route.request().url());
       return route.fulfill({ status: 200, contentType: "text/javascript", body: "" });
     });
+    // First-party page views always start on consent; Plausible only when a domain is set.
+    page.on("request", (r) => {
+      if (new URL(r.url()).pathname === "/api/collect") analytics.push(r.url());
+    });
     await page.goto("/");
     await page.getByRole("button", { name: "Accept all" }).click();
     await expect.poll(() => analytics.length).toBeGreaterThan(0);

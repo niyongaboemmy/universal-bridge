@@ -8,6 +8,7 @@ import { passwordProblem } from "@/lib/auth/password";
 import { payload } from "@/lib/cms/payload";
 import { settings } from "@/lib/settings";
 import { currentMember } from "./session";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 export type AccountState = {
   error?: string;
@@ -35,7 +36,7 @@ async function setToken(token: string) {
   (await cookies()).set(`${p.config.cookiePrefix}-token`, token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     expires: new Date(Date.now() + auth.tokenExpiration * 1000),
   });

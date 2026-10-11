@@ -22,6 +22,9 @@ async function editText(page: Page, el: ReturnType<Page["locator"]>, text: strin
 
 test.describe("Live editing", () => {
   test.skip(({ isMobile }) => isMobile, "staff edit on desktop");
+  // These tests edit and publish the same live page. Running them in several browsers
+  // at once (CI runs all projects in parallel) makes the runs overwrite each other.
+  test.skip(({ browserName }) => browserName !== "chromium", "edits shared content: one browser");
   test.describe.configure({ mode: "serial" });
 
   test("visitors get no editor and no edit markers", async ({ page }) => {

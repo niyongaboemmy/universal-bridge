@@ -1,6 +1,7 @@
 import { APIError, type CollectionConfig, type FieldAccess, type PayloadRequest } from "payload";
 import { can, actingFromReq } from "@/access/roles";
 import { passwordProblem } from "@/lib/auth/password";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 const siteUrl = () =>
   (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
@@ -40,7 +41,7 @@ export const Members: CollectionConfig = {
     tokenExpiration: 60 * 60 * 24 * 14,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
-    cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    cookies: { sameSite: "Lax", secure: secureCookies() },
     forgotPassword: {
       expiration: 60 * 60 * 1000,
       generateEmailSubject: () => "Reset your Universal Bridge password",
