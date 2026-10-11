@@ -54,6 +54,13 @@ export class UploadRejected extends Error {
   }
 }
 
+/** Payload's 400 for an invalid upload: an error on the `file` field. */
+export function isFileRejection(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const e = err as { status?: number; data?: { errors?: { path?: string }[] } };
+  return e.status === 400 && Boolean(e.data?.errors?.some((x) => x.path === "file"));
+}
+
 /** Store a checked file privately and queue its virus scan (ADR-004). */
 export async function storePrivateFile(
   req: PayloadRequest,
@@ -76,9 +83,9 @@ export async function storePrivateFile(
       },
     });
   } catch (err) {
-    // Payload validates file structure (e.g. "Invalid PDF file.").
-    if (err && typeof err === "object" && "name" in err && err.name === "ValidationError")
-      throw new UploadRejected(field);
+    // Payload validates file structure (e.g. "Invalid PDF file."). Matched by its data,
+    // not err.name: production builds minify class names ("ValidationError" → "o").
+    if (isFileRejection(err)) throw new UploadRejected(field);
     throw err;
   }
   const { enqueue } = await import("@/lib/outbox");

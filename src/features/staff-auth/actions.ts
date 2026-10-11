@@ -10,6 +10,7 @@ import { endSession, staffSession } from "@/lib/auth/staff-session";
 import { payload } from "@/lib/cms/payload";
 import { settings } from "@/lib/settings";
 import { secureCookies } from "@/lib/auth/secure-cookies";
+import { isLockedAuth } from "@/lib/auth/payload-errors";
 
 export type SignInState = { error?: string; sent?: boolean; email?: string } | null;
 
@@ -49,9 +50,8 @@ export async function signIn(_prev: SignInState, form: FormData): Promise<SignIn
     });
   } catch (err) {
     const status = (err as { status?: number }).status;
-    const name = (err as { name?: string }).name;
     if (status === 429) return { error: (err as Error).message, email };
-    if (name === "LockedAuth")
+    if (isLockedAuth(err))
       return { error: "This account is locked for 15 minutes after too many attempts.", email };
     return { error: "That email and password don't match an account.", email };
   }
