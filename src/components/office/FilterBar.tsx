@@ -62,6 +62,15 @@ export function FilterBar({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only the typed text drives this
   }, [q]);
 
+  // Text typed before React took over the input (slow devices) is in the DOM but not in
+  // state, so it would never be searched for. Pick it up once, after the first render.
+  const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const typed = input.current?.value ?? "";
+    if (search && typed !== q) setQ(typed);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on mount
+  }, []);
+
   const filterNames = fields.filter((f) => f.kind !== "search").map((f) => f.name);
   const active =
     filterNames.filter((n) => params.get(n)).length + (search && params.get(search.name) ? 1 : 0);
@@ -90,6 +99,7 @@ export function FilterBar({
             aria-hidden
           />
           <input
+            ref={input}
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}

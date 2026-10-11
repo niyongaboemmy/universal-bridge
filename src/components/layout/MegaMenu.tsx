@@ -29,6 +29,8 @@ export function MegaMenu({
   const pathname = usePathname();
 
   const close = useCallback((focusTrigger = false) => {
+    // A pending hover-open must not reopen the menu just after Esc (mouse still on it).
+    clearTimeout(hoverTimer.current);
     setOpen((current) => {
       if (focusTrigger && current !== null) triggers.current[current]?.focus();
       return null;
@@ -128,7 +130,10 @@ export function MegaMenu({
                   aria-expanded={isOpen}
                   aria-controls={`mega-${index}`}
                   className={triggerClass}
-                  onClick={() => setOpen(isOpen ? null : index)}
+                  onClick={() => {
+                    clearTimeout(hoverTimer.current);
+                    setOpen(isOpen ? null : index);
+                  }}
                   onKeyDown={(e) => onTriggerKey(e, index)}
                   onPointerEnter={(e) => e.pointerType === "mouse" && hover(index)}
                 >
