@@ -227,19 +227,22 @@ test.describe("Company dashboard", () => {
     await page.getByLabel("Department").selectOption("engineering");
     await page.getByLabel("Work email").fill(email);
     await page.getByLabel("Start date").fill("2026-01-05");
-    await page.getByRole("button", { name: "Add employee" }).click();
-    await page.waitForURL(/\/office\/people$/);
-    await page.getByRole("searchbox").fill("QA Engineer");
-    await page.waitForURL(/q=QA/);
-    await expect(page.getByRole("link", { name: /Test Employee/ })).toBeVisible();
-    const emp = (
-      await (
+    try {
+      await page.getByRole("button", { name: "Add employee" }).click();
+      await page.waitForURL(/\/office\/people$/);
+      await page.getByRole("searchbox").fill("QA Engineer");
+      await page.waitForURL(/q=QA/);
+      await expect(page.getByRole("link", { name: /Test Employee/ }).first()).toBeVisible();
+    } finally {
+      // Always clean up, so a retry doesn't find several "Test Employee" rows.
+      const found = await (
         await request.get(`/api/employees?where[email][equals]=${encodeURIComponent(email)}`, {
           headers,
         })
-      ).json()
-    ).docs[0];
-    await request.delete(`/api/employees/${emp.id}`, { headers });
+      ).json();
+      for (const e of (found.docs ?? []) as { id: number }[])
+        await request.delete(`/api/employees/${e.id}`, { headers });
+    }
   });
 
   test("analytics: only with consent, never bots or staff", async ({ browser, request }) => {

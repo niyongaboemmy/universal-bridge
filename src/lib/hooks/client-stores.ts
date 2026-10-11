@@ -14,25 +14,36 @@ const clocks = new Map<
   { now: number; listeners: Set<() => void>; id?: ReturnType<typeof setInterval> }
 >();
 
+/**
+ * The shared clock for an interval, created on first use. getSnapshot must return the
+ * same value until the clock ticks: returning Date.now() before subscribing made React
+ * see a "changed" snapshot on every read and re-render forever on slower devices
+ * (React error #185 on the contact page).
+ */
+function clockFor(intervalMs: number) {
+  let clock = clocks.get(intervalMs);
+  if (!clock) clocks.set(intervalMs, (clock = { now: Date.now(), listeners: new Set() }));
+  return clock;
+}
+
 export function useNow(intervalMs = 30_000): Date | null {
   const ms = useSyncExternalStore(
     (notify) => {
-      let clock = clocks.get(intervalMs);
-      if (!clock) clocks.set(intervalMs, (clock = { now: Date.now(), listeners: new Set() }));
+      const clock = clockFor(intervalMs);
       clock.listeners.add(notify);
       clock.id ??= setInterval(() => {
-        clock!.now = Date.now();
-        clock!.listeners.forEach((l) => l());
+        clock.now = Date.now();
+        clock.listeners.forEach((l) => l());
       }, intervalMs);
       return () => {
-        clock!.listeners.delete(notify);
-        if (!clock!.listeners.size) {
-          clearInterval(clock!.id);
+        clock.listeners.delete(notify);
+        if (!clock.listeners.size) {
+          clearInterval(clock.id);
           clocks.delete(intervalMs);
         }
       };
     },
-    () => clocks.get(intervalMs)?.now ?? Date.now(),
+    () => clockFor(intervalMs).now,
     () => null,
   );
   return ms === null ? null : new Date(ms);
