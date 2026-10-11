@@ -9,6 +9,7 @@ import { payload } from "@/lib/cms/payload";
 import { settings } from "@/lib/settings";
 import { currentMember } from "./session";
 import { secureCookies } from "@/lib/auth/secure-cookies";
+import { isLockedAuth } from "@/lib/auth/payload-errors";
 
 export type AccountState = {
   error?: string;
@@ -60,10 +61,8 @@ export async function memberLogin(_: AccountState, form: FormData): Promise<Acco
     if (!r.token) return { error: "wrong", email };
     await setToken(r.token);
   } catch (err) {
-    const name = (err as { name?: string }).name;
     return {
-      error:
-        name === "LockedAuth" || (err as { status?: number }).status === 429 ? "locked" : "wrong",
+      error: isLockedAuth(err) || (err as { status?: number }).status === 429 ? "locked" : "wrong",
       email,
     };
   }

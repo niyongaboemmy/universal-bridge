@@ -48,7 +48,13 @@ test.describe("S1 foundation", () => {
   test("theme toggle switches and persists", async ({ page, isMobile }) => {
     await setTheme(page, "light");
     await page.goto("/");
-    if (isMobile) await page.getByRole("button", { name: "Open menu" }).click();
+    // Phones: open the drawer and wait until it is open (a tap during hydration can be lost).
+    const openMenu = () =>
+      expect(async () => {
+        await page.getByRole("button", { name: "Open menu" }).click();
+        await expect(page.getByRole("dialog")).toBeVisible({ timeout: 2000 });
+      }).toPass({ timeout: 15_000 });
+    if (isMobile) await openMenu();
     const toggle = page.getByRole("button", { name: "Dark theme" });
     await expect(toggle).toHaveAttribute("aria-pressed", "false");
     await toggle.click();
@@ -56,13 +62,7 @@ test.describe("S1 foundation", () => {
     await expect(toggle).toHaveAttribute("aria-pressed", "true");
     await page.reload();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-    if (isMobile) {
-      // After the reload, wait for the drawer to be open before looking inside it.
-      await expect(async () => {
-        await page.getByRole("button", { name: "Open menu" }).click();
-        await expect(page.getByRole("dialog")).toBeVisible({ timeout: 2000 });
-      }).toPass({ timeout: 15_000 });
-    }
+    if (isMobile) await openMenu();
     // aria-pressed appears once React has loaded (the server can't know the saved theme).
     await expect(page.getByRole("button", { name: "Dark theme" })).toHaveAttribute(
       "aria-pressed",

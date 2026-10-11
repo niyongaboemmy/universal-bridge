@@ -288,7 +288,13 @@ test.describe("S4 application journeys", () => {
       mimeType: "application/pdf",
       buffer: Buffer.from("%PDF-1.4 not really a pdf"),
     });
+    // Wait for this submission's answer: the alert from the first try is still on screen.
+    const answered = page.waitForResponse(
+      (r) => r.request().method() === "POST" && new URL(r.url()).pathname.includes("/internships"),
+    );
     await page.getByRole("button", { name: "Send" }).click();
+    await answered;
+    await expect(page.locator("form").getByRole("alert")).not.toContainText("went wrong");
     await expect(page.locator("form").getByRole("alert")).toContainText(
       "Upload a PDF, DOC or DOCX file.",
     );
