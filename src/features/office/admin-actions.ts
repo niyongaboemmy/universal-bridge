@@ -317,6 +317,41 @@ export async function unlockStaff(id: number): Promise<ActionResult> {
   }, "Account unlocked");
 }
 
+/**
+ * Emails a staff member a fresh link: the invitation again if they never signed in,
+ * otherwise a password reset link. Sent from the outbox like the first invitation.
+ */
+export async function sendAccessLink(id: number): Promise<ActionResult> {
+  const user = await officeUser();
+  if (!allowed(user, "users.manage")) return { ok: false, error: "Your role can't do this." };
+  const p = await payload();
+  const target = await p.findByID({ collection: "users", id, depth: 0, overrideAccess: true });
+  const invite = !target.lastLoginAt;
+  return run(
+    async () => {
+      await p.create({
+        collection: "outbox",
+        overrideAccess: true,
+        data: {
+          kind: "staff-invite",
+          payload: { email: target.email, invitedBy: user.name, reset: !invite },
+          status: "pending",
+          attempts: 0,
+          runAfter: new Date().toISOString(),
+        },
+      });
+      const { audit } = await import("@/lib/audit");
+      await audit({ payload: p, user: { ...user, collection: "users" }, context: {} } as never, {
+        action: invite ? "users.invite-resent" : "users.reset-link-sent",
+        entity: "users",
+        entityId: id,
+        label: target.name,
+      });
+    },
+    invite ? `Invitation sent to ${target.email}` : `Reset link sent to ${target.email}`,
+  );
+}
+
 export async function setMemberRole(id: number, role: number): Promise<ActionResult> {
   const user = await officeUser();
   return run(async () => {

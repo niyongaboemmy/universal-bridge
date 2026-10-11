@@ -20,6 +20,7 @@ import { useActionState, useEffect, useOptimistic, useRef, useState, useTransiti
 import {
   inviteStaff,
   removeStaff,
+  sendAccessLink,
   setMemberRole,
   setUserRoles,
   unlockStaff,
@@ -130,10 +131,39 @@ export function RolePicker({
   );
 }
 
-export function StaffActions({ id, locked, self }: { id: number; locked: boolean; self: boolean }) {
+export function StaffActions({
+  id,
+  locked,
+  self,
+  invited,
+}: {
+  id: number;
+  locked: boolean;
+  self: boolean;
+  /** Never signed in: the link is the invitation again. */
+  invited?: boolean;
+}) {
   const [pending, start] = useTransition();
+  const linkLabel = invited ? "Resend invitation" : "Email a password reset link";
   return (
     <div className="flex justify-end gap-1">
+      {!self && (
+        <button
+          type="button"
+          disabled={pending}
+          onClick={() =>
+            start(async () => {
+              const r = await sendAccessLink(id);
+              toast(r.ok ? (r.message ?? "Sent") : r.error, r.ok ? undefined : "error");
+            })
+          }
+          aria-label={linkLabel}
+          title={linkLabel}
+          className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+        >
+          {invited ? <Mail className="size-4" /> : <KeyRound className="size-4" />}
+        </button>
+      )}
       {locked && (
         <button
           type="button"

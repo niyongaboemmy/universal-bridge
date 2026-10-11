@@ -1,8 +1,15 @@
-import { Button, Text } from "@react-email/components";
-import { render } from "@react-email/components";
+import { render, Text } from "@react-email/components";
 import type { Locale } from "@/i18n/routing";
 import { siteUrl } from "@/lib/utils";
-import { EmailLayout, emailButton, emailMuted, emailText } from "./Layout";
+import {
+  Details,
+  EmailActions,
+  EmailButton,
+  EmailLayout,
+  emailText,
+  Panel,
+  SignOff,
+} from "./Layout";
 import { emailTranslator, formTranslator } from "./translator";
 
 export type LeadEmailData = {
@@ -31,7 +38,8 @@ export async function leadConfirmationEmail(lead: LeadEmailData) {
     <EmailLayout
       lang={lead.locale}
       preview={t("leadConfirmation.preview")}
-      footer={t("footer")}
+      eyebrow={t("leadConfirmation.eyebrow")}
+      title={t("leadConfirmation.title")}
       privacy={t("privacy")}
     >
       <Text style={emailText}>
@@ -40,23 +48,12 @@ export async function leadConfirmationEmail(lead: LeadEmailData) {
       <Text style={emailText}>
         {t("leadConfirmation.body", { department: department.toLowerCase() })}
       </Text>
-      <Text style={{ ...emailMuted, fontWeight: 600 }}>{t("leadConfirmation.summary")}</Text>
-      <Text
-        style={{
-          ...emailMuted,
-          whiteSpace: "pre-wrap",
-          borderLeft: "3px solid #FF7A00",
-          paddingLeft: 12,
-        }}
-      >
-        {lead.message}
-      </Text>
+      <Panel title={t("leadConfirmation.summary")}>{lead.message}</Panel>
       <Text style={emailText}>{t("leadConfirmation.next")}</Text>
-      <Button href={bookUrl} style={emailButton}>
-        {t("leadConfirmation.book")}
-      </Button>
-      <Text style={{ ...emailText, marginTop: 20 }}>{t("leadConfirmation.signoff")}</Text>
-      <Text style={emailMuted}>{f("reference", { ref: lead.ref })}</Text>
+      <EmailActions>
+        <EmailButton href={bookUrl}>{t("leadConfirmation.book")}</EmailButton>
+      </EmailActions>
+      <SignOff text={t("leadConfirmation.signoff")} reference={f("reference", { ref: lead.ref })} />
     </EmailLayout>
   );
   return {
@@ -84,24 +81,18 @@ export async function leadNotificationEmail(lead: LeadEmailData, adminUrl: strin
     <EmailLayout
       lang="en"
       preview={`${lead.name}: ${lead.message.slice(0, 90)}`}
+      eyebrow={`New ${lead.department} inquiry`}
+      title={lead.company ? `${lead.name} · ${lead.company}` : lead.name}
       footer="Internal notification — do not forward outside UB."
     >
       {lead.botCheck === "missing" && (
-        <Text style={{ ...emailText, color: "#B45309" }}>
-          ⚠ Sent without JavaScript (no bot check). Review before replying.
-        </Text>
+        <Panel tone="warn">⚠ Sent without JavaScript (no bot check). Review before replying.</Panel>
       )}
-      {rows
-        .filter(([, v]) => v)
-        .map(([k, v]) => (
-          <Text key={k} style={emailMuted}>
-            <strong>{k}:</strong> {v}
-          </Text>
-        ))}
-      <Text style={{ ...emailText, whiteSpace: "pre-wrap", marginTop: 12 }}>{lead.message}</Text>
-      <Button href={adminUrl} style={emailButton}>
-        Open in the inbox
-      </Button>
+      <Details rows={rows} />
+      <Panel title="Message">{lead.message}</Panel>
+      <EmailActions>
+        <EmailButton href={adminUrl}>Open in the inbox</EmailButton>
+      </EmailActions>
     </EmailLayout>
   );
   return {

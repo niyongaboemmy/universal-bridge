@@ -276,7 +276,9 @@
       "summary": "Ibyo mwatwoherereje",
       "next": "Hagati aho, mushobora gusaba ikiganiro cy'iminota 30 mu gihe kibabereye.",
       "book": "Saba ikiganiro",
-      "signoff": "— Itsinda rya Universal Bridge"
+      "signoff": "— Itsinda rya Universal Bridge",
+      "eyebrow": "Ubutumwa bwakiriwe",
+      "title": "Murakoze, turabukurikirana"
     },
     "applicationStatus": {
       "subject": "Amakuru ku busabe bwawe ({ref})",
@@ -286,7 +288,20 @@
       "accepted": "Twishimiye kukumenyesha ko ubusabe bwawe bwa {subject} bwemewe. Tuzakoherereza vuba amakuru y'ibikurikira.",
       "rejected": "Murakoze gusaba {subject}. Nyuma yo gusuzuma neza, ntituzakomeza n'ubusabe bwawe kuri iyi nshuro. Twakwishimira kongera kubona ubusabe bwawe mu bihe biri imbere.",
       "waitlisted": "Ubusabe bwawe bwa {subject} buri ku rutonde rw'abategereje. Tuzakuvugisha umwanya ukimara kuboneka.",
-      "signoff": "— Itsinda rya Universal Bridge"
+      "signoff": "— Itsinda rya Universal Bridge",
+      "eyebrow": "Amakuru ku busabe",
+      "title": {
+        "shortlisted": "Mwatoranyijwe",
+        "accepted": "Turabashimiye!",
+        "rejected": "Ku bijyanye n'ubusabe bwanyu",
+        "waitlisted": "Muri ku rutonde rw'abategereje"
+      },
+      "steps": {
+        "received": "Ubusabe bwakiriwe",
+        "review": "Bwasuzumwe n'itsinda ryacu",
+        "shortlisted": "Gutoranywa",
+        "decision": "Icyemezo cya nyuma"
+      }
     },
     "applicationConfirmation": {
       "subject": "Twakiriye ubusabe bwawe ({ref})",
@@ -298,7 +313,33 @@
       "next1": "Dusuzuma buri busabe, akenshi mu minsi 5 y'akazi.",
       "next2": "Abatoranyijwe batumirwa mu kiganiro gito.",
       "next3": "Mwakira icyemezo cyacu kuri imeyili.",
-      "signoff": "— Itsinda rya Universal Bridge"
+      "signoff": "— Itsinda rya Universal Bridge",
+      "eyebrow": "Ubusabe bwakiriwe",
+      "title": "Ubusabe bwanyu bwatugezeho"
+    },
+    "linkFallback": "Buto ntikora? Koporora iyi link uyishyire muri mushakisha yawe:",
+    "layout": {
+      "website": "Urubuga",
+      "services": "Serivisi",
+      "academy": "Ishuri",
+      "contact": "Twandikire"
+    },
+    "newsletter": {
+      "eyebrow": "Amakuru"
+    },
+    "passwordReset": {
+      "subject": "Hindura ijambo ry'ibanga rya Universal Bridge",
+      "preview": "Koresha iyi link mu isaha imwe uhitemo ijambo ry'ibanga rishya.",
+      "eyebrow": "Umutekano wa konti",
+      "title": "Hindura ijambo ry'ibanga",
+      "intro": "Hari uwasabye guhindura ijambo ry'ibanga rya konti yawe ya Universal Bridge.",
+      "greeting": "Muraho {name},",
+      "body": "Kanda buto iri hepfo uhitemo ijambo ry'ibanga rishya. Iyi link ikora rimwe gusa kandi irangira mu isaha imwe.",
+      "button": "Hitamo ijambo ry'ibanga rishya",
+      "account": "Konti",
+      "requested": "Byasabwe",
+      "from": "Bivuye kuri",
+      "ignore": "Si wowe wabisabye? Irengagize iyi email: ijambo ry'ibanga ryawe ntirihinduka."
     }
   },
   "templates": {

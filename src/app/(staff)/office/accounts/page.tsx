@@ -222,7 +222,12 @@ export default async function Accounts({ searchParams }: { searchParams: Promise
                       <td className="px-4 py-2.5 text-fg-muted">{fmtDate(u.createdAt)}</td>
                       <td className="px-4 py-2">
                         {tab === "staff" && canStaff && (
-                          <StaffActions id={u.id} locked={locked} self={u.id === user.id} />
+                          <StaffActions
+                            id={u.id}
+                            locked={locked}
+                            self={u.id === user.id}
+                            invited={!u.lastLoginAt}
+                          />
                         )}
                       </td>
                     </tr>

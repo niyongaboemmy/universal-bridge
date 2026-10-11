@@ -1,10 +1,9 @@
 "use server";
 
 import { randomBytes } from "node:crypto";
-import { render } from "@react-email/components";
-import { Button, Text } from "@react-email/components";
+import { render, Text } from "@react-email/components";
 import { getTranslations } from "next-intl/server";
-import { EmailLayout, emailButton, emailText } from "@/emails/Layout";
+import { EmailActions, EmailButton, EmailLayout, emailText, LinkFallback } from "@/emails/Layout";
 import { handleSubmission } from "@/lib/forms/submit";
 import { CONSENT_VERSION, type FormState } from "@/lib/forms/types";
 import { enqueue } from "@/lib/outbox";
@@ -64,13 +63,15 @@ export async function subscribeNewsletter(
         <EmailLayout
           lang={meta.locale}
           preview={t("emailSubject")}
-          footer={e("footer")}
+          eyebrow={e("newsletter.eyebrow")}
+          title={t("emailSubject")}
           privacy={e("privacy")}
         >
           <Text style={emailText}>{t("emailBody")}</Text>
-          <Button href={link} style={emailButton}>
-            {t("emailButton")}
-          </Button>
+          <EmailActions>
+            <EmailButton href={link}>{t("emailButton")}</EmailButton>
+          </EmailActions>
+          <LinkFallback href={link} label={e("linkFallback")} />
         </EmailLayout>
       );
       await enqueue(req, {

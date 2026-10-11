@@ -276,7 +276,9 @@
       "summary": "Ce que vous nous avez envoyé",
       "next": "En attendant, vous pouvez réserver un appel découverte de 30 minutes au moment qui vous convient.",
       "book": "Réserver un appel",
-      "signoff": "— L'équipe Universal Bridge"
+      "signoff": "— L'équipe Universal Bridge",
+      "eyebrow": "Message reçu",
+      "title": "Merci, nous nous en occupons"
     },
     "applicationStatus": {
       "subject": "Mise à jour de votre candidature ({ref})",
@@ -286,7 +288,20 @@
       "accepted": "Félicitations ! Votre candidature pour {subject} a été acceptée. Nous vous enverrons très vite les prochaines étapes.",
       "rejected": "Merci d'avoir postulé pour {subject}. Après un examen attentif, nous ne donnerons pas suite à votre candidature cette fois-ci. Nous serions ravis d'avoir de vos nouvelles à l'avenir.",
       "waitlisted": "Votre candidature pour {subject} est sur liste d'attente. Nous vous contacterons dès qu'une place se libère.",
-      "signoff": "— L'équipe Universal Bridge"
+      "signoff": "— L'équipe Universal Bridge",
+      "eyebrow": "Suivi de candidature",
+      "title": {
+        "shortlisted": "Vous êtes présélectionné·e",
+        "accepted": "Félicitations !",
+        "rejected": "À propos de votre candidature",
+        "waitlisted": "Vous êtes sur liste d'attente"
+      },
+      "steps": {
+        "received": "Candidature reçue",
+        "review": "Examinée par notre équipe",
+        "shortlisted": "Présélection",
+        "decision": "Décision finale"
+      }
     },
     "applicationConfirmation": {
       "subject": "Nous avons bien reçu votre candidature ({ref})",
@@ -298,7 +313,33 @@
       "next1": "Nous étudions chaque candidature, en général sous 5 jours ouvrés.",
       "next2": "Les candidats présélectionnés sont invités à un court entretien.",
       "next3": "Vous recevez notre décision par e-mail.",
-      "signoff": "— L'équipe Universal Bridge"
+      "signoff": "— L'équipe Universal Bridge",
+      "eyebrow": "Candidature reçue",
+      "title": "Votre candidature est bien arrivée"
+    },
+    "linkFallback": "Le bouton ne fonctionne pas ? Copiez ce lien dans votre navigateur :",
+    "layout": {
+      "website": "Site web",
+      "services": "Services",
+      "academy": "Académie",
+      "contact": "Contact"
+    },
+    "newsletter": {
+      "eyebrow": "Newsletter"
+    },
+    "passwordReset": {
+      "subject": "Réinitialisez votre mot de passe Universal Bridge",
+      "preview": "Utilisez ce lien dans l'heure pour choisir un nouveau mot de passe.",
+      "eyebrow": "Sécurité du compte",
+      "title": "Réinitialisez votre mot de passe",
+      "intro": "Une demande de réinitialisation du mot de passe de votre compte Universal Bridge a été faite.",
+      "greeting": "Bonjour {name},",
+      "body": "Utilisez le bouton ci-dessous pour choisir un nouveau mot de passe. Le lien ne fonctionne qu'une fois et expire dans une heure.",
+      "button": "Choisir un nouveau mot de passe",
+      "account": "Compte",
+      "requested": "Demandé le",
+      "from": "Depuis",
+      "ignore": "Vous n'avez rien demandé ? Ignorez cet e-mail : votre mot de passe reste inchangé."
     }
   },
   "templates": {

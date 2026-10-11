@@ -34,6 +34,15 @@ async function inMaintenance(request: NextRequest) {
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  // Password links from older emails (Payload's own reset page) go to the branded one.
+  const legacyReset = /^\/admin\/reset\/([\w-]+)\/?$/.exec(pathname);
+  if (legacyReset) {
+    const url = new URL("/login/reset", request.url);
+    url.searchParams.set("token", legacyReset[1]!);
+    return NextResponse.redirect(url);
+  }
+  if (pathname === "/admin/forgot" || pathname === "/admin/forgot/")
+    return NextResponse.redirect(new URL("/login?forgot=1", request.url));
   // One sign-in page for the office and the CMS.
   if (pathname === "/admin/login" || pathname === "/admin/login/") {
     const url = new URL("/login", request.url);
@@ -58,7 +67,12 @@ export default async function proxy(request: NextRequest) {
     headers.set("x-ub-path", pathname);
     return NextResponse.next({ request: { headers } });
   }
-  if (pathname.startsWith("/staff") || pathname === "/login" || pathname === "/maintenance")
+  if (
+    pathname.startsWith("/staff") ||
+    pathname === "/login" ||
+    pathname.startsWith("/login/") ||
+    pathname === "/maintenance"
+  )
     return NextResponse.next();
   // Visitors get the holding page while maintenance is on; signed-in staff see the site.
   if ((await inMaintenance(request)) && !(await readStaffToken(request))) {
