@@ -266,5 +266,17 @@ export const PageViews: CollectionConfig = {
       admin: { description: "Daily-rotating hash; no IP or cookie stored" },
     },
     { name: "session", type: "text", index: true },
+    {
+      // Who was browsing: a visitor, a signed-in website member, or staff.
+      name: "audience",
+      type: "select",
+      defaultValue: "visitor",
+      index: true,
+      options: [
+        { label: "Visitor", value: "visitor" },
+        { label: "Website member", value: "member" },
+        { label: "Staff", value: "staff" },
+      ],
+    },
   ],
 };

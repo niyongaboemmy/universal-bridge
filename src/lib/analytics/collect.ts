@@ -43,3 +43,26 @@ export function externalReferrer(raw: unknown, own: Set<string>): string {
     return "";
   }
 }
+
+export type Audience = "visitor" | "member" | "staff";
+
+/**
+ * Who is browsing, from the sign-in cookie's token: staff ("users"), a website
+ * member ("members") or an anonymous visitor. Only a label for the statistics (the
+ * token isn't verified here and grants nothing): a forged cookie can at most
+ * mislabel the sender's own visits.
+ */
+export function audienceFromToken(token: string | undefined): Audience {
+  if (!token) return "visitor";
+  try {
+    const part = token.split(".")[1] ?? "";
+    const json = JSON.parse(Buffer.from(part, "base64url").toString("utf8")) as {
+      collection?: string;
+    };
+    if (json.collection === "users") return "staff";
+    if (json.collection === "members") return "member";
+  } catch {
+    // not a JWT
+  }
+  return "visitor";
+}

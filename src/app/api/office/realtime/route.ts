@@ -16,5 +16,8 @@ export async function GET(request: NextRequest) {
   ) {
     return NextResponse.json({ error: "Sign in" }, { status: 401 });
   }
-  return NextResponse.json(await realtimeVisitors(), { headers: { "cache-control": "no-store" } });
+  const staff = request.nextUrl.searchParams.get("staff") !== "0";
+  return NextResponse.json(await realtimeVisitors({ staff }), {
+    headers: { "cache-control": "no-store" },
+  });
 }
