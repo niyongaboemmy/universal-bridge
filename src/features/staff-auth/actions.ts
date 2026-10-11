@@ -9,6 +9,7 @@ import { passwordProblem } from "@/lib/auth/password";
 import { endSession, staffSession } from "@/lib/auth/staff-session";
 import { payload } from "@/lib/cms/payload";
 import { settings } from "@/lib/settings";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 export type SignInState = { error?: string; sent?: boolean; email?: string } | null;
 
@@ -59,7 +60,7 @@ export async function signIn(_prev: SignInState, form: FormData): Promise<SignIn
   (await cookies()).set(`${p.config.cookiePrefix}-token`, result.token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     expires: new Date(Date.now() + auth.tokenExpiration * 1000),
   });
@@ -157,7 +158,7 @@ export async function setStaffPassword(_prev: ResetState, form: FormData): Promi
   (await cookies()).set(`${p.config.cookiePrefix}-token`, result.token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: "/",
     expires: new Date(Date.now() + auth.tokenExpiration * 1000),
   });

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { beginSignIn, provider } from "@/lib/auth/sso";
 import { rateLimit } from "@/lib/security/rate-limit";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ export async function GET(
   res.cookies.set(`ub-sso-${p.id}`, cookie, {
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookies(),
     path: `/api/sso/${p.id}`,
     maxAge: 600,
   });

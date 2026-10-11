@@ -1,6 +1,7 @@
 import { APIError, type CollectionConfig, type FieldAccess, type PayloadRequest } from "payload";
 import { can, actingFromReq } from "@/access/roles";
 import { passwordProblem } from "@/lib/auth/password";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 const noField: FieldAccess = () => false;
 const managers: FieldAccess = ({ req }) =>
@@ -38,7 +39,7 @@ export const Members: CollectionConfig = {
     tokenExpiration: 60 * 60 * 24 * 14,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
-    cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    cookies: { sameSite: "Lax", secure: secureCookies() },
     // Branded, in the member's language (src/emails/account.tsx).
     forgotPassword: {
       expiration: 60 * 60 * 1000,

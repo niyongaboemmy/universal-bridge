@@ -4,6 +4,7 @@ import { allow, allowField, can, isSuperUser, superFieldOnly, actingFromReq } fr
 import { audit } from "@/lib/audit";
 import { passwordProblem } from "@/lib/auth/password";
 import { roleIds } from "./Roles";
+import { secureCookies } from "@/lib/auth/secure-cookies";
 
 function clientIp(req: PayloadRequest) {
   return (
@@ -44,7 +45,7 @@ export const Users: CollectionConfig = {
     tokenExpiration: 60 * 60 * 8,
     maxLoginAttempts: 5,
     lockTime: 15 * 60 * 1000,
-    cookies: { sameSite: "Lax", secure: process.env.NODE_ENV === "production" },
+    cookies: { sameSite: "Lax", secure: secureCookies() },
     // Branded emails (src/emails/account.tsx). The same Payload operation sends both the
     // invitation (from the outbox, context.invite) and "forgot password". Expiration is
     // set per call: 1 hour for a reset, 3 days for an invitation.

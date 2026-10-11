@@ -6,7 +6,10 @@ export const THIRD_PARTY_ORIGINS = {
   cal: "https://app.cal.com",
 } as const;
 
-export function buildCsp({ dev = false }: { dev?: boolean } = {}): string {
+export function buildCsp({
+  dev = false,
+  siteUrl = process.env.NEXT_PUBLIC_SITE_URL,
+}: { dev?: boolean; siteUrl?: string } = {}): string {
   const t = THIRD_PARTY_ORIGINS;
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
@@ -31,7 +34,9 @@ export function buildCsp({ dev = false }: { dev?: boolean } = {}): string {
     "manifest-src": ["'self'"],
   };
   const csp = Object.entries(directives).map(([k, v]) => `${k} ${v.join(" ")}`);
-  if (!dev) csp.push("upgrade-insecure-requests");
+  // Only for an https site: WebKit also upgrades http://localhost (a production build
+  // served locally or in CI), so styles and scripts would fail to load.
+  if (!dev && !/^http:\/\//.test(siteUrl ?? "")) csp.push("upgrade-insecure-requests");
   return csp.join("; ");
 }
 

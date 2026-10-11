@@ -284,6 +284,8 @@ test.describe("v2 V-1 hero shows what we build", () => {
 test.describe("v2 M-3 cross-page transitions", () => {
   test("same-origin navigations opt in to view transitions", async ({ page }) => {
     await page.goto("/");
+    const supported = await page.evaluate(() => "CSSViewTransitionRule" in window);
+    test.skip(!supported, "This browser ignores @view-transition (navigations still work)");
     const optedIn = await page.evaluate(() =>
       [...document.styleSheets].some((sheet) => {
         try {
@@ -363,6 +365,11 @@ test.describe("Ideas → Code → Impact story (desktop pin)", () => {
     test.skip(isMobile, "The pinned stage is desktop-only; phones show the visuals inline");
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
+    // The pinned stage is driven by scroll timelines; other browsers get the inline fallback.
+    const scrollTimelines = await page.evaluate(
+      () => CSS.supports("animation-timeline: view()") && CSS.supports("timeline-scope: --s0"),
+    );
+    test.skip(!scrollTimelines, "No scroll-driven animations here: visuals show inline instead");
     const steps = page.locator(".story__step");
     const opacities = () =>
       page
@@ -425,6 +432,10 @@ test.describe("Kigali globe is never missing", () => {
   test("with WebGL the live globe takes over from the frame", async ({ page, isMobile }) => {
     test.skip(isMobile, "The globe column is desktop/tablet only");
     await page.goto("/company/about");
+    const webgl2 = await page.evaluate(
+      () => !!document.createElement("canvas").getContext("webgl2"),
+    );
+    test.skip(!webgl2, "No WebGL2 in this browser: the pre-rendered globe stays (tested above)");
     await page.locator("[data-globe]").scrollIntoViewIfNeeded();
     await expect
       .poll(() => state(page), { timeout: 10_000 })
