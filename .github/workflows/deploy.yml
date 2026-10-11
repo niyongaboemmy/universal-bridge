@@ -95,6 +95,16 @@ jobs:
       # Pages are prerendered from this empty database; activate.sh refreshes
       # them from the real content right after the switch.
       - run: pnpm db:migrate
+      # Turbopack keeps its build work in .next/cache (Next 16.3+); restoring it
+      # makes the next build start warm. Keyed on the lockfile and sources; a
+      # partial match still helps, Turbopack invalidates what changed.
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('src/**', 'next.config.ts', 'public/**') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nextjs-${{ runner.os }}-
       - run: pnpm build
         env: { NEXT_OUTPUT: standalone }
       - run: bash deploy/cpanel/bundle.sh release
