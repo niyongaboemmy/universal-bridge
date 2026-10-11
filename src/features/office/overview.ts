@@ -139,7 +139,7 @@ export async function websiteData() {
       select path as label, count(distinct visitor)::int as value from page_views
       where created_at > now() - interval '30 days' group by 1 order by 2 desc limit 5`),
     rows<{ now: number; leads: number; visitors: number }>(sql`
-      select (select count(distinct visitor) from page_views where created_at > now() - interval '5 minutes')::int as now,
+      select (select count(distinct visitor) from page_views where updated_at > now() - interval '2 minutes')::int as now,
         (select count(*) from leads where created_at > now() - interval '30 days')::int as leads,
         (select count(distinct visitor) from page_views where created_at > now() - interval '30 days')::int as visitors`),
   ]);

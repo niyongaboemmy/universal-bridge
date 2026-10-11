@@ -739,7 +739,11 @@ export function EmployeeForm({
 }
 
 /** "On the site now": polls every 15 s while the tab is visible. */
-export function Realtime({ initial }: { initial: { now: number; pages: string[] } }) {
+export function Realtime({
+  initial,
+}: {
+  initial: { now: number; pages: { path: string; n: number }[] };
+}) {
   const [data, setData] = useState(initial);
   useEffect(() => {
     let timer = 0;
@@ -748,29 +752,43 @@ export function Realtime({ initial }: { initial: { now: number; pages: string[] 
         const res = await fetch("/api/office/realtime", { cache: "no-store" }).catch(() => null);
         if (res?.ok) setData(await res.json());
       }
-      timer = window.setTimeout(tick, 15000);
+      timer = window.setTimeout(tick, 10000);
     };
-    timer = window.setTimeout(tick, 15000);
+    timer = window.setTimeout(tick, 10000);
     return () => clearTimeout(timer);
   }, []);
   return (
     <div>
       <p className="flex items-center gap-2 text-body-sm text-fg-secondary">
         <span className="relative flex size-2.5">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60" />
-          <span className="relative inline-flex size-2.5 rounded-full bg-success" />
+          {data.now > 0 && (
+            <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60" />
+          )}
+          <span
+            className={cn(
+              "relative inline-flex size-2.5 rounded-full",
+              data.now > 0 ? "bg-success" : "bg-fg-muted",
+            )}
+          />
         </span>
         On the site now
       </p>
-      <p className="mt-1 font-display text-display-lg tabular-nums">{data.now}</p>
-      {data.pages.length > 0 && (
+      <p className="mt-1 font-display text-display-lg tabular-nums" aria-live="polite">
+        {data.now}
+      </p>
+      {data.pages.length > 0 ? (
         <ul className="mt-2 space-y-1 text-[0.8125rem] text-fg-secondary">
           {data.pages.map((p) => (
-            <li key={p} className="truncate">
-              {p}
+            <li key={p.path} className="flex items-center justify-between gap-2">
+              <span className="truncate">{p.path}</span>
+              <span className="shrink-0 tabular-nums text-fg-muted">{p.n}</span>
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="mt-2 text-[0.8125rem] text-fg-muted">
+          Counts visitors with a page open in the last 2 minutes.
+        </p>
       )}
     </div>
   );

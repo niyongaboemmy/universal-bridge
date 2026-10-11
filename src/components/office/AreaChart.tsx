@@ -156,6 +156,20 @@ export function AreaChart({
                 strokeWidth="2"
                 strokeLinecap="round"
               />
+              {/* A dot on each day with data: the smooth line between days isn't activity. */}
+              {data.length <= 45 &&
+                stacks[si]!.map(([lo, hi], i) =>
+                  hi > lo ? (
+                    <circle
+                      key={i}
+                      cx={x(i)}
+                      cy={y(hi)}
+                      r="2.5"
+                      fill={s.color}
+                      className="office-page"
+                    />
+                  ) : null,
+                )}
             </g>
           );
         })}
