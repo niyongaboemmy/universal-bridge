@@ -130,7 +130,7 @@ export function LoginForm({
                 onClick={() => setShow((s) => !s)}
                 aria-label={show ? "Hide password" : "Show password"}
                 aria-pressed={show}
-                className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+                className="absolute top-1/2 right-2 grid size-8 -translate-y-1/2 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
               >
                 {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
@@ -144,7 +144,7 @@ export function LoginForm({
           <button
             type="submit"
             disabled={signingIn}
-            className="group mt-1 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--accent-primary)_70%,transparent)] transition-[translate,box-shadow,opacity] hover:-translate-y-0.5 disabled:opacity-70"
+            className="group mt-1 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc] shadow-[0_8px_24px_-8px_color-mix(in_oklab,var(--accent-primary)_70%,transparent)] transition-[translate,box-shadow,opacity] hover:-translate-y-0.5 disabled:opacity-70"
           >
             {signingIn ? (
               <Loader2 className="size-4.5 animate-spin" aria-hidden />
@@ -170,7 +170,7 @@ export function LoginForm({
                   <a
                     key={p.id}
                     href={`/api/sso/${p.id}/start`}
-                    className="inline-flex h-11 items-center justify-center rounded-xl border border-strong text-body-sm font-medium hover:bg-[var(--bg-sunken)]"
+                    className="inline-flex h-11 items-center justify-center rounded-full border border-strong text-body-sm font-medium hover:bg-[var(--bg-sunken)]"
                   >
                     {p.label}
                   </a>
@@ -216,7 +216,7 @@ export function LoginForm({
           <button
             type="submit"
             disabled={resetting}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc] disabled:opacity-70"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#0145b8] font-semibold text-white hover:bg-[#0a52cc] disabled:opacity-70"
           >
             {resetting ? <Loader2 className="size-4.5 animate-spin" aria-hidden /> : "Send link"}
           </button>

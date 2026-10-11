@@ -177,7 +177,7 @@ export function Kanban({
                           </span>
                         )}
                       </div>
-                      <span className="relative grid size-7 shrink-0 place-items-center rounded-md text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg">
+                      <span className="relative grid size-7 shrink-0 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg">
                         <MoreHorizontal aria-hidden className="size-4" />
                         <select
                           aria-label={`Move ${item.title} to another stage`}

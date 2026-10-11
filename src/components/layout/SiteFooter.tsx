@@ -59,7 +59,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={s.network}
-                      className="inline-flex size-11 items-center justify-center rounded-md border border-subtle text-fg-secondary transition-[background-color,border-color,color,translate] duration-300 ease-standard hover:-translate-y-0.5 hover:border-transparent hover:bg-spark hover:text-on-spark [&_svg]:size-[1.125rem]"
+                      className="inline-flex size-11 items-center justify-center rounded-full border border-subtle text-fg-secondary transition-[background-color,border-color,color,translate] duration-300 ease-standard hover:-translate-y-0.5 hover:border-transparent hover:bg-spark hover:text-on-spark [&_svg]:size-[1.125rem]"
                     >
                       <SocialIcon network={s.network} />
                     </a>
@@ -201,7 +201,7 @@ export async function SiteFooter({ locale }: { locale: Locale }) {
             <a
               href="#"
               aria-label={t("backToTop")}
-              className="group inline-flex size-11 shrink-0 items-center justify-center self-start rounded-md border border-subtle text-fg transition-[background-color,border-color,color] duration-300 hover:border-transparent hover:bg-spark hover:text-on-spark md:self-auto"
+              className="group inline-flex size-11 shrink-0 items-center justify-center self-start rounded-full border border-subtle text-fg transition-[background-color,border-color,color] duration-300 hover:border-transparent hover:bg-spark hover:text-on-spark md:self-auto"
             >
               <ArrowUp
                 aria-hidden

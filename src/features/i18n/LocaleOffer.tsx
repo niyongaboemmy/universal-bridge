@@ -57,7 +57,7 @@ export function LocaleOffer({ offers }: { offers: Partial<Record<Locale, Offer>>
         type="button"
         onClick={dismiss}
         aria-label={offer.dismiss}
-        className="inline-flex size-11 items-center justify-center rounded-md text-fg-secondary hover:bg-accent-soft hover:text-accent"
+        className="inline-flex size-11 items-center justify-center rounded-full text-fg-secondary hover:bg-accent-soft hover:text-accent"
       >
         <X aria-hidden className="size-4" />
       </button>

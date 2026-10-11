@@ -478,7 +478,7 @@ export default async function Settings({
               key={s.key}
               href={`/office/settings?s=${s.key}`}
               aria-current={s.key === current.key ? "page" : undefined}
-              className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-body-sm whitespace-nowrap text-fg-secondary transition-colors hover:bg-surface hover:text-fg aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-1 [&_svg]:size-4 aria-[current=page]:[&_svg]:text-accent"
+              className="flex items-center gap-2.5 rounded-full px-3 py-2 text-body-sm whitespace-nowrap text-fg-secondary transition-colors hover:bg-surface hover:text-fg aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-1 [&_svg]:size-4 aria-[current=page]:[&_svg]:text-accent"
             >
               {s.icon}
               {s.label}
@@ -487,7 +487,7 @@ export default async function Settings({
           <Link
             href="/office/settings?s=environment"
             aria-current={sp.s === "environment" ? "page" : undefined}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-body-sm whitespace-nowrap text-fg-secondary transition-colors hover:bg-surface hover:text-fg aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-1 [&_svg]:size-4"
+            className="flex items-center gap-2.5 rounded-full px-3 py-2 text-body-sm whitespace-nowrap text-fg-secondary transition-colors hover:bg-surface hover:text-fg aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-1 [&_svg]:size-4"
           >
             <KeyRound />
             Server environment

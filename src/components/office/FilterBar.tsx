@@ -204,7 +204,7 @@ export function FilterBar({
         <button
           type="button"
           onClick={clear}
-          className="inline-flex h-10 items-center gap-1 rounded-[10px] px-3 text-[0.8125rem] font-medium text-accent hover:bg-accent-soft"
+          className="inline-flex h-10 items-center gap-1 rounded-full px-3 text-[0.8125rem] font-medium text-accent hover:bg-accent-soft"
         >
           <X className="size-3.5" aria-hidden /> Clear {active} filter{active === 1 ? "" : "s"}
         </button>

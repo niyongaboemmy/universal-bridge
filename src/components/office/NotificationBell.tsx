@@ -154,7 +154,7 @@ export function NotificationBell() {
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={badge ? `Notifications, ${badge} new` : "Notifications"}
-        className="relative grid size-10 shrink-0 place-items-center rounded-[10px] border border-subtle bg-surface shadow-1 transition-colors hover:border-strong"
+        className="relative grid size-10 shrink-0 place-items-center rounded-full border border-subtle bg-surface shadow-1 transition-colors hover:border-strong"
       >
         <Bell className={cn("size-[18px]", badge > 0 && "office-ring")} aria-hidden />
         {badge > 0 && (
@@ -196,7 +196,7 @@ export function NotificationBell() {
             <button
               type="button"
               onClick={() => markRead({ all: true })}
-              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[0.75rem] font-medium text-accent hover:bg-accent-soft"
+              className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-[0.75rem] font-medium text-accent hover:bg-accent-soft"
             >
               <CheckCheck className="size-3.5" aria-hidden /> Mark all read
             </button>

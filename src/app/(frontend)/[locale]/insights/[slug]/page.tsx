@@ -137,7 +137,7 @@ export default async function PostPage({ params }: Props) {
                 <a
                   key={tag}
                   href={localizePath(`/insights/tag/${tagSlug(tag)}`, locale)}
-                  className="inline-flex min-h-9 items-center rounded-md border border-subtle px-3 text-body-sm text-fg-secondary hover:border-accent hover:text-accent"
+                  className="inline-flex min-h-9 items-center rounded-full border border-subtle px-3 text-body-sm text-fg-secondary hover:border-accent hover:text-accent"
                 >
                   #{tag}
                 </a>

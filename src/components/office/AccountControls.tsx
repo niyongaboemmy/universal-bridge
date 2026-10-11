@@ -159,7 +159,7 @@ export function StaffActions({
           }
           aria-label={linkLabel}
           title={linkLabel}
-          className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+          className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
         >
           {invited ? <Mail className="size-4" /> : <KeyRound className="size-4" />}
         </button>
@@ -176,7 +176,7 @@ export function StaffActions({
           }
           aria-label="Unlock"
           title="Unlock"
-          className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
+          className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-[var(--bg-sunken)] hover:text-fg"
         >
           <LockOpen className="size-4" />
         </button>
@@ -199,7 +199,7 @@ export function StaffActions({
           }}
           aria-label="Remove account"
           title="Remove account"
-          className="grid size-8 place-items-center rounded-lg text-fg-muted hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)] hover:text-danger"
+          className="grid size-8 place-items-center rounded-full text-fg-muted hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)] hover:text-danger"
         >
           <Trash2 className="size-4" />
         </button>
@@ -255,7 +255,7 @@ export function InviteButton({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
+        className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[#0145b8] px-3.5 text-body-sm font-semibold text-white"
       >
         <UserPlus className="size-4" aria-hidden /> Add staff
       </button>
@@ -322,7 +322,7 @@ function InviteDialog({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="grid size-8 place-items-center rounded-lg hover:bg-[var(--bg-sunken)]"
+            className="grid size-8 place-items-center rounded-full hover:bg-[var(--bg-sunken)]"
           >
             <X className="size-4" />
           </button>
@@ -407,7 +407,7 @@ function InviteDialog({
                     type="button"
                     onClick={() => setShow((v) => !v)}
                     aria-label={show ? "Hide password" : "Show password"}
-                    className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-fg-muted hover:text-fg"
+                    className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full text-fg-muted hover:text-fg"
                   >
                     {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -419,7 +419,7 @@ function InviteDialog({
                     setShow(true);
                     setCopied(false);
                   }}
-                  className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-[10px] border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
+                  className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-strong px-3 text-[0.8125rem] font-medium hover:bg-[var(--bg-sunken)]"
                 >
                   <Wand2 className="size-4" aria-hidden /> Generate
                 </button>
@@ -431,7 +431,7 @@ function InviteDialog({
                       await navigator.clipboard?.writeText(pw).catch(() => null);
                       setCopied(true);
                     }}
-                    className="grid size-10 shrink-0 place-items-center rounded-[10px] border border-strong hover:bg-[var(--bg-sunken)]"
+                    className="grid size-10 shrink-0 place-items-center rounded-full border border-strong hover:bg-[var(--bg-sunken)]"
                   >
                     {copied ? (
                       <Check className="size-4 text-success" />

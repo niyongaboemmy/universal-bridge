@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
-// UI/UX §11/§13: lift on hover, press scales 0.97 and tightens the radius
-// (M3 Expressive shape change), arrow icon slides 4 px. 44 px min height (md).
+// UI/UX §11/§13: pill-shaped, lift on hover, press scales 0.97, arrow icon slides
+// 4 px. 44 px min height (md).
 // Long labels wrap on phones instead of overflowing the screen.
 // One primary-action colour site-wide (UI/UX audit P1-4): every primary button is
 // the orange "spark"; blue is for links, focus, selection and secondary actions.
@@ -10,8 +10,8 @@ const primaryAction =
 export const buttonVariants = cva(
   [
     "group/button relative inline-flex max-w-full shrink-0 items-center justify-center gap-2 text-center font-medium select-none sm:whitespace-nowrap",
-    "rounded-md transition-[background-color,color,box-shadow,transform,border-radius] duration-[var(--dur-fast)] ease-standard",
-    "active:scale-[0.97] active:rounded-[12px] disabled:pointer-events-none disabled:opacity-50",
+    "rounded-full transition-[background-color,color,box-shadow,transform] duration-[var(--dur-fast)] ease-standard",
+    "active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
     "[&_svg]:size-[1.1em] [&_svg]:shrink-0 [&_[data-arrow]]:transition-transform [&_[data-arrow]]:duration-[var(--dur-fast)] hover:[&_[data-arrow]]:translate-x-1",
   ],
   {

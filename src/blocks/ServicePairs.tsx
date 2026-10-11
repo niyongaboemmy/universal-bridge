@@ -170,7 +170,7 @@ export async function ServicePairs({ services, locale }: { services: Service[]; 
               type="button"
               data-dir={dir}
               aria-label={ask(dir)}
-              className="grid size-11 place-items-center rounded-md border border-subtle text-fg transition-[background-color,border-color,color,scale] duration-300 ease-standard hover:border-transparent hover:bg-spark hover:text-on-spark active:scale-95 [&_svg]:size-5"
+              className="grid size-11 place-items-center rounded-full border border-subtle text-fg transition-[background-color,border-color,color,scale] duration-300 ease-standard hover:border-transparent hover:bg-spark hover:text-on-spark active:scale-95 [&_svg]:size-5"
             >
               {dir === "prev" ? <ChevronLeft aria-hidden /> : <ChevronRight aria-hidden />}
             </button>

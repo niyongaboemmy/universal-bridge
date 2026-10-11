@@ -251,7 +251,7 @@ export default async function OfficeLayout({ children }: { children: ReactNode }
           <button
             type="submit"
             aria-label="Sign out"
-            className="grid size-8 place-items-center rounded-lg text-white/60 hover:bg-white/10 hover:text-white"
+            className="grid size-8 place-items-center rounded-full text-white/60 hover:bg-white/10 hover:text-white"
           >
             <LogOut className="size-4" aria-hidden />
           </button>

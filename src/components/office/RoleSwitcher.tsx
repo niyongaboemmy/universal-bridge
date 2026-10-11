@@ -44,7 +44,7 @@ export function RoleSwitcher({ roles, active }: { roles: R[]; active: number | n
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={`Working as ${current?.name ?? "all roles"}. Switch role`}
-        className="inline-flex h-10 max-w-48 items-center gap-2 rounded-[10px] border border-subtle bg-surface px-2.5 text-[0.8125rem] font-medium shadow-1 transition-colors hover:border-strong"
+        className="inline-flex h-10 max-w-48 items-center gap-2 rounded-full border border-subtle bg-surface px-2.5 text-[0.8125rem] font-medium shadow-1 transition-colors hover:border-strong"
       >
         {pending ? (
           <Loader2 className="size-4 animate-spin text-fg-muted" aria-hidden />

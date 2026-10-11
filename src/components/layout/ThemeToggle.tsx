@@ -60,7 +60,7 @@ export function ThemeToggle({ label, className }: { label: string; className?: s
       aria-pressed={mounted ? isDark : undefined}
       title={label}
       className={cn(
-        "relative inline-flex size-11 items-center justify-center rounded-md text-fg transition-colors hover:bg-accent-soft hover:text-accent",
+        "relative inline-flex size-11 items-center justify-center rounded-full text-fg transition-colors hover:bg-accent-soft hover:text-accent",
         className,
       )}
     >

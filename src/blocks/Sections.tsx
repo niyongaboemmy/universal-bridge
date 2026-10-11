@@ -174,7 +174,7 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
           </span>
           <span
             aria-hidden
-            className="flex size-12 shrink-0 items-center justify-center rounded-md bg-spark text-on-spark shadow-1 sm:hidden"
+            className="flex size-12 shrink-0 items-center justify-center rounded-full bg-spark text-on-spark shadow-1 sm:hidden"
           >
             <ArrowRight className="size-5" />
           </span>
@@ -198,7 +198,7 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
           <a
             key={slug}
             href={localizePath(`/contact?topic=sales&service=${slug}`, locale)}
-            className="cta-chip group/chip inline-flex min-h-10 items-center gap-2 rounded-md border border-subtle bg-surface px-3.5 text-body-sm text-fg-secondary transition-[border-color,color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-fg hover:shadow-2"
+            className="cta-chip group/chip inline-flex min-h-10 items-center gap-2 rounded-full border border-subtle bg-surface px-3.5 text-body-sm text-fg-secondary transition-[border-color,color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-fg hover:shadow-2"
             style={{ "--i": i } as React.CSSProperties}
           >
             <Icon

@@ -44,7 +44,7 @@ export function MobileMenu({
           if (supportsCommands()) return; // the native command already opens it
           if (!dialog.current?.open) dialog.current?.showModal();
         }}
-        className="inline-flex size-11 items-center justify-center rounded-md hover:bg-accent-soft hover:text-accent"
+        className="inline-flex size-11 items-center justify-center rounded-full hover:bg-accent-soft hover:text-accent"
       >
         <Menu aria-hidden className="size-6" />
       </button>
@@ -67,7 +67,7 @@ export function MobileMenu({
               onClick={() => {
                 if (!supportsCommands()) dialog.current?.close();
               }}
-              className="inline-flex size-11 items-center justify-center rounded-md hover:bg-accent-soft"
+              className="inline-flex size-11 items-center justify-center rounded-full hover:bg-accent-soft"
             >
               <X aria-hidden className="size-6" />
             </button>
