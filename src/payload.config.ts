@@ -101,7 +101,10 @@ export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL,
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URL },
+    // Kigali days: "today", per-day charts and due dates follow the company's clock, not
+    // the database server's (the cPanel server runs on America/New_York). Stored
+    // timestamps are absolute instants and are unaffected.
+    pool: { connectionString: process.env.DATABASE_URL, options: "-c timezone=Africa/Kigali" },
     // Dev pushes schema changes automatically; staging/prod use migrations (pnpm db:migrate).
     push: process.env.NODE_ENV !== "production" && process.env.PAYLOAD_PUSH !== "0",
     migrationDir: path.resolve(dirname, "migrations"),

@@ -251,6 +251,15 @@ export async function attention(user: OfficeUser) {
 
 export type Range = 7 | 30 | 90;
 
+/** This site's host: a referrer from it is a move within the site, not a source. */
+const OWN_HOST = (() => {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "").hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+})();
+
 export async function analytics(range: Range) {
   const since = sql`now() - (${range} * interval '1 day')`;
   const prev = sql`now() - (${range * 2} * interval '1 day')`;
@@ -271,12 +280,23 @@ export async function analytics(range: Range) {
       select to_char(d.day, 'YYYY-MM-DD') as day,
         coalesce(count(distinct v.visitor), 0)::int as visitors, count(v.id)::int as views
       from d left join page_views v on v.created_at::date = d.day group by d.day order by d.day`),
-    rows<{ visitors: number; views: number; sessions: number; bounces: number }>(sql`
-      with s as (select session, count(*) as n from page_views where created_at > ${since} and session is not null group by session)
+    rows<{
+      visitors: number;
+      views: number;
+      sessions: number;
+      bounces: number;
+      avg_seconds: number;
+    }>(sql`
+      with s as (
+        select session, count(*) as n,
+          extract(epoch from max(updated_at) - min(created_at)) as secs
+        from page_views where created_at > ${since} and session is not null group by session)
       select (select count(distinct visitor) from page_views where created_at > ${since})::int as visitors,
              (select count(*) from page_views where created_at > ${since})::int as views,
              (select count(*) from s)::int as sessions,
-             (select count(*) from s where n = 1)::int as bounces`),
+             -- A bounce: one page, left within 10 s (pings show who stayed to read).
+             (select count(*) from s where n = 1 and secs < 10)::int as bounces,
+             coalesce((select avg(secs) from s), 0)::float as avg_seconds`),
     rows<{ visitors: number; views: number }>(sql`
       select count(distinct visitor)::int as visitors, count(*)::int as views
       from page_views where created_at between ${prev} and ${since}`),
@@ -284,7 +304,7 @@ export async function analytics(range: Range) {
       select path as label, count(*)::int as value, count(distinct visitor)::int as visitors
       from page_views where created_at > ${since} group by path order by value desc limit 10`),
     rows<{ label: string; value: number }>(sql`
-      select coalesce(nullif(utm_source, ''), nullif(referrer, ''), 'Direct') as label, count(distinct visitor)::int as value
+      select coalesce(nullif(utm_source, ''), nullif(nullif(referrer, ''), ${OWN_HOST}), 'Direct') as label, count(distinct visitor)::int as value
       from page_views where created_at > ${since} group by 1 order by value desc limit 10`),
     rows<{ label: string; value: number }>(sql`
       select coalesce(nullif(country, ''), '—') as label, count(distinct visitor)::int as value
@@ -316,10 +336,19 @@ export async function analytics(range: Range) {
   };
 }
 
+/**
+ * Who is on the site now: visitors whose open page pinged (or loaded) in the last two
+ * minutes (the tracker pings every 30 s while the page is visible), and the page
+ * each of them is on.
+ */
 export async function realtimeVisitors() {
-  const [r] = await rows<{ now: number; pages: string[] | null }>(sql`
-    select count(distinct visitor)::int as now,
-      (select array_agg(path) from (select path from page_views where created_at > now() - interval '5 minutes' group by path order by count(*) desc limit 5) t) as pages
-    from page_views where created_at > now() - interval '5 minutes'`);
+  const [r] = await rows<{ now: number; pages: { path: string; n: number }[] | null }>(sql`
+    with live as (
+      select distinct on (visitor) visitor, path from page_views
+      where updated_at > now() - interval '2 minutes'
+      order by visitor, updated_at desc)
+    select (select count(*) from live)::int as now,
+      (select json_agg(t) from (
+        select path, count(*)::int as n from live group by path order by n desc, path limit 5) t) as pages`);
   return { now: r?.now ?? 0, pages: r?.pages ?? [] };
 }

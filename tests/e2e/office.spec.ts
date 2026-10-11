@@ -1,5 +1,12 @@
 import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
-import { adminToken, loginStaff, staffHeaders, stubGoogleAnalytics, uniqueEmail } from "./helpers";
+import {
+  adminToken,
+  loginStaff,
+  staffHeaders,
+  stubGoogleAnalytics,
+  testClientIp,
+  uniqueEmail,
+} from "./helpers";
 
 // Company dashboard (/office): access, pipelines, records, projects, people, analytics.
 
@@ -267,7 +274,7 @@ test.describe("Company dashboard", () => {
     expect(await count()).toBe(start);
     await declined.close();
 
-    const consented = await browser.newContext();
+    const consented = await browser.newContext({ extraHTTPHeaders: testClientIp() });
     await stubGoogleAnalytics(consented);
     await consented.addInitScript(() =>
       localStorage.setItem(
@@ -296,6 +303,80 @@ test.describe("Company dashboard", () => {
     expect(latest.utmSource).toBe("e2e");
     expect(latest.visitor).toMatch(/^[0-9a-f]{16}$/); // a daily hash, not an IP
     expect(JSON.stringify(latest)).not.toMatch(/\d+\.\d+\.\d+\.\d+/);
+  });
+
+  test("analytics: page changes, country from the time zone, live visitors", async ({
+    browser,
+    request,
+    isMobile,
+  }) => {
+    test.skip(isMobile, "one run is enough");
+    const headers = await staffHeaders(request);
+    const visitor = await browser.newContext({
+      // Each test visitor is a different person (own address), like real traffic.
+      extraHTTPHeaders: testClientIp(),
+      timezoneId: "Africa/Kigali",
+      userAgent:
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+    });
+    await stubGoogleAnalytics(visitor);
+    await visitor.addInitScript(() =>
+      localStorage.setItem(
+        "ub-consent",
+        JSON.stringify({ v: 1, analytics: true, at: new Date().toISOString() }),
+      ),
+    );
+    const page = await visitor.newPage();
+    const session = () =>
+      page.evaluate(() => (sessionStorage.getItem("ub-sid") ?? "").split(":")[0] ?? "");
+    try {
+      await page.goto(`${SITE}/academy`);
+      await expect.poll(session).not.toBe("");
+      const sid = await session();
+      const stored = async () =>
+        (
+          (
+            await (
+              await request.get(
+                `/api/page-views?limit=10&sort=createdAt&where[session][equals]=${sid}`,
+                { headers },
+              )
+            ).json()
+          ).docs as { path: string }[]
+        ).map((v) => v.path);
+      // The first view is stored before moving on (its beacon must not be lost).
+      await expect.poll(stored).toEqual(["/academy"]);
+      // A click inside the site (client-side navigation) is a new page view.
+      await page.locator('main a[href$="/academy/internships"]').first().click();
+      await page.waitForURL(/\/academy\/internships/);
+      const views = async () =>
+        (
+          await (
+            await request.get(
+              `/api/page-views?limit=10&sort=createdAt&where[session][equals]=${sid}`,
+              { headers },
+            )
+          ).json()
+        ).docs as { path: string; country: string; referrer: string | null }[];
+      await expect
+        .poll(async () => (await views()).map((v) => v.path))
+        .toEqual(["/academy", "/academy/internships"]);
+      for (const v of await views()) {
+        expect(v.country).toBe("RW"); // from the time zone, no IP lookup
+        expect(v.referrer ?? "").toBe(""); // moving within the site is not a source
+      }
+      // Open and visible → counted as on the site now.
+      const live = async () =>
+        (await (await request.get("/api/office/realtime", { headers })).json()) as {
+          now: number;
+          pages: { path: string; n: number }[];
+        };
+      await expect
+        .poll(async () => (await live()).pages.map((p) => p.path))
+        .toContain("/academy/internships");
+    } finally {
+      await visitor.close();
+    }
   });
 
   test("lists: search, filters, sort, page size, pagination and clear (URL-driven)", async ({

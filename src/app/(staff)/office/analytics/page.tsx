@@ -11,6 +11,19 @@ export const metadata = { title: "Website analytics" };
 const COUNTRY = new Intl.DisplayNames(["en"], { type: "region" });
 const LANG: Record<string, string> = { en: "English", fr: "French", rw: "Kinyarwanda" };
 const pct = (a: number, b: number) => (b ? Math.round((a / b) * 1000) / 10 : 0);
+/** 🇷🇼 from "RW" (regional indicator letters). */
+const flag = (code: string) =>
+  /^[A-Z]{2}$/.test(code)
+    ? String.fromCodePoint(...[...code].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65))
+    : "";
+/** "45 s", "3 min 20 s", "1 h 05 min". */
+function duration(seconds: number) {
+  const s = Math.round(seconds);
+  if (s < 60) return `${s} s`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m} min ${String(s % 60).padStart(2, "0")} s`;
+  return `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min`;
+}
 
 export default async function Analytics({
   searchParams,
@@ -31,7 +44,8 @@ export default async function Analytics({
         subtitle={
           <span className="inline-flex items-center gap-1.5">
             <ShieldCheck className="size-4 text-success" aria-hidden /> First-party and cookieless:
-            counted only for visitors who accept analytics. No IP addresses stored.
+            counted only for visitors who accept analytics. No IP addresses stored; the country
+            comes from the browser&apos;s time zone. Days are Kigali days.
           </span>
         }
         actions={
@@ -52,7 +66,7 @@ export default async function Analytics({
           label="Visitors"
           value={fmtNumber(totals.visitors)}
           change={delta(totals.visitors, previous.visitors)}
-          hint={`vs previous ${range} days`}
+          hint={`unique per day · vs previous ${range} days`}
         />
         <Stat
           label="Page views"
@@ -62,12 +76,12 @@ export default async function Analytics({
         <Stat
           label="Sessions"
           value={fmtNumber(totals.sessions)}
-          hint={`${totals.sessions ? (totals.views / totals.sessions).toFixed(1) : "0"} pages per session`}
+          hint={`${totals.sessions ? (totals.views / totals.sessions).toFixed(1) : "0"} pages · ${duration(totals.avg_seconds)} per visit`}
         />
         <Stat
           label="Bounce rate"
           value={`${pct(totals.bounces, totals.sessions)}%`}
-          hint="sessions with one page"
+          hint="one page, left within 10 s"
         />
         <Stat
           label="Requests & applications"
@@ -122,7 +136,10 @@ export default async function Analytics({
         <Card title="Countries">
           <BarList
             items={a.countries.map((c) => ({
-              label: c.label === "—" ? "Unknown" : (COUNTRY.of(c.label) ?? c.label),
+              label:
+                c.label === "—"
+                  ? "Unknown"
+                  : `${flag(c.label)} ${COUNTRY.of(c.label) ?? c.label}`.trim(),
               value: c.value,
             }))}
             format={fmtNumber}

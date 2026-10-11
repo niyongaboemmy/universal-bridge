@@ -6,7 +6,7 @@ import { sameSiteHeaders } from "@/lib/live-edit/session";
 
 export const dynamic = "force-dynamic";
 
-// Company dashboard: visitors in the last 5 minutes (polled by the analytics page).
+// Company dashboard: visitors with a page open now (polled by the analytics page).
 export async function GET(request: NextRequest) {
   const { user } = await (await payload()).auth({ headers: sameSiteHeaders(request.headers) });
   if (

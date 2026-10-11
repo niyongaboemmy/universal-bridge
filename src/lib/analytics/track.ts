@@ -2,10 +2,13 @@
  * First-party page views for the Company dashboard. Loaded only after the
  * visitor accepts analytics (CookieConsent). No cookies: a session id lives in
  * sessionStorage for 30 minutes of inactivity; the server derives a daily,
- * non-reversible visitor hash. Client-side navigations are counted too.
+ * non-reversible visitor hash. Client-side navigations are counted too. While the
+ * page is open and visible, a ping every 30 s tells the office who is on the site
+ * now and how long visits last. The time zone (not the IP) gives the country.
  */
 const SESSION_KEY = "ub-sid";
 const SESSION_MS = 30 * 60 * 1000;
+const PING_MS = 30_000;
 
 function sessionId() {
   try {
@@ -19,26 +22,52 @@ function sessionId() {
   }
 }
 
+function timeZone() {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Page views and pings go out with fetch (keepalive). sendBeacon is kept for the last
+ * ping when the tab is hidden or closing, which is what it is for; for ordinary
+ * requests it is less dependable (Safari has dropped beacon bodies).
+ */
+function post(data: Record<string, string>, leaving = false) {
+  const body = JSON.stringify(data);
+  if (
+    leaving &&
+    navigator.sendBeacon?.("/api/collect", new Blob([body], { type: "application/json" }))
+  )
+    return;
+  void fetch("/api/collect", {
+    method: "POST",
+    body,
+    keepalive: true,
+    headers: { "content-type": "application/json" },
+  }).catch(() => {});
+}
+
 let last = "";
 function send() {
   const key = location.pathname + location.search;
   if (key === last) return;
   last = key;
-  const body = JSON.stringify({
+  post({
     p: location.pathname,
     q: location.search,
     r: document.referrer,
     l: document.documentElement.lang,
     s: sessionId(),
+    z: timeZone(),
   });
-  if (!navigator.sendBeacon?.("/api/collect", new Blob([body], { type: "application/json" }))) {
-    void fetch("/api/collect", {
-      method: "POST",
-      body,
-      keepalive: true,
-      headers: { "content-type": "application/json" },
-    });
-  }
+}
+
+/** "Still here": refreshes the current view, no new page view. */
+function ping(leaving = false) {
+  post({ t: "ping", p: location.pathname, s: sessionId() }, leaving);
 }
 
 export function startTracking() {
@@ -54,6 +83,11 @@ export function startTracking() {
     };
   }
   addEventListener("popstate", () => setTimeout(send, 0));
+  setInterval(() => document.visibilityState === "visible" && ping(), PING_MS);
+  // Leaving or switching tabs: one last ping so the visit's length is right.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") ping(true);
+  });
 }
 
 function loadPlausible(domain: string) {
