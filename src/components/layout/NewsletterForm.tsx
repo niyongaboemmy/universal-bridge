@@ -3,6 +3,7 @@
 import { ArrowRight, Check } from "lucide-react";
 import { useActionState } from "react";
 import { HONEYPOT_FIELD, initialFormState, type FormState } from "@/lib/forms/types";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 /** Footer newsletter sign-up (double opt-in). Plain form: works without JavaScript. */
 export function NewsletterForm({
@@ -39,7 +40,7 @@ export function NewsletterForm({
       </p>
       <p className="mt-1 text-body-sm text-fg-secondary">{copy.lead}</p>
       {/* One pill: the field and the button share a border, which lights up on focus. */}
-      <div className="mt-5 flex items-center gap-1 rounded-full border border-strong bg-surface p-1 pl-5 transition-[border-color,box-shadow] duration-300 focus-within:border-accent focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent-primary)_18%,transparent)]">
+      <div className="mt-5 flex items-center gap-1 rounded-[calc(var(--radius-md)+4px)] border border-strong bg-surface p-1 pl-5 transition-[border-color,box-shadow] duration-300 focus-within:border-accent focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent-primary)_18%,transparent)]">
         <label className="sr-only" htmlFor="newsletter-email">
           {copy.label}
         </label>
@@ -57,13 +58,10 @@ export function NewsletterForm({
           type="submit"
           disabled={pending}
           aria-label={copy.submit}
-          className="group/sub inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-spark px-4 font-medium text-on-spark transition-colors hover:bg-spark-hover disabled:opacity-60 sm:px-5"
+          className={buttonVariants()}
         >
           <span className="hidden sm:inline">{copy.submit}</span>
-          <ArrowRight
-            aria-hidden
-            className="size-4 transition-transform group-hover/sub:translate-x-0.5"
-          />
+          <ArrowRight aria-hidden data-arrow />
         </button>
       </div>
       <label className="mt-3 flex items-start gap-2 pl-1 text-[0.8125rem] text-fg-secondary">

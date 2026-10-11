@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import { BridgeGame } from "@/features/not-found/BridgeGame";
 import { Link } from "@/i18n/link";
 import { localizePath, type Locale } from "@/i18n/routing";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 // FR-GL-09: branded 404 with the broken-bridge interaction and helpful links.
 export default async function NotFound() {
@@ -43,7 +44,7 @@ export default async function NotFound() {
                 <Link
                   href={href}
                   locale={locale}
-                  className="inline-flex min-h-11 items-center rounded-full border border-subtle px-4 text-body-sm hover:border-accent hover:text-accent"
+                  className={buttonVariants({ variant: "secondary", size: "sm" })}
                 >
                   {label}
                 </Link>

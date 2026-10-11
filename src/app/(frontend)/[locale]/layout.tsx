@@ -57,7 +57,9 @@ export const viewport: Viewport = {
 // Lite mode (no CSS animation) only for data saver or a genuine 2G link. Chrome
 // often estimates ordinary Wi-Fi as "3g", which used to switch every animation
 // off; 3G now only skips the canvas/WebGL effects (lib/motion/can-use-rich-effects).
-const liteModeScript = `try{var c=navigator.connection;var s=localStorage.getItem('ub-lite');if(s==='on'||(s!=='off'&&c&&(c.saveData||/2g/.test(c.effectiveType||''))))document.documentElement.dataset.lite='on'}catch(e){}`;
+// Lite mode (calm motion) on a slow link, with Save-Data, or on a phone: decorative loops and
+// scroll-linked animations cost frames and jump the layout on small touch screens.
+const liteModeScript = `try{var c=navigator.connection;var s=localStorage.getItem('ub-lite');if(s==='on'||(s!=='off'&&((c&&(c.saveData||/2g/.test(c.effectiveType||'')))||matchMedia('(max-width: 767px)').matches)))document.documentElement.dataset.lite='on'}catch(e){}`;
 
 async function localeOffers() {
   const pick = async (l: "fr" | "rw") => {

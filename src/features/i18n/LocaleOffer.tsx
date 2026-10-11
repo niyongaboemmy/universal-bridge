@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 import { localizePath, type Locale } from "@/i18n/routing";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 type Offer = { text: string; action: string; dismiss: string };
 
@@ -48,7 +49,7 @@ export function LocaleOffer({ offers }: { offers: Partial<Record<Locale, Offer>>
       <a
         href={localizePath(window.location.pathname, target) + window.location.search}
         onClick={dismiss}
-        className="inline-flex min-h-11 items-center rounded-md bg-spark px-3 font-semibold text-on-spark"
+        className={buttonVariants({ size: "sm" })}
       >
         {offer.action}
       </a>
@@ -56,7 +57,7 @@ export function LocaleOffer({ offers }: { offers: Partial<Record<Locale, Offer>>
         type="button"
         onClick={dismiss}
         aria-label={offer.dismiss}
-        className="inline-flex size-11 items-center justify-center rounded-full text-fg-secondary hover:bg-accent-soft hover:text-accent"
+        className="inline-flex size-11 items-center justify-center rounded-md text-fg-secondary hover:bg-accent-soft hover:text-accent"
       >
         <X aria-hidden className="size-4" />
       </button>

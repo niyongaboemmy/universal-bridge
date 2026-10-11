@@ -35,6 +35,7 @@ import { ServicePairs } from "./ServicePairs";
 import { ProductSpotlight } from "./ProductSpotlight";
 import { RAIL, RAIL_ITEM } from "@/lib/grid";
 import type { BlockProps } from "./types";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 const href = (path: string | null | undefined, locale: BlockProps<"hero">["locale"]) =>
   path ? localizePath(path, locale) : undefined;
@@ -159,7 +160,12 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
             </span>
           </span>
           {/* Desktop: the action written out on a spark button. Phones: the arrow alone. */}
-          <span className="hidden min-h-12 shrink-0 items-center gap-2 rounded-full bg-spark px-6 text-[0.9375rem] font-medium text-on-spark shadow-1 transition-[background-color,box-shadow] duration-300 group-hover:bg-spark-hover group-hover:shadow-2 sm:inline-flex">
+          <span
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "hidden group-hover:bg-spark-hover group-hover:shadow-2 sm:inline-flex",
+            )}
+          >
             {ask("start")}
             <ArrowRight
               aria-hidden
@@ -168,7 +174,7 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
           </span>
           <span
             aria-hidden
-            className="flex size-12 shrink-0 items-center justify-center rounded-full bg-spark text-on-spark shadow-1 sm:hidden"
+            className="flex size-12 shrink-0 items-center justify-center rounded-md bg-spark text-on-spark shadow-1 sm:hidden"
           >
             <ArrowRight className="size-5" />
           </span>
@@ -192,7 +198,7 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
           <a
             key={slug}
             href={localizePath(`/contact?topic=sales&service=${slug}`, locale)}
-            className="cta-chip group/chip inline-flex min-h-10 items-center gap-2 rounded-full border border-subtle bg-surface px-3.5 text-body-sm text-fg-secondary transition-[border-color,color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-fg hover:shadow-2"
+            className="cta-chip group/chip inline-flex min-h-10 items-center gap-2 rounded-md border border-subtle bg-surface px-3.5 text-body-sm text-fg-secondary transition-[border-color,color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-accent hover:text-fg hover:shadow-2"
             style={{ "--i": i } as React.CSSProperties}
           >
             <Icon
@@ -204,7 +210,7 @@ export async function ServicesGridBlock({ block, locale, edit }: BlockProps<"ser
         ))}
         <a
           href={localizePath("/book", locale)}
-          className="inline-flex min-h-10 items-center gap-2 rounded-full px-3.5 text-body-sm font-medium text-accent transition-colors hover:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-accent")}
         >
           <CalendarDays aria-hidden className="size-4" />
           {ask("book")}

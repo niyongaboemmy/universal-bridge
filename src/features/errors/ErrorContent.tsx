@@ -3,6 +3,7 @@
 import { RotateCcw } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 // FR-GL-09: branded 500 content. Loaded only when an error happens (see app/[locale]/error.tsx).
 const COPY = {
@@ -53,23 +54,16 @@ export default function ErrorContent({
         <h1 className="mt-4 text-display-lg">{t.title}</h1>
         <p className="mt-4 text-body-lg text-fg-secondary">{t.body}</p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <button
-            type="button"
-            onClick={reset}
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-spark px-6 font-medium text-on-spark transition-colors hover:bg-spark-hover"
-          >
+          <button type="button" onClick={reset} className={buttonVariants({ size: "lg" })}>
             <RotateCcw aria-hidden className="size-4" />
             {t.retry}
           </button>
-          <a
-            href={prefix || "/"}
-            className="inline-flex min-h-12 items-center rounded-full border border-strong px-6 font-medium hover:border-accent"
-          >
+          <a href={prefix || "/"} className={buttonVariants({ variant: "secondary", size: "lg" })}>
             {t.home}
           </a>
           <a
             href={`${prefix}/contact`}
-            className="inline-flex min-h-12 items-center rounded-full px-4 font-medium text-accent"
+            className={buttonVariants({ variant: "ghost", size: "lg" })}
           >
             {t.contact}
           </a>

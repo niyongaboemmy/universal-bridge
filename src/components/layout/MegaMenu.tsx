@@ -114,7 +114,7 @@ export function MegaMenu({
           const isOpen = open === index;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
           const triggerClass = cn(
-            "inline-flex h-10 items-center gap-1 rounded-full px-3.5 text-[0.9375rem] font-medium transition-colors",
+            "inline-flex h-10 items-center gap-1 rounded-md px-3.5 text-[0.9375rem] font-medium transition-colors",
             "hover:bg-accent-soft hover:text-accent",
             (isOpen || active) && "text-accent",
             isOpen && "bg-accent-soft",

@@ -6,6 +6,7 @@ import { Turnstile } from "@/components/forms/Turnstile";
 import { initialFormState } from "@/lib/forms/types";
 import { cn } from "@/lib/utils";
 import { applyToOpening } from "./actions";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export type ApplyCopy = {
   name: string;
@@ -206,7 +207,7 @@ export function ApplyForm({
                   {opts.map((o) => (
                     <label
                       key={o}
-                      className="cursor-pointer rounded-full border border-strong px-3.5 py-1.5 text-body-sm transition-colors has-checked:border-accent has-checked:bg-accent-soft has-checked:text-accent"
+                      className="cursor-pointer rounded-md border border-strong px-3.5 py-1.5 text-body-sm transition-colors has-checked:border-accent has-checked:bg-accent-soft has-checked:text-accent"
                     >
                       <input
                         type="radio"
@@ -282,7 +283,7 @@ export function ApplyForm({
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex h-12 items-center justify-center rounded-full bg-[var(--accent-spark)] px-8 font-semibold text-[var(--ub-navy-900)] transition-[translate,opacity] hover:-translate-y-0.5 disabled:opacity-70 sm:justify-self-start"
+        className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
       >
         {pending ? copy.submitting : copy.submit}
       </button>

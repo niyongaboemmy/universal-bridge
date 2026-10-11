@@ -7,7 +7,7 @@ export function DismissAnnouncement({ storageKey, label }: { storageKey: string;
     <button
       type="button"
       aria-label={label}
-      className="absolute right-2 inline-flex size-9 items-center justify-center rounded-full hover:bg-white/15"
+      className="absolute right-2 inline-flex size-9 items-center justify-center rounded-md hover:bg-white/15"
       onClick={() => {
         try {
           localStorage.setItem(storageKey, "1");

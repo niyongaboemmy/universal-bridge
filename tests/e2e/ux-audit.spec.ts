@@ -229,7 +229,9 @@ test.describe("Home services pillar carousel", () => {
 
   test("arrows step through pillars, manual navigation pauses auto-advance, and it moves on by itself", async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, "Phones start paused (calm motion); covered by the next test");
     await page.goto("/");
     const carousel = page.locator(".svc-pairs");
     await carousel.scrollIntoViewIfNeeded();
@@ -244,6 +246,26 @@ test.describe("Home services pillar carousel", () => {
     await expect(carousel).toHaveAttribute("data-paused", "");
     await expect(carousel.locator("nav a").nth(2)).toHaveAttribute("aria-current", "true");
     await carousel.getByRole("button", { name: "Previous services" }).click();
+    await expect(count).toHaveText("02");
+    await carousel.getByRole("button", { name: "Resume auto-scroll" }).click();
+    await expect(carousel).not.toHaveAttribute("data-paused", "");
+  });
+});
+
+test.describe("Home services carousel on phones", () => {
+  test("starts paused so nothing moves while reading; swipe arrows and play still work", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "phones only");
+    await page.goto("/");
+    const carousel = page.locator(".svc-pairs");
+    await carousel.scrollIntoViewIfNeeded();
+    await expect(carousel).toHaveAttribute("data-ready", "");
+    await expect(carousel).toHaveAttribute("data-paused", "");
+    const count = carousel.locator("[data-count]");
+    await expect(count).toHaveText("01");
+    await carousel.getByRole("button", { name: "Next services" }).click();
     await expect(count).toHaveText("02");
     await carousel.getByRole("button", { name: "Resume auto-scroll" }).click();
     await expect(carousel).not.toHaveAttribute("data-paused", "");
@@ -459,7 +481,9 @@ test.describe("Services request: quick picks", () => {
 test.describe("Animations keep running on a 3G estimate", () => {
   test("Chrome reporting 3g does not switch Lite mode on; data saver still does", async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, "Phones always use calm motion (Lite mode); checked below");
     const fake = (type: string, saveData: boolean) =>
       page.addInitScript(
         ([t, s]) =>
@@ -473,6 +497,18 @@ test.describe("Animations keep running on a 3G estimate", () => {
     await page.goto("/");
     await expect(page.locator("html")).not.toHaveAttribute("data-lite", "on");
     expect(await page.evaluate(() => document.getAnimations().length)).toBeGreaterThan(10);
+  });
+
+  test("phones get calm motion (Lite mode) unless the visitor turned it off", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "phones only");
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-lite", "on");
+    await page.evaluate(() => localStorage.setItem("ub-lite", "off"));
+    await page.reload();
+    await expect(page.locator("html")).not.toHaveAttribute("data-lite", "on");
   });
 
   test("data saver switches Lite mode on", async ({ page }) => {
