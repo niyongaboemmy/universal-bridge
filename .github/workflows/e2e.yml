@@ -1,0 +1,58 @@
+name: E2E
+
+# End-to-end + accessibility tests (Playwright, all browsers, ~1 hour). They run
+# locally before merging; this workflow is manual only (Actions → E2E → Run
+# workflow) as an optional second check on GitHub. It never blocks deploys.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or commit to test
+        required: true
+        default: main
+
+env:
+  NODE_VERSION: 22
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/universal_bridge
+  PAYLOAD_SECRET: ci-only-secret-not-used-anywhere-else
+  NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  REVALIDATE_SECRET: ci
+  CRON_SECRET: ci
+  RATE_LIMIT_SALT: ci
+  NEXT_PUBLIC_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+  TURNSTILE_SECRET_KEY: 1x0000000000000000000000000000000AA
+  EMAIL_FROM: "Universal Bridge <hello@universalbridge.rw>"
+  # Test-only signing key (never used outside CI).
+  CERT_SIGNING_KEY: 4c0c3e1f2a6b7d8e9f00112233445566778899aabbccddeeff00112233445566 # gitleaks:allow (test-only)
+  # ^ exactly 64 hex characters (32 bytes); a wrong length makes certificate issuing fail.
+
+jobs:
+  e2e:
+    name: Build + E2E + a11y
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: universal_bridge }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: "${{ inputs.ref }}" }
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm db:seed
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium webkit firefox
+      - name: Start production server
+        run: pnpm start & npx wait-on http://localhost:3000/api/health --timeout 120000
+      - name: Bundle budget (NFR-PERF-03)
+        run: pnpm exec tsx scripts/check-bundle.ts
+      - run: pnpm test:e2e
+        env: { E2E_BASE_URL: "http://localhost:3000", CI: "true" }
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with: { name: playwright-report, path: playwright-report, retention-days: 7 }

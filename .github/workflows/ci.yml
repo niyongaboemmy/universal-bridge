@@ -69,38 +69,9 @@ jobs:
           # tests/integration/setup-db.ts reads this; the default has no password.
           TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/universal_bridge
 
-  e2e:
-    name: Build + E2E + a11y
-    runs-on: ubuntu-latest
-    needs: [static]
-    services:
-      postgres:
-        image: postgres:16
-        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: universal_bridge }
-        ports: ["5432:5432"]
-        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm db:migrate
-      - run: pnpm db:seed
-      - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium webkit firefox
-      - name: Start production server
-        run: pnpm start & npx wait-on http://localhost:3000/api/health --timeout 120000
-      - name: Bundle budget (NFR-PERF-03)
-        run: pnpm exec tsx scripts/check-bundle.ts
-      - run: pnpm test:e2e
-        env: { E2E_BASE_URL: "http://localhost:3000", CI: "true" }
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with: { name: playwright-report, path: playwright-report, retention-days: 7 }
-
   # Auto-deploy: every push to main that passes static checks and unit/
-  # integration tests. E2E runs alongside as a signal and doesn't block it.
+  # integration tests. E2E runs locally before merging (and on demand in the
+  # "E2E" workflow), not here.
   deploy:
     name: Deploy
     needs: [static, test]
