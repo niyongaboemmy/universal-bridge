@@ -229,7 +229,9 @@ test.describe("Home services pillar carousel", () => {
 
   test("arrows step through pillars, manual navigation pauses auto-advance, and it moves on by itself", async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, "Phones start paused (calm motion); covered by the next test");
     await page.goto("/");
     const carousel = page.locator(".svc-pairs");
     await carousel.scrollIntoViewIfNeeded();
@@ -244,6 +246,26 @@ test.describe("Home services pillar carousel", () => {
     await expect(carousel).toHaveAttribute("data-paused", "");
     await expect(carousel.locator("nav a").nth(2)).toHaveAttribute("aria-current", "true");
     await carousel.getByRole("button", { name: "Previous services" }).click();
+    await expect(count).toHaveText("02");
+    await carousel.getByRole("button", { name: "Resume auto-scroll" }).click();
+    await expect(carousel).not.toHaveAttribute("data-paused", "");
+  });
+});
+
+test.describe("Home services carousel on phones", () => {
+  test("starts paused so nothing moves while reading; swipe arrows and play still work", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "phones only");
+    await page.goto("/");
+    const carousel = page.locator(".svc-pairs");
+    await carousel.scrollIntoViewIfNeeded();
+    await expect(carousel).toHaveAttribute("data-ready", "");
+    await expect(carousel).toHaveAttribute("data-paused", "");
+    const count = carousel.locator("[data-count]");
+    await expect(count).toHaveText("01");
+    await carousel.getByRole("button", { name: "Next services" }).click();
     await expect(count).toHaveText("02");
     await carousel.getByRole("button", { name: "Resume auto-scroll" }).click();
     await expect(carousel).not.toHaveAttribute("data-paused", "");
@@ -284,6 +306,8 @@ test.describe("v2 V-1 hero shows what we build", () => {
 test.describe("v2 M-3 cross-page transitions", () => {
   test("same-origin navigations opt in to view transitions", async ({ page }) => {
     await page.goto("/");
+    const supported = await page.evaluate(() => "CSSViewTransitionRule" in window);
+    test.skip(!supported, "This browser ignores @view-transition (navigations still work)");
     const optedIn = await page.evaluate(() =>
       [...document.styleSheets].some((sheet) => {
         try {
@@ -363,6 +387,11 @@ test.describe("Ideas → Code → Impact story (desktop pin)", () => {
     test.skip(isMobile, "The pinned stage is desktop-only; phones show the visuals inline");
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
+    // The pinned stage is driven by scroll timelines; other browsers get the inline fallback.
+    const scrollTimelines = await page.evaluate(
+      () => CSS.supports("animation-timeline: view()") && CSS.supports("timeline-scope: --s0"),
+    );
+    test.skip(!scrollTimelines, "No scroll-driven animations here: visuals show inline instead");
     const steps = page.locator(".story__step");
     const opacities = () =>
       page
@@ -425,6 +454,10 @@ test.describe("Kigali globe is never missing", () => {
   test("with WebGL the live globe takes over from the frame", async ({ page, isMobile }) => {
     test.skip(isMobile, "The globe column is desktop/tablet only");
     await page.goto("/company/about");
+    const webgl2 = await page.evaluate(
+      () => !!document.createElement("canvas").getContext("webgl2"),
+    );
+    test.skip(!webgl2, "No WebGL2 in this browser: the pre-rendered globe stays (tested above)");
     await page.locator("[data-globe]").scrollIntoViewIfNeeded();
     await expect
       .poll(() => state(page), { timeout: 10_000 })
@@ -448,7 +481,9 @@ test.describe("Services request: quick picks", () => {
 test.describe("Animations keep running on a 3G estimate", () => {
   test("Chrome reporting 3g does not switch Lite mode on; data saver still does", async ({
     page,
+    isMobile,
   }) => {
+    test.skip(isMobile, "Phones always use calm motion (Lite mode); checked below");
     const fake = (type: string, saveData: boolean) =>
       page.addInitScript(
         ([t, s]) =>
@@ -462,6 +497,18 @@ test.describe("Animations keep running on a 3G estimate", () => {
     await page.goto("/");
     await expect(page.locator("html")).not.toHaveAttribute("data-lite", "on");
     expect(await page.evaluate(() => document.getAnimations().length)).toBeGreaterThan(10);
+  });
+
+  test("phones get calm motion (Lite mode) unless the visitor turned it off", async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, "phones only");
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("data-lite", "on");
+    await page.evaluate(() => localStorage.setItem("ub-lite", "off"));
+    await page.reload();
+    await expect(page.locator("html")).not.toHaveAttribute("data-lite", "on");
   });
 
   test("data saver switches Lite mode on", async ({ page }) => {
