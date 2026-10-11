@@ -66,7 +66,7 @@ jobs:
         ports: ["5432:5432"]
         options: --health-cmd pg_isready --health-interval 5s --health-retries 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ inputs.ref }}
       - name: Check production settings
@@ -78,8 +78,8 @@ jobs:
           [ -n "$NEXT_PUBLIC_TURNSTILE_SITE_KEY" ] || { echo "::error::Set NEXT_PUBLIC_TURNSTILE_SITE_KEY"; exit 1; }
       - id: meta
         run: echo "release=$(date -u +%Y%m%d%H%M%S)-$(git rev-parse --short=8 HEAD)" >> "$GITHUB_OUTPUT"
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with: { node-version: "${{ env.NODE_VERSION }}", cache: pnpm }
       - run: pnpm install --frozen-lockfile
 
@@ -121,7 +121,7 @@ jobs:
           fi
 
       - run: tar -czf release.tgz -C release .
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-${{ steps.meta.outputs.release }}
           path: release.tgz
@@ -153,7 +153,7 @@ jobs:
           if [ "$tip" = "$REF" ]; then echo go=true >> "$GITHUB_OUTPUT"
           else echo go=false >> "$GITHUB_OUTPUT"; echo "::notice::Not deploying $REF: main moved to $tip."; fi
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         if: steps.fresh.outputs.go == 'true'
         with: { name: "release-${{ needs.build.outputs.release }}" }
 
