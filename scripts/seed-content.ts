@@ -21,6 +21,25 @@ import {
 const LOCALES = ["en", "fr", "rw"] as const;
 
 /**
+ * Live-site safety (re-seeding production):
+ * - SEED_PROTECT_AFTER=<ISO date>: documents and globals edited after that
+ *   moment (by staff in /admin or live editing) are left alone, and missing
+ *   team members are not re-created (people removed on purpose stay removed).
+ * - SEED_DRY_RUN=1: report what would be created, updated or skipped; write nothing.
+ * Published documents stay published either way.
+ */
+export const protectAfter = process.env.SEED_PROTECT_AFTER
+  ? new Date(process.env.SEED_PROTECT_AFTER)
+  : null;
+export const dryRun = process.env.SEED_DRY_RUN === "1";
+export const summary = { created: 0, updated: 0, skipped: [] as string[] };
+
+/** True when a live document was changed by hand after the protect date. */
+export function editedByHand(updatedAt: unknown): boolean {
+  return Boolean(protectAfter && updatedAt && new Date(String(updatedAt)) > protectAfter);
+}
+
+/**
  * Upsert one document by a unique field, writing every locale. English is
  * saved first; fr/rw fall back to English where a translation is missing.
  */
@@ -32,7 +51,8 @@ async function upsert(
   {
     versioned = true,
     status = "published",
-  }: { versioned?: boolean; status?: "published" | "draft" } = {},
+    create = true,
+  }: { versioned?: boolean; status?: "published" | "draft"; create?: boolean } = {},
 ): Promise<number> {
   const found = await payload.find({
     collection,
@@ -42,7 +62,26 @@ async function upsert(
     draft: versioned,
     overrideAccess: true,
   });
-  let id = found.docs[0]?.id as number | undefined;
+  const existing = found.docs[0] as
+    { id: number; updatedAt?: string; _status?: string } | undefined;
+  let id = existing?.id;
+  const label = `${collection}:${key.value}`;
+  if (existing && editedByHand(existing.updatedAt)) {
+    summary.skipped.push(`${label} (edited ${existing.updatedAt})`);
+    return existing.id;
+  }
+  if (!existing && !create) {
+    summary.skipped.push(`${label} (not on this site; not re-created)`);
+    return -1;
+  }
+  // Never unpublish: a document that is live stays live.
+  if (existing?._status === "published") status = "published";
+  if (existing) summary.updated++;
+  else summary.created++;
+  if (dryRun) {
+    console.log(`  would ${existing ? "update" : "create"} ${label}`);
+    return existing?.id ?? -1;
+  }
   for (const locale of LOCALES) {
     const data = {
       ...(pickWithFallback(tree, locale) as object),
@@ -108,6 +147,10 @@ async function seedConceptImages(payload: Payload): Promise<Record<string, numbe
       overrideAccess: true,
     });
     let id = existing.docs[0]?.id as number | undefined;
+    if (!id && dryRun) {
+      console.log(`  would upload media ${filename}`);
+      continue;
+    }
     if (!id) {
       const { readFile } = await import("node:fs/promises");
       const created = await payload.create({
@@ -124,7 +167,7 @@ async function seedConceptImages(payload: Payload): Promise<Record<string, numbe
       });
       id = created.id as number;
     }
-    if (img.alt.fr)
+    if (img.alt.fr && !dryRun)
       await payload.update({
         collection: "media",
         id,
@@ -266,7 +309,7 @@ async function seedS5(payload: Payload, media: Record<string, number>) {
       "team-members",
       { field: "name", value: m.name },
       { ...m, isLeadership: true },
-      { versioned: false },
+      { versioned: false, create: !protectAfter },
     );
   console.log(`✓ leadership (${leadership.length}, from the current site — confirm OI-11)`);
 

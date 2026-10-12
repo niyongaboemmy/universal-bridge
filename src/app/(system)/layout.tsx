@@ -11,7 +11,12 @@ const themeScript = `try{var t=localStorage.getItem('theme')||'system';if(t==='s
 /** Stand-alone screens outside the website and the office (maintenance). */
 export default function SystemLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jakarta.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+      className={`${inter.variable} ${jakarta.variable}`}
+    >
       <head>
         <InlineScript code={themeScript} />
       </head>

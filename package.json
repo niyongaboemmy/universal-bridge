@@ -29,7 +29,8 @@
     "prepare": "husky || true",
     "check:csp": "tsx scripts/check-csp.ts",
     "brand:assets": "tsx scripts/build-brand-assets.ts",
-    "cert:keygen": "tsx scripts/cert-keygen.ts"
+    "cert:keygen": "tsx scripts/cert-keygen.ts",
+    "db:seed:prod": "bash scripts/seed-prod.sh"
   },
   "engines": {
     "node": ">=22.12.0"

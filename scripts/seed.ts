@@ -7,7 +7,14 @@ import config from "../src/payload.config";
 import { pick, withIds } from "./seed-data/localize";
 import { footerColumns, navItems } from "./seed-data/navigation";
 import { siteSettings } from "./seed-data/settings";
-import { CONTENT_TAGS, seedContent } from "./seed-content";
+import {
+  CONTENT_TAGS,
+  dryRun,
+  editedByHand,
+  protectAfter,
+  seedContent,
+  summary,
+} from "./seed-content";
 
 type GlobalSlug = "navigation" | "site-settings" | "announcement";
 
@@ -17,6 +24,7 @@ export async function seedGlobal(
   slug: GlobalSlug,
   tree: Record<string, unknown>,
 ) {
+  if (await globalIsProtected(payload, slug)) return;
   const en = await payload.updateGlobal({
     slug,
     locale: "en",
@@ -31,6 +39,18 @@ export async function seedGlobal(
       context: { seed: true },
     });
   }
+}
+
+/** Live-site safety: skip a global edited by hand, or report it in a dry run. */
+async function globalIsProtected(payload: Payload, slug: GlobalSlug): Promise<boolean> {
+  const current = (await payload.findGlobal({ slug, depth: 0 })) as { updatedAt?: string };
+  if (editedByHand(current.updatedAt)) {
+    summary.skipped.push(`global:${slug} (edited ${current.updatedAt})`);
+    return true;
+  }
+  summary.updated++;
+  if (dryRun) console.log(`  would update global:${slug}`);
+  return dryRun;
 }
 
 /** Tell a running dev/staging server to drop cached content (best effort). */
@@ -79,16 +99,27 @@ process.on("exit", (code) => code && console.error(`seed exited with ${code}`));
 
 async function main() {
   const payload = await getPayload({ config });
-  await seedAdmin(payload);
-  await payload.updateGlobal({
-    slug: "site-settings",
-    data: siteSettings,
-    context: { seed: true },
-  });
-  console.log("✓ site settings");
+  if (protectAfter || dryRun)
+    console.log(
+      `Live-site mode: ${dryRun ? "DRY RUN, nothing is written; " : ""}${protectAfter ? `keeping anything edited after ${protectAfter.toISOString()}` : ""}`,
+    );
+  if (!dryRun) await seedAdmin(payload);
+  if (!(await globalIsProtected(payload, "site-settings"))) {
+    await payload.updateGlobal({
+      slug: "site-settings",
+      data: siteSettings,
+      context: { seed: true },
+    });
+    console.log("✓ site settings");
+  }
   await seedGlobal(payload, "navigation", { items: navItems, footerColumns });
   console.log("✓ navigation (en, fr, rw)");
   await seedContent(payload);
+  console.log(
+    `${dryRun ? "Would create" : "Created"} ${summary.created}, ${dryRun ? "update" : "updated"} ${summary.updated}, skipped ${summary.skipped.length}`,
+  );
+  for (const s of summary.skipped) console.log(`  · skipped ${s}`);
+  if (dryRun) process.exit(0);
   await revalidateRunningSite([
     "global:site-settings",
     "global:navigation",

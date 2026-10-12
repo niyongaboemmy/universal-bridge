@@ -99,8 +99,11 @@ export default async function LocaleLayout({
   };
 
   return (
+    // data-scroll-behavior: Next 16 only jumps straight to the top on navigation
+    // (instead of animating our CSS smooth scroll) when this is set.
     <html
       lang={locale}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${jakarta.variable} ${inter.variable} ${jetbrains.variable}`}
     >
