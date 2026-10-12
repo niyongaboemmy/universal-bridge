@@ -465,6 +465,26 @@
       "labsLab": "Lab",
       "productsVisit": "Sura {site}",
       "productsWhere": "Rwanda"
+    },
+    "detail": {
+      "ctaEyebrow": "TUGANIRE",
+      "ctaTitle": "Ufite umushinga mu *bitekerezo*?",
+      "ctaLead": "Tubwire ikibazo. Injeniyeri azagusubiza mu munsi umwe w’akazi.",
+      "ctaPrimary": "Tangira umushinga",
+      "ctaSecondary": "Saba ikiganiro",
+      "sprints": "Ibyiciro by’ibyumweru bibiri",
+      "timezone": "Kigali · UTC+2",
+      "languages": "EN · FR · RW",
+      "privacy": "Kurinda amakuru kuva mu ntangiriro",
+      "reply": "Igisubizo mu munsi umwe",
+      "labCtaTitle": "Twubakane ikintu *gishya*.",
+      "labCtaLead": "Kaminuza, startups n’abafatanyabikorwa bakoresha laboratwari zacu.",
+      "academyCtaTitle": "Tangira kwiga *muri iki* gihembwe.",
+      "academyCtaLead": "Amatsinda mato, imishinga nyayo n’icyemezo abakoresha bashobora kugenzura.",
+      "academyCtaPrimary": "Iyandikishe",
+      "academyCtaSecondary": "Reba amasomo yose",
+      "values": "Ibiduha imbaraga",
+      "team": "Itsinda"
     }
   },
   "apply": {

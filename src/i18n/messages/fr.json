@@ -465,6 +465,26 @@
       "labsLab": "Lab",
       "productsVisit": "Visiter {site}",
       "productsWhere": "Rwanda"
+    },
+    "detail": {
+      "ctaEyebrow": "PARLONS-EN",
+      "ctaTitle": "Un projet en *tête* ?",
+      "ctaLead": "Décrivez-nous le problème. Un ingénieur vous répond sous un jour ouvré.",
+      "ctaPrimary": "Démarrer un projet",
+      "ctaSecondary": "Réserver un appel",
+      "sprints": "Sprints de deux semaines",
+      "timezone": "Kigali · UTC+2",
+      "languages": "EN · FR · RW",
+      "privacy": "Confidentialité dès la conception",
+      "reply": "Réponse sous un jour",
+      "labCtaTitle": "Construisons quelque chose de *nouveau*.",
+      "labCtaLead": "Universités, startups et partenaires utilisent nos labs pour prototyper vite.",
+      "academyCtaTitle": "Commencez *cette* session.",
+      "academyCtaLead": "Petits groupes, vrais projets et un certificat vérifiable par les employeurs.",
+      "academyCtaPrimary": "Postuler",
+      "academyCtaSecondary": "Tous les programmes",
+      "values": "Ce qui nous anime",
+      "team": "L’équipe"
     }
   },
   "apply": {

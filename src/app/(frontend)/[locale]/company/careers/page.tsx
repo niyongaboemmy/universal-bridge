@@ -30,13 +30,19 @@ export default async function CareersPage({ params }: Props) {
         <div className="container-page">
           <SectionHeader title={t("openRoles")} />
           {open.length ? (
-            <ul className="mt-10 divide-y divide-subtle rounded-xl border border-subtle bg-surface">
+            <ul className="mt-10 grid gap-3">
               {open.map((j) => (
                 <li
                   key={j.id}
-                  className="group relative flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between"
+                  className="reveal spotlight group relative flex flex-col gap-4 rounded-2xl border border-subtle bg-surface p-6 transition-[translate,border-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--accent-spark)_45%,var(--border-subtle))] hover:shadow-3 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div>
+                  <span
+                    aria-hidden
+                    className="hidden size-12 shrink-0 items-center justify-center rounded-xl border border-subtle text-accent transition-[background-color,color,rotate] duration-300 group-hover:-rotate-6 group-hover:bg-spark group-hover:text-on-spark sm:flex"
+                  >
+                    <Briefcase className="size-5" />
+                  </span>
+                  <div className="flex-1">
                     <h3 className="font-display text-heading-md">
                       <a
                         href={localizePath(`/company/careers/${j.slug}`, locale)}
@@ -56,10 +62,12 @@ export default async function CareersPage({ params }: Props) {
                       </span>
                     </p>
                   </div>
-                  <ArrowRight
+                  <span
                     aria-hidden
-                    className="size-5 text-accent transition-transform group-hover:translate-x-1"
-                  />
+                    className="flex size-11 shrink-0 items-center justify-center rounded-full border border-subtle text-accent transition-[background-color,color,translate] duration-300 group-hover:translate-x-1 group-hover:border-transparent group-hover:bg-spark group-hover:text-on-spark"
+                  >
+                    <ArrowRight className="size-5" />
+                  </span>
                 </li>
               ))}
             </ul>

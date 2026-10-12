@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { DetailHero } from "@/components/layout/DetailHero";
 import { AcademyApplyForm } from "@/features/academy/forms";
 import type { Locale } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -27,21 +27,25 @@ export default async function ApplyPage({ params }: Props) {
     getTranslations({ locale, namespace: "nav" }),
   ]);
   return (
-    <div className="section pt-8">
-      <div className="container-page max-w-4xl">
-        <Breadcrumbs
-          locale={locale}
-          items={[
-            { label: n("academy"), href: "/academy" },
-            { label: n("apply"), href: "/academy/apply" },
-          ]}
-        />
-        <h1 className="mt-10 text-display-lg">{t("applyTitle")}</h1>
-        <p className="mt-4 max-w-2xl text-body-lg text-fg-secondary">{t("applyLead")}</p>
-        <div className="mt-10 rounded-xl border border-subtle bg-surface p-6 shadow-2 sm:p-10">
-          <AcademyApplyForm locale={locale} />
+    <>
+      <DetailHero
+        locale={locale}
+        crumbs={[
+          { label: n("academy"), href: "/academy" },
+          { label: n("apply"), href: "/academy/apply" },
+        ]}
+        eyebrow="UB ACADEMY"
+        title={t("applyTitle")}
+        lead={t("applyLead")}
+        icon="graduation-cap"
+      />
+      <div className="section pt-12">
+        <div className="container-page max-w-4xl">
+          <div className="rounded-2xl border border-subtle bg-surface p-6 shadow-2 sm:p-10">
+            <AcademyApplyForm locale={locale} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

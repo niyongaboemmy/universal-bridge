@@ -14,6 +14,14 @@ export const conceptImages: { key: string; file: string; alt: L }[] = [
     },
   },
   {
+    key: "lobby-backlit",
+    file: "Futuristic Universal Bridge Office Lobby.png",
+    alt: {
+      en: "Concept render of a dark, backlit 3D “UB Universal Bridge Ltd” sign on a textured wall, with the line “Building smart solutions. Connecting the future.”, a plant and warm wall-wash lighting",
+      fr: "Rendu conceptuel d'une enseigne 3D rétroéclairée « UB Universal Bridge Ltd » sur un mur texturé, avec la phrase « Building smart solutions. Connecting the future. », une plante et un éclairage chaud",
+    },
+  },
+  {
     key: "lobby-corridor",
     file: "Futuristic Universal Bridge Lobby.png",
     alt: {

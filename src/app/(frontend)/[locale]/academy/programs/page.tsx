@@ -3,9 +3,8 @@ import { balancedCols } from "@/lib/grid";
 import { cn } from "@/lib/utils";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProgramCard } from "@/components/cards/ProgramCard";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { DetailHero } from "@/components/layout/DetailHero";
 import { FacetFilters, type Facet } from "@/components/patterns/FacetFilters";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PROGRAM_CATEGORIES, PROGRAM_LEVELS, PROGRAM_MODES } from "@/collections/Academy";
 import type { Locale } from "@/i18n/routing";
 import { openIntakes } from "@/lib/cms/academy";
@@ -53,84 +52,86 @@ export default async function ProgramsPage({ params }: Props) {
     all.filter((v) => programs.some((p) => p[key] === v));
   const results = icuPluralForms(c.raw("results") as string);
   return (
-    <div className="section pt-8">
-      <div className="container-page">
-        <Breadcrumbs
-          locale={locale}
-          items={[
-            { label: n("academy"), href: "/academy" },
-            { label: t("programsTitle"), href: "/academy/programs" },
-          ]}
-        />
-        <SectionHeader
-          as="h1"
-          className="mt-10"
-          eyebrow="UB ACADEMY"
-          title={t("programsTitle")}
-          lead={t("programsLead")}
-        />
-        <FacetFilters
-          facets={facets}
-          attr="program"
-          keys={["mode", "level", "category", "duration"]}
-          dimensions={[
-            {
-              key: "mode",
-              label: t("mode"),
-              options: PROGRAM_MODES.map((v) => ({ value: v, label: t(`modes.${v}`) })),
-            },
-            {
-              key: "level",
-              label: t("level"),
-              options: present(PROGRAM_LEVELS, "level").map((v) => ({
-                value: v,
-                label: t(`levels.${v}`),
-              })),
-            },
-            {
-              key: "category",
-              label: t("category"),
-              options: present(PROGRAM_CATEGORIES, "category").map((v) => ({
-                value: v,
-                label: t(`categories.${v}`),
-              })),
-            },
-            {
-              key: "duration",
-              label: t("duration"),
-              options: DURATIONS.filter((d) =>
-                programs.some((p) => durationOf(p.durationWeeks) === d),
-              ).map((v) => ({
-                value: v,
-                label: t(`durations.${v}`),
-              })),
-            },
-          ]}
-          copy={{
-            title: t("programsTitle"),
-            any: t("any"),
-            clear: c("clearFilters"),
-            results: {
-              zero: results.zero ?? results.other,
-              one: results.one,
-              other: results.other,
-            },
-            emptyTitle: t("noProgramsMatch"),
-            emptyBody: t("noIntake"),
-          }}
-        />
-        <ul className={cn("mt-8 grid gap-6 md:grid-cols-2", balancedCols(programs.length))}>
-          {programs.map((p) => (
-            <li key={p.id} data-program={p.id}>
-              <ProgramCard
-                program={p}
-                intake={intakes.find((i) => typeof i.program === "object" && i.program.id === p.id)}
-                locale={locale}
-              />
-            </li>
-          ))}
-        </ul>
+    <>
+      <DetailHero
+        locale={locale}
+        crumbs={[
+          { label: n("academy"), href: "/academy" },
+          { label: t("programsTitle"), href: "/academy/programs" },
+        ]}
+        eyebrow="UB ACADEMY"
+        title={t("programsTitle")}
+        lead={t("programsLead")}
+        icon="book-open"
+        chips={programs.slice(0, 3).map((p) => p.title)}
+      />
+      <div className="section pt-12">
+        <div className="container-page">
+          <FacetFilters
+            facets={facets}
+            attr="program"
+            keys={["mode", "level", "category", "duration"]}
+            dimensions={[
+              {
+                key: "mode",
+                label: t("mode"),
+                options: PROGRAM_MODES.map((v) => ({ value: v, label: t(`modes.${v}`) })),
+              },
+              {
+                key: "level",
+                label: t("level"),
+                options: present(PROGRAM_LEVELS, "level").map((v) => ({
+                  value: v,
+                  label: t(`levels.${v}`),
+                })),
+              },
+              {
+                key: "category",
+                label: t("category"),
+                options: present(PROGRAM_CATEGORIES, "category").map((v) => ({
+                  value: v,
+                  label: t(`categories.${v}`),
+                })),
+              },
+              {
+                key: "duration",
+                label: t("duration"),
+                options: DURATIONS.filter((d) =>
+                  programs.some((p) => durationOf(p.durationWeeks) === d),
+                ).map((v) => ({
+                  value: v,
+                  label: t(`durations.${v}`),
+                })),
+              },
+            ]}
+            copy={{
+              title: t("programsTitle"),
+              any: t("any"),
+              clear: c("clearFilters"),
+              results: {
+                zero: results.zero ?? results.other,
+                one: results.one,
+                other: results.other,
+              },
+              emptyTitle: t("noProgramsMatch"),
+              emptyBody: t("noIntake"),
+            }}
+          />
+          <ul className={cn("mt-8 grid gap-6 md:grid-cols-2", balancedCols(programs.length))}>
+            {programs.map((p) => (
+              <li key={p.id} data-program={p.id}>
+                <ProgramCard
+                  program={p}
+                  intake={intakes.find(
+                    (i) => typeof i.program === "object" && i.program.id === p.id,
+                  )}
+                  locale={locale}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

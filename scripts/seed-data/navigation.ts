@@ -226,6 +226,10 @@ export const navItems: Item[] = [
         fr: "Apprendre. Innover. Diriger.",
         rw: "Iga. Hanga. Yobora.",
       },
+      body: {
+        en: "Hands-on courses and internships taught by working engineers, with certificates anyone can verify.",
+        fr: "Formations pratiques et stages animés par des ingénieurs en activité, avec des certificats vérifiables par tous.",
+      },
       href: "/academy",
       cta: { en: "Explore the Academy", fr: "Découvrir l'Académie" },
     },

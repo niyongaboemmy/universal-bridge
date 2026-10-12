@@ -4,9 +4,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DetailHero } from "@/components/layout/DetailHero";
-import { Badge } from "@/components/ui/Badge";
+import { PhoneScreens } from "@/components/brand/PhoneScreens";
+import { FeatureGrid, InnerSection } from "@/components/patterns/Inner";
 import { Button } from "@/components/ui/Button";
-import { Icon } from "@/components/ui/Icon";
 import { Media } from "@/components/ui/Media";
 import { ContactForm } from "@/features/contact/ContactForm";
 import { contactFormCopy } from "@/features/contact/copy";
@@ -64,10 +64,41 @@ export default async function ProductPage({ params }: Props) {
         edit={{ ref: await docRef("products", p, locale), title: "name", lead: "tagline" }}
         lead={p.tagline}
         aside={
-          <div className="flex flex-col items-start gap-4 lg:items-end">
-            <Badge tone={p.status === "live" ? "live" : p.status === "beta" ? "spark" : "neutral"}>
+          <div className="inner-media relative mx-auto aspect-square w-full max-w-[460px]">
+            <div
+              aria-hidden
+              className="absolute inset-[10%] rounded-full bg-[radial-gradient(closest-side,var(--glow),transparent)]"
+            />
+            <div aria-hidden className="absolute inset-0 overflow-hidden rounded-full">
+              <div className="product-orbit absolute inset-[6%] rounded-full border border-dashed border-[var(--border-strong)]" />
+              <div className="product-orbit product-orbit--rev absolute inset-[20%] rounded-full border border-subtle">
+                <span className="absolute top-1/2 -left-1.5 size-3 -translate-y-1/2 rounded-full bg-spark shadow-[0_0_12px_var(--accent-spark)]" />
+              </div>
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {shots[0] ? (
+                <Media
+                  media={shots[0]}
+                  priority
+                  sizes="(min-width: 1024px) 240px, 60vw"
+                  className="aspect-[9/17] w-56 rounded-[2rem] shadow-4"
+                />
+              ) : (
+                <PhoneScreens
+                  name={p.name}
+                  tagline={p.tagline}
+                  features={p.features ?? []}
+                  className="w-52 rotate-[-3deg] sm:w-56"
+                />
+              )}
+            </div>
+            <span className="glass absolute top-[8%] right-[4%] inline-flex items-center gap-2 rounded-full border border-subtle px-3.5 py-1.5 text-body-sm font-medium text-fg shadow-3">
+              <span aria-hidden className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
+                <span className="relative inline-flex size-2 rounded-full bg-success" />
+              </span>
               {t(`status.${p.status}`)}
-            </Badge>
+            </span>
           </div>
         }
       >
@@ -98,9 +129,9 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </DetailHero>
 
-      {shots.length > 0 && (
+      {shots.length > 1 && (
         <div className="container-page -mt-10 grid gap-4 sm:grid-cols-2">
-          {shots.slice(0, 2).map((s) => (
+          {shots.slice(1, 3).map((s) => (
             <Media
               key={s.id}
               media={s}
@@ -114,7 +145,11 @@ export default async function ProductPage({ params }: Props) {
       {(p.summary || p.audience) && (
         <section className="section pb-0">
           <div className="container-page grid gap-10 lg:grid-cols-2">
-            {p.summary && <p className="font-display text-heading-lg">{p.summary}</p>}
+            {p.summary && (
+              <p className="reveal font-display text-heading-lg text-balance lg:text-[2rem] lg:leading-tight">
+                {p.summary}
+              </p>
+            )}
             {p.audience && (
               <div>
                 <h2 className="eyebrow">{t("audience")}</h2>
@@ -126,27 +161,9 @@ export default async function ProductPage({ params }: Props) {
       )}
 
       {!!p.features?.length && (
-        <section className="section">
-          <div className="container-page">
-            <h2 className="text-display-lg">{t("features")}</h2>
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {p.features.map((f, i) => (
-                <li
-                  key={f.id ?? i}
-                  className="rounded-xl border border-subtle bg-surface p-6 shadow-1"
-                >
-                  {f.icon && (
-                    <span className="flex size-11 items-center justify-center rounded-lg bg-accent-soft text-accent [&_svg]:size-5">
-                      <Icon name={f.icon} />
-                    </span>
-                  )}
-                  <h3 className="mt-4 font-display text-heading-md">{f.title}</h3>
-                  {f.body && <p className="mt-2 text-fg-secondary">{f.body}</p>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <InnerSection title={t("features")}>
+          <FeatureGrid items={p.features} />
+        </InnerSection>
       )}
 
       <section id="demo" className="section bg-sunken" aria-labelledby="demo-title">
@@ -157,7 +174,7 @@ export default async function ProductPage({ params }: Props) {
             </h2>
             <p className="mt-4 text-body-lg text-fg-secondary">{t("demoLead")}</p>
           </div>
-          <div className="rounded-xl border border-subtle bg-surface p-6 shadow-2 sm:p-8">
+          <div className="rounded-2xl border border-subtle bg-surface p-6 shadow-3 sm:p-8">
             <ContactForm
               copy={{ ...copy, fields: { ...copy.fields, message: t("useCase"), messageHint: "" } }}
               locale={locale}

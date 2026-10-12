@@ -6,6 +6,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { ServiceCard } from "@/components/cards/ServiceCard";
 import { DetailHero } from "@/components/layout/DetailHero";
+import { BridgeCompare } from "@/components/patterns/Inner";
+import { DetailCta } from "@/components/patterns/DetailCta";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { localizePath, routing, type Locale } from "@/i18n/routing";
@@ -43,6 +45,7 @@ export default async function IndustryPage({ params }: Props) {
     getTranslations({ locale, namespace: "common" }),
     getCaseStudies(locale),
   ]);
+  const d = await getTranslations({ locale, namespace: "templates.detail" });
   if (!i) notFound();
   const services = (i.services ?? []).filter((s): s is Service => typeof s === "object");
   const related = all
@@ -59,42 +62,37 @@ export default async function IndustryPage({ params }: Props) {
         title={i.title}
         edit={{ ref: await docRef("industries", i, locale), title: "title", lead: "summary" }}
         lead={i.summary}
+        icon={i.icon ?? null}
+        chips={(i.solutions ?? []).map((x) => x.title)}
+        facts={[
+          { icon: "badge-check", label: d("privacy") },
+          { icon: "compass", label: d("timezone") },
+          { icon: "users", label: d("languages") },
+        ]}
       >
-        <Button asChild size="lg" variant="spark" className="mt-9">
-          <a href={localizePath("/contact?topic=sales", locale)}>
-            {n("letsTalk")} <ArrowRight aria-hidden data-arrow />
-          </a>
-        </Button>
-      </DetailHero>
-      <section className="section">
-        <div className="container-page grid gap-12 lg:grid-cols-2">
-          {!!i.challenges?.length && (
-            <div>
-              <h2 className="font-display text-heading-lg">{t("industry.challenges")}</h2>
-              <ul className="mt-6 space-y-3">
-                {i.challenges.map((ch, k) => (
-                  <li key={ch.id ?? k} className="rounded-lg border border-subtle bg-surface p-4">
-                    {ch.text}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {!!i.solutions?.length && (
-            <div>
-              <h2 className="font-display text-heading-lg">{t("industry.solutions")}</h2>
-              <ul className="mt-6 space-y-5">
-                {i.solutions.map((so, k) => (
-                  <li key={so.id ?? k}>
-                    <h3 className="font-semibold">{so.title}</h3>
-                    {so.body && <p className="mt-1 text-fg-secondary">{so.body}</p>}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Button asChild size="lg" variant="spark">
+            <a href={localizePath("/contact?topic=sales", locale)}>
+              {n("letsTalk")} <ArrowRight aria-hidden data-arrow />
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="secondary" className="bg-transparent">
+            <a href={localizePath("/book", locale)}>{d("ctaSecondary")}</a>
+          </Button>
         </div>
-      </section>
+      </DetailHero>
+      {(!!i.challenges?.length || !!i.solutions?.length) && (
+        <section className="section">
+          <div className="container-page">
+            <BridgeCompare
+              problemsTitle={t("industry.challenges")}
+              problems={i.challenges ?? []}
+              answersTitle={t("industry.solutions")}
+              answers={i.solutions ?? []}
+            />
+          </div>
+        </section>
+      )}
       {services.length > 0 && (
         <section className="section bg-sunken">
           <div className="container-page">
@@ -129,6 +127,14 @@ export default async function IndustryPage({ params }: Props) {
           </div>
         </section>
       )}
+      <DetailCta
+        locale={locale}
+        eyebrow={d("ctaEyebrow")}
+        title={d("ctaTitle")}
+        lead={d("ctaLead")}
+        primary={{ label: d("ctaPrimary"), href: "/contact?topic=sales" }}
+        secondary={{ label: d("ctaSecondary"), href: "/book" }}
+      />
     </>
   );
 }

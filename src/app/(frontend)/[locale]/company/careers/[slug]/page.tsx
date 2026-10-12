@@ -59,6 +59,8 @@ export default async function JobPage({ params }: Props) {
         title={j.title}
         edit={{ ref: await docRef("jobs", j, locale), title: "title", lead: "summary" }}
         lead={j.summary}
+        icon="briefcase"
+        chips={[t(`departments.${j.department}`), j.location, t(`remote.${j.remotePolicy}`)]}
       >
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Button asChild variant="spark" size="lg">
