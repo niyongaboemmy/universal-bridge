@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { DetailHero } from "@/components/layout/DetailHero";
+import { DetailCta } from "@/components/patterns/DetailCta";
 import { SocialIcon } from "@/components/layout/SocialIcon";
 import { Media } from "@/components/ui/Media";
 import type { Locale } from "@/i18n/routing";
@@ -30,73 +31,86 @@ export default async function LeadershipPage({ params }: Props) {
     getTranslations({ locale, namespace: "s5.leadership" }),
     getTranslations({ locale, namespace: "nav" }),
   ]);
+  const d = await getTranslations({ locale, namespace: "templates.detail" });
+  const initials = (name: string) =>
+    name
+      .split(" ")
+      .map((w) => w[0])
+      .slice(0, 2)
+      .join("");
   return (
-    <div className="section pt-8">
-      <div className="container-page">
-        <Breadcrumbs
-          locale={locale}
-          items={[
-            { label: n("company"), href: "/company/about" },
-            { label: t("title"), href: "/company/leadership" },
-          ]}
-        />
-        <h1 className="mt-10 text-display-xl">{t("title")}</h1>
-        <p className="mt-4 max-w-2xl text-body-lg text-fg-secondary">{t("lead")}</p>
-        <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {people.map((p) => (
-            <li key={p.id}>
-              <article className="group">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-sunken">
-                  {p.photo && typeof p.photo === "object" ? (
-                    <Media
-                      media={p.photo}
-                      sizes="(min-width:1024px) 33vw, 50vw"
-                      className="absolute inset-0"
-                      imgClassName="transition-transform duration-700 group-hover:scale-[1.03]"
-                    />
-                  ) : (
-                    <span
-                      aria-hidden
-                      className="absolute inset-0 grid place-items-center font-display text-display-xl text-accent/60"
-                    >
-                      {p.name
-                        .split(" ")
-                        .map((w) => w[0])
-                        .slice(0, 2)
-                        .join("")}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-4 flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-display text-heading-md">{p.name}</h2>
-                    {p.title && <p className="text-fg-secondary">{p.title}</p>}
+    <>
+      <DetailHero
+        locale={locale}
+        crumbs={[
+          { label: n("company"), href: "/company/about" },
+          { label: t("title"), href: "/company/leadership" },
+        ]}
+        eyebrow={n("company")}
+        title={t("title")}
+        lead={t("lead")}
+        icon={null}
+      />
+      <section className="section">
+        <div className="container-page">
+          <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {people.map((p, i) => (
+              <li key={p.id} className="reveal">
+                <article className="person-card spotlight group relative flex h-full flex-col overflow-hidden rounded-2xl border border-subtle bg-surface p-6 transition-[translate,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-[color-mix(in_oklab,var(--accent-spark)_45%,var(--border-subtle))] hover:shadow-3">
+                  <div className="flex items-center gap-5">
+                    <div className="person-ring relative size-24 shrink-0 rounded-full p-[3px]">
+                      <div className="relative size-full overflow-hidden rounded-full bg-[linear-gradient(150deg,var(--ub-blue-600),var(--ub-navy-900))]">
+                        {p.photo && typeof p.photo === "object" ? (
+                          <Media
+                            media={p.photo}
+                            sizes="96px"
+                            className="absolute inset-0"
+                            imgClassName="transition-transform duration-700 group-hover:scale-[1.06]"
+                          />
+                        ) : (
+                          <span
+                            aria-hidden
+                            className="absolute inset-0 grid place-items-center font-display text-heading-lg font-bold text-white"
+                          >
+                            {initials(p.name)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-mono text-[0.72rem] tracking-[0.16em] text-fg-muted">
+                        {String(i + 1).padStart(2, "0")}
+                      </p>
+                      <h2 className="mt-1 font-display text-heading-md">{p.name}</h2>
+                      {p.title && <p className="text-body-sm text-spark-text">{p.title}</p>}
+                    </div>
                   </div>
+                  {p.bio && <p className="mt-5 text-fg-secondary">{p.bio}</p>}
                   {p.linkedinUrl && (
                     <a
                       href={p.linkedinUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={t("linkedin", { name: p.name })}
-                      className="inline-flex size-11 items-center justify-center rounded-full text-fg-secondary hover:bg-accent-soft hover:text-accent"
+                      className="mt-auto inline-flex size-11 items-center justify-center self-start rounded-full text-fg-secondary hover:bg-accent-soft hover:text-accent"
                     >
                       <SocialIcon network="linkedin" />
                     </a>
                   )}
-                </div>
-                {p.bio && (
-                  <details className="accordion mt-2">
-                    <summary className="inline-flex min-h-11 cursor-pointer list-none items-center font-semibold text-accent [&::-webkit-details-marker]:hidden">
-                      {t("viewBio", { name: p.name.split(" ")[0] ?? p.name })}
-                    </summary>
-                    <p className="pb-2 text-fg-secondary">{p.bio}</p>
-                  </details>
-                )}
-              </article>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+                </article>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+      <DetailCta
+        locale={locale}
+        eyebrow={d("ctaEyebrow")}
+        title={d("ctaTitle")}
+        lead={d("ctaLead")}
+        primary={{ label: d("ctaPrimary"), href: "/contact" }}
+        secondary={{ label: n("careers"), href: "/company/careers" }}
+      />
+    </>
   );
 }

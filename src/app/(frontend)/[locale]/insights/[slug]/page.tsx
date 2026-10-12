@@ -79,7 +79,14 @@ export default async function PostPage({ params }: Props) {
     <article>
       {/* Reading progress trace (UI/UX §10.7): CSS scroll timeline, no JS. */}
       <div aria-hidden data-no-print className="reading-trace" />
-      <header className="section pt-8 pb-10">
+      <header
+        data-hero="night"
+        className="night relative isolate overflow-hidden pt-8 pb-16 lg:pb-24"
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-48 right-[-15%] size-[620px] rounded-full bg-[radial-gradient(closest-side,var(--glow),transparent)]" />
+          <div className="absolute -bottom-64 left-[-10%] size-[520px] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--accent-spark)_14%,transparent),transparent)]" />
+        </div>
         <div className="container-reading">
           <Breadcrumbs
             locale={locale}
@@ -88,8 +95,13 @@ export default async function PostPage({ params }: Props) {
               { label: p.title, href: `/insights/${slug}` },
             ]}
           />
-          <h1 className="mt-10 text-display-lg">{p.title}</h1>
-          <p className="mt-4 text-body-lg text-fg-secondary">{p.excerpt}</p>
+          <h1 className="inner-rise mt-10 text-display-xl text-balance">{p.title}</h1>
+          <p
+            className="inner-rise mt-5 text-body-lg text-fg-secondary"
+            style={{ "--i": 1 } as React.CSSProperties}
+          >
+            {p.excerpt}
+          </p>
           <p className="mt-6 flex flex-wrap gap-x-4 gap-y-1 text-body-sm text-fg-secondary">
             {author && <span>{t("by", { name: author.name })}</span>}
             <time dateTime={p.publishedAt}>{dateFmt(p.publishedAt, locale)}</time>
@@ -103,12 +115,12 @@ export default async function PostPage({ params }: Props) {
         </div>
       </header>
       {p.cover && typeof p.cover === "object" && (
-        <div className="container-page max-w-5xl">
+        <div className="container-page relative z-10 -mt-10 max-w-5xl">
           <Media
             media={p.cover}
             priority
             sizes="(min-width:1024px) 960px, 100vw"
-            className="aspect-[2/1] rounded-xl"
+            className="inner-media aspect-[2/1] rounded-2xl border border-subtle shadow-4"
           />
         </div>
       )}

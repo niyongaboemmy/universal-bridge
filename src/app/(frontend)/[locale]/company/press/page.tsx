@@ -1,7 +1,7 @@
-import { Download, ExternalLink } from "lucide-react";
+import { Download, ExternalLink, Mail } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { DetailHero } from "@/components/layout/DetailHero";
 import { dateFmt } from "@/features/academy/format";
 import type { Locale } from "@/i18n/routing";
 import { getPressItems } from "@/lib/cms/content";
@@ -43,28 +43,74 @@ export default async function PressPage({ params }: Props) {
     [t("factHq"), t("factHqValue")],
     [t("factLanguages"), t("factLanguagesValue")],
   ];
+  const logos = [
+    ["/brand/original-logo.svg", t("logoSvg"), "bg-white"],
+    [
+      "/brand/ub-mark-white.svg",
+      t("logoWhite"),
+      "bg-[linear-gradient(150deg,var(--ub-blue-600),var(--ub-navy-900))]",
+    ],
+  ] as const;
   return (
-    <div className="section pt-8">
-      <div className="container-page">
-        <Breadcrumbs
-          locale={locale}
-          items={[
-            { label: n("company"), href: "/company/about" },
-            { label: t("title"), href: "/company/press" },
-          ]}
-        />
-        <h1 className="mt-10 text-display-xl">{t("title")}</h1>
-        <p className="mt-4 max-w-2xl text-body-lg text-fg-secondary">{t("lead")}</p>
-        <div className="mt-14 grid gap-12 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+    <>
+      <DetailHero
+        locale={locale}
+        crumbs={[
+          { label: n("company"), href: "/company/about" },
+          { label: t("title"), href: "/company/press" },
+        ]}
+        eyebrow={n("company")}
+        title={t("title")}
+        lead={t("lead")}
+        icon="newspaper"
+        chips={[t("kit"), t("facts"), t("boilerplate")]}
+      />
+      <section className="section">
+        <div className="container-page grid gap-12 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
           <div className="space-y-12">
-            {!items.length && <p className="text-fg-secondary">{t("none")}</p>}
+            <section>
+              <h2 className="font-display text-heading-lg">{t("kit")}</h2>
+              <p className="mt-2 text-fg-secondary">{t("kitLead")}</p>
+              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+                {logos.map(([href, label, bg]) => (
+                  <li key={href} className="reveal">
+                    <a
+                      href={href}
+                      download
+                      className="group block overflow-hidden rounded-2xl border border-subtle bg-surface transition-[translate,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-3"
+                    >
+                      <span className={`grid aspect-[16/9] place-items-center ${bg}`}>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- static SVG preview */}
+                        <img
+                          src={href}
+                          alt=""
+                          width={96}
+                          height={96}
+                          className="size-24 transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </span>
+                      <span className="flex items-center justify-between gap-3 p-4 font-semibold">
+                        {label}
+                        <Download aria-hidden className="size-4 text-accent" />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <section>
+              <h2 className="font-display text-heading-lg">{t("boilerplate")}</h2>
+              <blockquote className="reveal mt-5 rounded-2xl border border-subtle bg-[linear-gradient(120deg,var(--accent-primary-soft),transparent_70%)] p-6 text-body-lg">
+                {t("boilerplateText")}
+              </blockquote>
+            </section>
             {groups.map(([kind, label]) => {
               const list = items.filter((i) => i.kind === kind);
               if (!list.length) return null;
               return (
                 <section key={kind}>
                   <h2 className="font-display text-heading-lg">{label}</h2>
-                  <ul className="mt-5 divide-y divide-subtle rounded-xl border border-subtle bg-surface">
+                  <ul className="mt-5 divide-y divide-subtle rounded-2xl border border-subtle bg-surface">
                     {list.map((i) => (
                       <li key={i.id} className="p-5">
                         <p className="text-body-sm text-fg-secondary">
@@ -93,50 +139,33 @@ export default async function PressPage({ params }: Props) {
                 </section>
               );
             })}
+            {!items.length && <p className="text-body-sm text-fg-muted">{t("none")}</p>}
           </div>
-          <aside className="space-y-6">
-            <section className="rounded-xl border border-subtle bg-surface p-6 shadow-1">
-              <h2 className="font-display text-heading-md">{t("kit")}</h2>
-              <p className="mt-2 text-body-sm text-fg-secondary">{t("kitLead")}</p>
-              <ul className="mt-4 space-y-2">
-                {[
-                  ["/brand/original-logo.svg", t("logoSvg")],
-                  ["/brand/ub-mark-white.svg", t("logoWhite")],
-                ].map(([href, label]) => (
-                  <li key={href}>
-                    <a
-                      href={href}
-                      download
-                      className="inline-flex min-h-11 items-center gap-2 font-semibold text-accent hover:underline"
-                    >
-                      <Download aria-hidden className="size-4" />
-                      {label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <h3 className="mt-6 font-semibold">{t("facts")}</h3>
-              <dl className="mt-2 space-y-1 text-body-sm">
+          <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
+            <section className="rounded-2xl border border-subtle bg-surface p-6 shadow-2">
+              <h2 className="font-display text-heading-md">{t("facts")}</h2>
+              <dl className="mt-4 grid grid-cols-2 gap-3">
                 {facts.map(([k, v]) => (
-                  <div key={k} className="flex justify-between gap-4 border-b border-subtle py-1.5">
-                    <dt className="text-fg-muted">{k}</dt>
-                    <dd className="text-right font-medium">{v}</dd>
+                  <div key={k} className="rounded-xl border border-subtle bg-sunken p-4">
+                    <dt className="font-mono text-[0.7rem] tracking-[0.14em] text-fg-muted uppercase">
+                      {k}
+                    </dt>
+                    <dd className="mt-1 font-display font-semibold">{v}</dd>
                   </div>
                 ))}
               </dl>
-              <h3 className="mt-6 font-semibold">{t("boilerplate")}</h3>
-              <p className="mt-2 text-body-sm text-fg-secondary">{t("boilerplateText")}</p>
               <h3 className="mt-6 font-semibold">{t("contact")}</h3>
               <a
                 href={`mailto:${pressEmail ?? settings.email}`}
-                className="mt-1 inline-block text-body-sm font-semibold text-accent hover:underline"
+                className="mt-1 inline-flex min-h-11 items-center gap-2 font-semibold text-accent hover:underline"
               >
+                <Mail aria-hidden className="size-4" />
                 {pressEmail ?? settings.email}
               </a>
             </section>
           </aside>
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 }

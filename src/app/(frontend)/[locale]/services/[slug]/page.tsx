@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { docRef } from "@/lib/live-edit/session";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -9,6 +9,8 @@ import { DetailHero } from "@/components/layout/DetailHero";
 import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { FeatureGrid, InnerSection, StepTrack } from "@/components/patterns/Inner";
+import { DetailCta } from "@/components/patterns/DetailCta";
 import { localizePath, routing, type Locale } from "@/i18n/routing";
 import { getCaseStudies, getService, publishedSlugs } from "@/lib/cms/content";
 import { JsonLd } from "@/lib/seo/json-ld";
@@ -55,6 +57,7 @@ export default async function ServicePage({ params }: Props) {
   const faqs = (s.faqs ?? []).filter((f): f is Faq => typeof f === "object");
   const techs = (s.technologies ?? []).filter((x): x is Technology => typeof x === "object");
 
+  const d = await getTranslations({ locale, namespace: "templates.detail" });
   return (
     <>
       <DetailHero
@@ -71,62 +74,49 @@ export default async function ServicePage({ params }: Props) {
           lead: s.outcome ? "outcome" : "summary",
         }}
         lead={s.outcome || s.summary}
+        icon={s.icon ?? null}
+        chips={(s.deliverables ?? []).map((x) => x.title)}
+        facts={[
+          { icon: "rocket", label: d("sprints") },
+          { icon: "compass", label: d("timezone") },
+          { icon: "users", label: d("reply") },
+        ]}
       >
-        <Button asChild size="lg" variant="spark" className="mt-9">
-          <a href={localizePath("/contact?topic=sales", locale)}>
-            {t("service.cta", { service: s.title })}
-          </a>
-        </Button>
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Button asChild size="lg" variant="spark">
+            <a href={localizePath("/contact?topic=sales", locale)}>
+              {t("service.cta", { service: s.title })} <ArrowRight aria-hidden data-arrow />
+            </a>
+          </Button>
+          <Button asChild size="lg" variant="secondary" className="bg-transparent">
+            <a href={localizePath("/book", locale)}>{d("ctaSecondary")}</a>
+          </Button>
+        </div>
       </DetailHero>
 
-      {(s.problem || s.deliverables?.length) && (
-        <section className="section">
-          <div className="container-page grid gap-12 lg:grid-cols-2">
-            {s.problem && (
-              <div>
-                <p className="eyebrow">{t("service.problem")}</p>
-                <p className="mt-4 font-display text-heading-lg">{s.problem}</p>
-              </div>
-            )}
-            {!!s.deliverables?.length && (
-              <div>
-                <h2 className="font-display text-heading-lg">{t("service.deliverables")}</h2>
-                <ul className="mt-6 space-y-4">
-                  {s.deliverables.map((d, i) => (
-                    <li key={d.id ?? i} className="reveal flex gap-3">
-                      <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-                        <Check aria-hidden className="size-4" />
-                      </span>
-                      <span>
-                        <strong className="block">{d.title}</strong>
-                        {d.body && <span className="text-fg-secondary">{d.body}</span>}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+      {s.problem && (
+        <section className="section pb-0">
+          <div className="container-page grid gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
+            <p className="eyebrow pt-2">{t("service.problem")}</p>
+            <p className="reveal font-display text-heading-lg text-balance lg:text-[2rem] lg:leading-tight">
+              {s.problem}
+            </p>
           </div>
         </section>
       )}
 
+      {!!s.deliverables?.length && (
+        <InnerSection title={t("service.deliverables")}>
+          <FeatureGrid
+            items={s.deliverables.map((x) => ({ id: x.id, title: x.title, body: x.body }))}
+          />
+        </InnerSection>
+      )}
+
       {!!s.process?.length && (
-        <section className="section bg-sunken">
-          <div className="container-page">
-            <SectionHeader title={t("service.process")} />
-            <ol className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {s.process.map((p, i) => (
-                <li key={p.id ?? i} className="rounded-xl border border-subtle bg-surface p-6">
-                  <p className="font-mono text-body-sm text-spark-text">
-                    {t("service.step", { n: i + 1 })}
-                  </p>
-                  <h3 className="mt-2 font-display text-heading-md">{p.title}</h3>
-                  {p.body && <p className="mt-2 text-fg-secondary">{p.body}</p>}
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
+        <InnerSection title={t("service.process")} sunken>
+          <StepTrack steps={s.process} stepLabel={(i) => t("service.step", { n: i })} />
+        </InnerSection>
       )}
 
       {(techs.length > 0 || !!s.engagementModels?.length) && (
@@ -139,7 +129,7 @@ export default async function ServicePage({ params }: Props) {
                   {techs.map((tech) => (
                     <li
                       key={tech.id}
-                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-subtle bg-surface px-4 text-body-sm font-medium"
+                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-subtle bg-surface px-4 text-body-sm font-medium transition-[border-color,translate] duration-300 hover:-translate-y-0.5 hover:border-accent"
                     >
                       {typeof tech.logo === "object" && tech.logo?.url && (
                         <Image src={mediaSrc(tech.logo.url)} alt="" width={18} height={18} />
@@ -155,12 +145,16 @@ export default async function ServicePage({ params }: Props) {
                 <h2 className="font-display text-heading-lg">{t("service.models")}</h2>
                 <ul className="mt-6 grid gap-3 sm:grid-cols-2">
                   {s.engagementModels.map((m) => (
-                    <li key={m} className="rounded-lg border border-subtle p-4 font-medium">
+                    <li key={m}>
                       <a
                         href={localizePath("/services#engagement", locale)}
-                        className="hover:text-accent"
+                        className="group flex items-center justify-between gap-3 rounded-xl border border-subtle bg-surface p-4 font-medium transition-[border-color,translate,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-accent hover:shadow-2"
                       >
                         {t(`engagement.${m}`)}
+                        <ArrowRight
+                          aria-hidden
+                          className="size-4 text-fg-muted transition-[translate,color] group-hover:translate-x-0.5 group-hover:text-accent"
+                        />
                       </a>
                     </li>
                   ))}
@@ -197,6 +191,14 @@ export default async function ServicePage({ params }: Props) {
           <JsonLd data={faqLd(faqs)} />
         </section>
       )}
+      <DetailCta
+        locale={locale}
+        eyebrow={d("ctaEyebrow")}
+        title={d("ctaTitle")}
+        lead={d("ctaLead")}
+        primary={{ label: d("ctaPrimary"), href: "/contact?topic=sales" }}
+        secondary={{ label: d("ctaSecondary"), href: "/book" }}
+      />
       <JsonLd
         data={serviceLd({
           name: s.title,

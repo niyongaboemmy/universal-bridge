@@ -31,6 +31,7 @@ import { PillarFilter } from "./PillarFilter";
 import { StoryPin } from "@/components/motion/StoryPin";
 import { CodeVisual, IdeasVisual, ImpactVisual } from "./StoryVisuals";
 import { Section } from "./Section";
+import { FeatureGrid, StepTrack } from "@/components/patterns/Inner";
 import { ServicePairs } from "./ServicePairs";
 import { ProductSpotlight } from "./ProductSpotlight";
 import { RAIL, RAIL_ITEM } from "@/lib/grid";
@@ -415,35 +416,20 @@ export function ProcessBlock({ block, edit }: BlockProps<"process">) {
   return (
     <Section id={block.anchor}>
       <SectionHeader eyebrow={block.eyebrow} title={block.title} lead={block.lead} edit={edit} />
-      <ol className="relative mt-14 grid gap-8 md:grid-cols-5 md:gap-4">
-        <span
-          aria-hidden
-          className="absolute top-5 right-0 left-0 hidden h-px bg-[linear-gradient(90deg,var(--accent-primary),var(--accent-spark))] md:block"
+      <div className="mt-14">
+        <StepTrack
+          steps={steps.map((s) => {
+            const row = child(edit, "steps", s.id);
+            return {
+              id: s.id,
+              title: s.title,
+              body: s.body,
+              titleAttrs: editable(row, "title", "text", s.title),
+              bodyAttrs: s.body ? editable(row, "body", "textarea", s.body) : undefined,
+            };
+          })}
         />
-        {steps.map((s, i) => (
-          <li key={s.id ?? i} className="relative flex gap-4 md:block">
-            <span className="relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-canvas font-mono text-body-sm font-medium text-accent">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <div className="md:mt-5">
-              <h3
-                className="font-display text-heading-md"
-                {...editable(child(edit, "steps", s.id), "title", "text", s.title)}
-              >
-                {s.title}
-              </h3>
-              {s.body && (
-                <p
-                  className="mt-2 text-fg-secondary"
-                  {...editable(child(edit, "steps", s.id), "body", "textarea", s.body)}
-                >
-                  {s.body}
-                </p>
-              )}
-            </div>
-          </li>
-        ))}
-      </ol>
+      </div>
     </Section>
   );
 }
@@ -591,30 +577,23 @@ export function CardsGridBlock({ block, locale, edit }: BlockProps<"cardsGrid">)
   return (
     <Section id={block.anchor}>
       <SectionHeader eyebrow={block.eyebrow} title={block.title} lead={block.lead} edit={edit} />
-      <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {(block.cards ?? []).map((c, i) => (
-          <li key={c.id ?? i} className="rounded-xl border border-subtle bg-surface p-6 shadow-1">
-            {c.icon && (
-              <span className="flex size-11 items-center justify-center rounded-lg bg-accent-soft text-accent [&_svg]:size-5">
-                <Icon name={c.icon} />
-              </span>
-            )}
-            <h3 className="mt-5 font-display text-heading-md">
-              <span {...editable(child(edit, "cards", c.id), "title", "text", c.title)}>
-                {c.href ? <a href={href(c.href, locale)}>{c.title}</a> : c.title}
-              </span>
-            </h3>
-            {c.body && (
-              <p
-                className="mt-2 text-fg-secondary"
-                {...editable(child(edit, "cards", c.id), "body", "textarea", c.body)}
-              >
-                {c.body}
-              </p>
-            )}
-          </li>
-        ))}
-      </ul>
+      <FeatureGrid
+        className="mt-12"
+        numbered={false}
+        columns={(block.cards ?? []).length % 3 === 0 ? 3 : 4}
+        items={(block.cards ?? []).map((c) => {
+          const row = child(edit, "cards", c.id);
+          return {
+            id: c.id,
+            title: c.title,
+            body: c.body,
+            icon: c.icon,
+            href: href(c.href, locale),
+            titleAttrs: editable(row, "title", "text", c.title),
+            bodyAttrs: c.body ? editable(row, "body", "textarea", c.body) : undefined,
+          };
+        })}
+      />
     </Section>
   );
 }
@@ -637,7 +616,7 @@ export function MediaTextBlock({ block, locale, edit }: BlockProps<"mediaText">)
             typeof block.media === "object" ? block.media?.id : block.media,
           )}
           sizes="(min-width:1024px) 50vw, 100vw"
-          className="bridge-mask aspect-[4/3] rounded-xl"
+          className="reveal bridge-mask aspect-[4/3] rounded-2xl border border-subtle shadow-4"
         />
         <div>
           <SectionHeader
@@ -665,35 +644,59 @@ export function TimelineBlock({ block, edit }: BlockProps<"timeline">) {
   return (
     <Section id={block.anchor}>
       <SectionHeader eyebrow={block.eyebrow} title={block.title} lead={block.lead} edit={edit} />
-      <ol className="mt-12 space-y-8 border-l border-strong pl-8">
-        {(block.items ?? []).map((item, i) => (
-          <li key={item.id ?? i} className="relative">
-            <span
-              aria-hidden
-              className="absolute top-1.5 -left-[39px] size-3.5 rounded-full border-2 border-accent bg-canvas"
-            />
-            <p
-              className="font-mono text-body-sm text-spark-text"
-              {...editable(child(edit, "items", item.id), "year", "text", item.year)}
+      <ol className="timeline relative mt-14 space-y-10 lg:space-y-0">
+        <span
+          aria-hidden
+          className="absolute top-2 bottom-2 left-[7px] w-px bg-[var(--border-strong)] lg:left-1/2"
+        />
+        <span
+          aria-hidden
+          className="timeline__fill absolute top-2 bottom-2 left-[7px] w-px origin-top bg-[linear-gradient(180deg,var(--accent-primary),var(--accent-spark))] lg:left-1/2"
+        />
+        {(block.items ?? []).map((item, i) => {
+          const row = child(edit, "items", item.id);
+          const right = i % 2 === 1;
+          return (
+            <li
+              key={item.id ?? i}
+              className="reveal relative pl-10 lg:grid lg:grid-cols-2 lg:gap-16 lg:pl-0"
             >
-              {item.year}
-            </p>
-            <h3
-              className="mt-1 font-display text-heading-md"
-              {...editable(child(edit, "items", item.id), "title", "text", item.title)}
-            >
-              {item.title}
-            </h3>
-            {item.body && (
-              <p
-                className="mt-1 text-fg-secondary"
-                {...editable(child(edit, "items", item.id), "body", "textarea", item.body)}
+              <span
+                aria-hidden
+                className="absolute top-6 left-0 size-[15px] rounded-full border-2 border-accent bg-canvas shadow-[0_0_0_6px_var(--bg-canvas),0_0_18px_var(--glow)] lg:left-1/2 lg:-translate-x-1/2"
+              />
+              <div
+                className={cn(
+                  "spotlight rounded-2xl border border-subtle bg-surface p-6 shadow-1 transition-[border-color,translate] duration-300 hover:-translate-y-0.5 hover:border-accent lg:my-4",
+                  right ? "lg:col-start-2" : "lg:col-start-1 lg:text-right",
+                )}
               >
-                {item.body}
-              </p>
-            )}
-          </li>
-        ))}
+                <p
+                  className={cn(
+                    "inline-flex rounded-full bg-accent-soft px-3 py-1 font-mono text-body-sm font-medium text-accent",
+                  )}
+                  {...editable(row, "year", "text", item.year)}
+                >
+                  {item.year}
+                </p>
+                <h3
+                  className="mt-3 font-display text-heading-md"
+                  {...editable(row, "title", "text", item.title)}
+                >
+                  {item.title}
+                </h3>
+                {item.body && (
+                  <p
+                    className="mt-2 text-fg-secondary"
+                    {...editable(row, "body", "textarea", item.body)}
+                  >
+                    {item.body}
+                  </p>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ol>
     </Section>
   );

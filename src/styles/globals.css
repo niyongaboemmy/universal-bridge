@@ -118,6 +118,12 @@
     html {
       scroll-behavior: smooth;
     }
+    /* Smooth for in-page links only: while a form field has focus, the browser's
+       scroll-to-field must be instant, or the next field is still moving when a
+       keyboard user (or a test) acts on it. */
+    html:has(:is(input, select, textarea):focus) {
+      scroll-behavior: auto;
+    }
   }
   body {
     background-color: var(--bg-canvas);
@@ -3261,5 +3267,137 @@ html.nav-pending * {
   /* Hover lifts stick after a tap on touch screens. */
   :is(.lab-card, .cta-band, .cta-ring, .cta-pill):hover {
     transform: none;
+  }
+}
+
+/*
+ * Inner pages (components/patterns/Inner.tsx, layout/DetailHero.tsx): the home
+ * page's motion language on every template. Still by default; motion only with
+ * no reduced-motion preference, outside Lite mode, and on tablets and up.
+ */
+.inner-track__line {
+  background: linear-gradient(180deg, var(--accent-primary), var(--accent-spark));
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .inner-track__line {
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-spark));
+  }
+}
+.inner-bridge__pulse {
+  stroke-dasharray: 16 84;
+  opacity: 0;
+}
+.inner-card .lucide {
+  transition: scale 300ms var(--ease-standard, ease);
+}
+.inner-card:hover .lucide {
+  scale: 1.08;
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html:not([data-lite="on"]) .inner-stage__ring {
+    animation: orbit calc(36s + var(--r, 0) * 18s) linear infinite;
+  }
+  html:not([data-lite="on"]) .inner-stage__ring--rev {
+    animation-direction: reverse;
+  }
+  html:not([data-lite="on"]) .inner-stage__chip {
+    animation: inner-float 6s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i, 0) * -2s);
+  }
+  html:not([data-lite="on"]) .inner-rise {
+    animation: reveal 640ms var(--ease-enter) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  html:not([data-lite="on"]) .inner-bridge__pulse {
+    opacity: 1;
+    animation: inner-pulse 3.2s linear infinite;
+  }
+  html:not([data-lite="on"]) .inner-track__line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, #fff 70%, var(--accent-spark)),
+      transparent
+    );
+    background-size: 30% 100%;
+    background-repeat: no-repeat;
+    animation: inner-sweep 4.5s ease-in-out infinite;
+  }
+  html:not([data-lite="on"]) .inner-media {
+    animation: reveal 800ms var(--ease-enter) 200ms both;
+  }
+}
+@keyframes inner-float {
+  from {
+    translate: 0 -6px;
+  }
+  to {
+    translate: 0 6px;
+  }
+}
+@keyframes inner-pulse {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes inner-sweep {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+
+/* People: initials portrait with a slowly turning gradient ring. */
+.person-ring {
+  background: conic-gradient(
+    from var(--a, 0deg),
+    var(--accent-primary),
+    var(--accent-spark),
+    var(--accent-primary) 60%,
+    transparent 75%,
+    var(--accent-primary)
+  );
+}
+@property --a {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  html:not([data-lite="on"]) .person-card:hover .person-ring {
+    animation: person-turn 2.4s linear infinite;
+  }
+}
+@keyframes person-turn {
+  to {
+    --a: 360deg;
+  }
+}
+
+/* Timeline block: the trace fills as the list scrolls through the viewport. */
+.timeline__fill {
+  scale: 1 1;
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  @supports (animation-timeline: view()) {
+    html:not([data-lite="on"]) .timeline__fill {
+      animation: timeline-fill linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 70%;
+    }
+  }
+}
+@keyframes timeline-fill {
+  from {
+    scale: 1 0;
   }
 }

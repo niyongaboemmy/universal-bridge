@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { CodeLines, SECTOR_VISUALS } from "./SectorVisuals";
 
 /**
  * Live mini-diagrams for service cards: one per service, picked by its icon.
@@ -522,7 +523,7 @@ function Sparkline() {
 }
 
 const VISUALS: Record<string, () => React.ReactElement> = {
-  code: Sparkline,
+  code: CodeLines,
   smartphone: Devices,
   cloud: Uptime,
   brain: Forecast,
@@ -530,4 +531,5 @@ const VISUALS: Record<string, () => React.ReactElement> = {
   palette: DesignKit,
   compass: Roadmap,
   "life-buoy": Sla,
+  ...SECTOR_VISUALS,
 };

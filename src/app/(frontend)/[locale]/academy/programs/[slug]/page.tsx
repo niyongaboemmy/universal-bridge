@@ -1,10 +1,11 @@
-import { CalendarDays, Clock, MapPin, MonitorSmartphone, Wallet } from "lucide-react";
+import { CalendarDays, Check, Clock, MapPin, MonitorSmartphone, Wallet } from "lucide-react";
 import { docRef } from "@/lib/live-edit/session";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PeopleList } from "@/components/patterns/PeopleList";
 import { DetailHero } from "@/components/layout/DetailHero";
+import { DetailCta } from "@/components/patterns/DetailCta";
 import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { feeLabel, intakeLabels } from "@/features/academy/format";
@@ -51,8 +52,10 @@ export default async function ProgramPage({ params }: Props) {
     feeLabel(p, locale),
     intake ? intakeLabels(intake, locale) : null,
   ]);
+  const d = await getTranslations({ locale, namespace: "templates.detail" });
   const faqs = (p.faqs ?? []).filter((f): f is Faq => typeof f === "object");
-  const applyHref = localizePath(`/academy/apply${intake ? `?intake=${intake.id}` : ""}`, locale);
+  const applyPath = `/academy/apply${intake ? `?intake=${intake.id}` : ""}`;
+  const applyHref = localizePath(applyPath, locale);
   const applyLabel = intake?.full ? t("joinWaitlist") : t("apply");
 
   const facts = [
@@ -107,7 +110,22 @@ export default async function ProgramPage({ params }: Props) {
         title={p.title}
         edit={{ ref: await docRef("programs", p, locale), title: "title", lead: "summary" }}
         lead={p.summary}
-      />
+        icon={p.icon ?? "graduation-cap"}
+        chips={(p.curriculum ?? []).map((m) => m.module)}
+        facts={facts.slice(0, 3).map((f) => ({ label: f.value }))}
+      >
+        <div className="mt-9 flex flex-wrap gap-3">
+          <Button asChild size="lg" variant="spark">
+            <a href={applyHref}>{intake ? applyLabel : n("contact")}</a>
+          </Button>
+          {labels && (
+            <span className="inline-flex min-h-12 items-center gap-2 rounded-full border border-subtle px-4 text-body-sm text-fg-secondary">
+              <span aria-hidden className="size-2 rounded-full bg-success" />
+              {labels.starts}
+            </span>
+          )}
+        </div>
+      </DetailHero>
       <div className="section">
         <div className="container-page grid gap-12 grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)]">
           <div className="space-y-12">
@@ -116,7 +134,13 @@ export default async function ProgramPage({ params }: Props) {
                 <h2 className="font-display text-heading-lg">{t("outcomes")}</h2>
                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
                   {p.outcomes.map((o, i) => (
-                    <li key={o.id ?? i} className="rounded-lg border border-subtle bg-surface p-4">
+                    <li
+                      key={o.id ?? i}
+                      className="reveal flex items-start gap-3 rounded-xl border border-subtle bg-surface p-4 transition-[border-color,translate] duration-300 hover:-translate-y-0.5 hover:border-accent"
+                    >
+                      <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                        <Check aria-hidden className="size-3.5" />
+                      </span>
                       {o.text}
                     </li>
                   ))}
@@ -193,6 +217,14 @@ export default async function ProgramPage({ params }: Props) {
           </div>
         </div>
       </div>
+      <DetailCta
+        locale={locale}
+        eyebrow={t("programsTitle")}
+        title={d("academyCtaTitle")}
+        lead={d("academyCtaLead")}
+        primary={{ label: d("academyCtaPrimary"), href: applyPath }}
+        secondary={{ label: d("academyCtaSecondary"), href: "/academy/programs" }}
+      />
       {/* Mobile: the enrol panel becomes a bottom bar (UI/UX §12.9). */}
       <div
         data-no-print

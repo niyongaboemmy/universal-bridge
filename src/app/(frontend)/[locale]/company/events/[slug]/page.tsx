@@ -75,16 +75,8 @@ export default async function EventPage({ params }: Props) {
         title={e.title}
         edit={{ ref: await docRef("events", e, locale), title: "title", lead: "summary" }}
         lead={e.summary}
-        aside={
-          e.cover && typeof e.cover === "object" ? (
-            <Media
-              media={e.cover}
-              priority
-              sizes="(min-width:1024px) 400px, 100vw"
-              className="aspect-[4/3] rounded-xl shadow-3"
-            />
-          ) : undefined
-        }
+        media={e.cover}
+        icon={e.cover && typeof e.cover === "object" ? undefined : "calendar"}
       >
         <dl className="mt-8 grid gap-4 sm:grid-cols-2">
           <div>
