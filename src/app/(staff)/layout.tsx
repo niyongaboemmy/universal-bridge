@@ -28,6 +28,7 @@ export default function StaffLayout({ children }: { children: ReactNode }) {
     // attributes on <html> before React loads; this only affects <html>'s own attributes.
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${inter.variable} ${jakarta.variable} ${jetbrains.variable}`}
     >
