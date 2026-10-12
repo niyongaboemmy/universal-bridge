@@ -43,7 +43,9 @@ async function revalidateRunningSite(tags: string[]) {
         authorization: `Bearer ${process.env.REVALIDATE_SECRET}`,
         "content-type": "application/json",
       },
-      body: JSON.stringify({ tags }),
+      // expire: never serve the old copy after new content lands (a stale-while-revalidate
+      // refresh would show the previous seed to the first visitor of every page).
+      body: JSON.stringify({ tags, expire: true }),
       signal: AbortSignal.timeout(5000),
     });
     console.log(
