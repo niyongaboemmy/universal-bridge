@@ -27,10 +27,16 @@ function clockFor(intervalMs: number) {
 }
 
 export function useNow(intervalMs = 30_000): Date | null {
-  const ms = useSyncExternalStore(
-    (notify) => {
+  // A stable subscribe: a new function each render makes React unsubscribe and
+  // resubscribe after every render. Together with a clock that was dropped when its
+  // last listener left, every resubscribe read a fresh Date.now(), so the snapshot
+  // "changed" on each render: an endless loop (React #185, contact page on WebKit).
+  const subscribe = useCallback(
+    (notify: () => void) => {
       const clock = clockFor(intervalMs);
       clock.listeners.add(notify);
+      // Restarting after a pause: catch up once (a single re-render, not a loop).
+      if (clock.id === undefined) clock.now = Date.now();
       clock.id ??= setInterval(() => {
         clock.now = Date.now();
         clock.listeners.forEach((l) => l());
@@ -38,11 +44,16 @@ export function useNow(intervalMs = 30_000): Date | null {
       return () => {
         clock.listeners.delete(notify);
         if (!clock.listeners.size) {
+          // Pause the timer but keep the clock, so its snapshot stays the same.
           clearInterval(clock.id);
-          clocks.delete(intervalMs);
+          clock.id = undefined;
         }
       };
     },
+    [intervalMs],
+  );
+  const ms = useSyncExternalStore(
+    subscribe,
     () => clockFor(intervalMs).now,
     () => null,
   );
