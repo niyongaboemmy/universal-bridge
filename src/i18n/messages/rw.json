@@ -991,7 +991,8 @@
     "crumb": "Vizulla Browser",
     "eyebrow": "Igicuruzwa cya Universal Bridge",
     "title": "Vizulla Browser",
-    "lead": "Mushakisha yihuta kandi irinda ubuzima bwite: ihagarika amatangazo n'ababakurikirana, ibika neza amagambo y'ibanga kandi ifite umufasha ukorera kuri mudasobwa yawe. Ni ubuntu, mu ndimi enye.",
+    "tagline": "Koresha internet vuba, <hl>nta wugukurikirana.</hl>",
+    "lead": "Ihagarika amatangazo n'ababakurikirana, ibika neza amagambo y'ibanga kandi ifite umufasha ukorera kuri mudasobwa yawe. Ni ubuntu, mu ndimi enye.",
     "facts": {
       "free": "Ni ubuntu, nta konti ikenewe",
       "platforms": "macOS · Windows · Linux",
@@ -1041,23 +1042,23 @@
       "items": {
         "shields": {
           "title": "Amatangazo n'ababakurikirana birahagarikwa",
-          "body": "Shields zihagarika amatangazo, ababakurikirana n'ubutumwa bwa cookies ku mbuga zose, bityo paji zifunguka vuba kandi nta wugukurikirana."
+          "body": "Shields zihagarika amatangazo, ababakurikirana n'ubutumwa bwa cookies ku mbuga zose, bityo paji zifunguka vuba."
         },
         "assistant": {
           "title": "Umufasha uri kuri mudasobwa yawe",
-          "body": "Incamake ya paji, kuyibaza ibibazo cyangwa kuzuza ifishi. Akorera ku gikoresho cyawe, bityo ibyo usoma bikaguma iwawe."
+          "body": "Incamake ya paji cyangwa kuyibaza ibibazo. Akorera ku gikoresho cyawe, bityo ibyo usoma bikaguma iwawe."
         },
         "tabs": {
           "title": "Tabs ziri ku murongo",
-          "body": "Tabs hejuru cyangwa ku ruhande, amatsinda ya tabs, Spaces z'akazi n'iz'urugo, n'amadirishya menshi, nk'uko usanzwe ubikora."
+          "body": "Tabs hejuru cyangwa ku ruhande, amatsinda ya tabs na Spaces z'akazi n'iz'urugo."
         },
         "passwords": {
           "title": "Amagambo y'ibanga abitswe neza",
-          "body": "Bika kandi wuzuze amagambo y'ibanga, ukore akomeye, kandi umenyeshwe ayoroshye cyangwa ayasubiwemo. Arindwa n'ifunga rya mudasobwa yawe."
+          "body": "Bika kandi wuzuze amagambo y'ibanga, ukore akomeye. Arindwa n'ifunga rya mudasobwa yawe."
         },
         "profiles": {
           "title": "Porofayili ya buri wese",
-          "body": "Buri muntu cyangwa buri nshingano igira porofayili yayo, ifite amateka, amagambo y'ibanga n'igenamiterere bitandukanye kuri mudasobwa imwe."
+          "body": "Buri muntu cyangwa buri nshingano igira porofayili yayo, ifite amateka, amagambo y'ibanga n'igenamiterere bitandukanye."
         },
         "languages": {
           "title": "Ivuga ururimi rwawe",
@@ -1139,7 +1140,25 @@
       "blocked": "Ababakurikirana bahagaritswe",
       "assistant": "Umufasha kuri mudasobwa yawe",
       "address": "Shakisha cyangwa wandike aderesi",
-      "newTab": "Tab nshya"
+      "newTab": "Tab nshya",
+      "query": "amakuru kigali",
+      "tabNews": "Amakuru y'uyu munsi",
+      "tabInsights": "Inyandiko · Universal Bridge",
+      "tabSignIn": "Injira",
+      "ad": "Itangazo",
+      "shieldsOn": "Shields zirakora",
+      "ads": "Amatangazo",
+      "trackers": "Ababakurikirana",
+      "cookies": "Ubutumwa bwa cookies",
+      "ask": "Mpa incamake y'iyi paji",
+      "onDevice": "Kuri mudasobwa yawe",
+      "strong": "Ijambo ry'ibanga rikomeye",
+      "scenes": {
+        "start": "Tab nshya",
+        "shields": "Shields",
+        "assistant": "Umufasha",
+        "passwords": "Amagambo y'ibanga"
+      }
     }
   }
 }
