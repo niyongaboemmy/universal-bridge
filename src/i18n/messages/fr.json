@@ -991,7 +991,8 @@
     "crumb": "Vizulla Browser",
     "eyebrow": "Un produit Universal Bridge",
     "title": "Vizulla Browser",
-    "lead": "Un navigateur rapide et privé qui bloque les publicités et les traqueurs, protège vos mots de passe et intègre un assistant qui fonctionne sur votre ordinateur. Gratuit, en quatre langues.",
+    "tagline": "Naviguez vite. <hl>Personne ne vous suit.</hl>",
+    "lead": "Bloque publicités et traqueurs, protège vos mots de passe et intègre un assistant qui fonctionne sur votre ordinateur. Gratuit, en quatre langues.",
     "facts": {
       "free": "Gratuit, sans compte",
       "platforms": "macOS · Windows · Linux",
@@ -1041,23 +1042,23 @@
       "items": {
         "shields": {
           "title": "Publicités et traqueurs bloqués",
-          "body": "Les boucliers arrêtent publicités, traqueurs et bandeaux de cookies sur tous les sites : les pages chargent plus vite et personne ne vous suit."
+          "body": "Les boucliers arrêtent publicités, traqueurs et bandeaux de cookies sur tous les sites : les pages chargent plus vite."
         },
         "assistant": {
           "title": "Un assistant sur votre ordinateur",
-          "body": "Résumez une page, posez-lui des questions ou remplissez un formulaire. Il fonctionne sur votre appareil : ce que vous lisez reste chez vous."
+          "body": "Résumez une page ou posez-lui des questions. Il fonctionne sur votre appareil : ce que vous lisez reste chez vous."
         },
         "tabs": {
           "title": "Des onglets bien rangés",
-          "body": "Onglets en haut ou sur le côté, groupes d'onglets, Espaces pour le travail et la maison, et plusieurs fenêtres, comme vous en avez l'habitude."
+          "body": "Onglets en haut ou sur le côté, groupes d'onglets et Espaces pour le travail et la maison."
         },
         "passwords": {
           "title": "Mots de passe gérés",
-          "body": "Enregistrez et remplissez vos mots de passe, créez-en de solides et soyez averti des mots de passe faibles ou réutilisés. Protégés par le verrouillage de votre ordinateur."
+          "body": "Enregistrez, remplissez et créez des mots de passe solides, protégés par le verrouillage de votre ordinateur."
         },
         "profiles": {
           "title": "Un profil pour chacun",
-          "body": "Chaque personne ou rôle a son propre profil, avec historique, mots de passe et réglages séparés sur le même ordinateur."
+          "body": "Chaque personne ou rôle a son propre profil, avec historique, mots de passe et réglages séparés."
         },
         "languages": {
           "title": "Parle votre langue",
@@ -1139,7 +1140,25 @@
       "blocked": "Traqueurs bloqués",
       "assistant": "Assistant sur l'appareil",
       "address": "Rechercher ou saisir une adresse",
-      "newTab": "Nouvel onglet"
+      "newTab": "Nouvel onglet",
+      "query": "actualités kigali",
+      "tabNews": "À la une",
+      "tabInsights": "Ressources · Universal Bridge",
+      "tabSignIn": "Se connecter",
+      "ad": "Pub",
+      "shieldsOn": "Boucliers activés",
+      "ads": "Publicités",
+      "trackers": "Traqueurs",
+      "cookies": "Bandeaux de cookies",
+      "ask": "Résume cette page",
+      "onDevice": "Sur l'appareil",
+      "strong": "Mot de passe solide",
+      "scenes": {
+        "start": "Nouvel onglet",
+        "shields": "Boucliers",
+        "assistant": "Assistant",
+        "passwords": "Mots de passe"
+      }
     }
   }
 }

@@ -991,7 +991,8 @@
     "crumb": "Vizulla Browser",
     "eyebrow": "A Universal Bridge product",
     "title": "Vizulla Browser",
-    "lead": "A fast, private browser that blocks ads and trackers, keeps your passwords safe and brings an assistant that runs on your computer. Free, in four languages.",
+    "tagline": "Browse fast. <hl>Nobody follows.</hl>",
+    "lead": "Blocks ads and trackers, keeps your passwords safe and brings an assistant that runs on your computer. Free, in four languages.",
     "facts": {
       "free": "Free, no account needed",
       "platforms": "macOS · Windows · Linux",
@@ -1041,23 +1042,23 @@
       "items": {
         "shields": {
           "title": "Ads and trackers blocked",
-          "body": "Shields stop ads, trackers and cookie pop-ups on every site, so pages load faster and nobody follows you around the web."
+          "body": "Shields stop ads, trackers and cookie pop-ups on every site, so pages load faster."
         },
         "assistant": {
           "title": "An assistant on your computer",
-          "body": "Summarise a page, ask questions about it or fill a form. It runs on your device, so what you read stays with you."
+          "body": "Summarise a page or ask about it. It runs on your device, so what you read stays with you."
         },
         "tabs": {
           "title": "Tabs that stay organised",
-          "body": "Tabs on top or on the side, tab groups, Spaces for work and home, and several windows, the way you're used to."
+          "body": "Tabs on top or on the side, tab groups and Spaces for work and home."
         },
         "passwords": {
           "title": "Passwords, handled",
-          "body": "Save and fill passwords, create strong ones, and get warned about weak or reused passwords. Protected by your computer's lock."
+          "body": "Save, fill and create strong passwords, protected by your computer's lock."
         },
         "profiles": {
           "title": "A profile for everyone",
-          "body": "Each person or role gets their own profile, with separate history, passwords and settings on the same computer."
+          "body": "Each person or role gets their own profile, with separate history, passwords and settings."
         },
         "languages": {
           "title": "Speaks your language",
@@ -1139,7 +1140,25 @@
       "blocked": "Trackers blocked",
       "assistant": "Assistant on your device",
       "address": "Search or enter address",
-      "newTab": "New tab"
+      "newTab": "New tab",
+      "query": "kigali news",
+      "tabNews": "Today's headlines",
+      "tabInsights": "Insights · Universal Bridge",
+      "tabSignIn": "Sign in",
+      "ad": "Ad",
+      "shieldsOn": "Shields are up",
+      "ads": "Ads",
+      "trackers": "Trackers",
+      "cookies": "Cookie pop-ups",
+      "ask": "Summarise this page",
+      "onDevice": "On device",
+      "strong": "Strong password",
+      "scenes": {
+        "start": "New tab",
+        "shields": "Shields",
+        "assistant": "Assistant",
+        "passwords": "Passwords"
+      }
     }
   }
 }

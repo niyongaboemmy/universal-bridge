@@ -197,7 +197,7 @@ export function DownloadPanel({
               {has(main) ? (
                 <a
                   href={href(main)}
-                  className={buttonVariants({ size: "lg" })}
+                  className={cn(buttonVariants({ size: "lg" }), "vz-cta")}
                   onClick={() => setStarted(true)}
                   data-platform={main}
                 >
