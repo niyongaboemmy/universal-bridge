@@ -3,6 +3,7 @@ import * as migration_20261010_214517_office_workspace from './20261010_214517_o
 import * as migration_20261010_221939_staff_password from './20261010_221939_staff_password';
 import * as migration_20261010_233714_google_analytics from './20261010_233714_google_analytics';
 import * as migration_20261011_152503_analytics_audience from './20261011_152503_analytics_audience';
+import * as migration_20261109_120000_vizulla_nav from './20261109_120000_vizulla_nav';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261011_152503_analytics_audience.up,
     down: migration_20261011_152503_analytics_audience.down,
     name: '20261011_152503_analytics_audience'
+  },
+  {
+    up: migration_20261109_120000_vizulla_nav.up,
+    down: migration_20261109_120000_vizulla_nav.down,
+    name: '20261109_120000_vizulla_nav'
   },
 ];
