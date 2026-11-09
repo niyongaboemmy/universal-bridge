@@ -984,5 +984,162 @@
     },
     "language": "Langue des e-mails",
     "newsletter": "M'envoyer des nouvelles de temps en temps"
+  },
+  "vizulla": {
+    "metaTitle": "Vizulla Browser — rapide, privé et gratuit",
+    "metaDescription": "Téléchargez Vizulla, le navigateur rapide et privé d'Universal Bridge : blocage des publicités et des traqueurs, assistant sur l'appareil, mots de passe et profils. Gratuit pour macOS, Windows et Linux.",
+    "crumb": "Vizulla Browser",
+    "eyebrow": "Un produit Universal Bridge",
+    "title": "Vizulla Browser",
+    "lead": "Un navigateur rapide et privé qui bloque les publicités et les traqueurs, protège vos mots de passe et intègre un assistant qui fonctionne sur votre ordinateur. Gratuit, en quatre langues.",
+    "facts": {
+      "free": "Gratuit, sans compte",
+      "platforms": "macOS · Windows · Linux",
+      "languages": "English · Kiswahili · Français · Kinyarwanda"
+    },
+    "os": {
+      "mac": "macOS",
+      "windows": "Windows",
+      "linux": "Linux"
+    },
+    "platform": {
+      "mac-arm64": "macOS · Apple silicon (M1 ou plus récent)",
+      "mac-x64": "macOS · Intel",
+      "win-x64": "Windows 10 et 11 · 64 bits",
+      "linux-appimage": "Linux · AppImage",
+      "linux-deb": "Linux · Debian et Ubuntu (.deb)"
+    },
+    "download": {
+      "detecting": "Recherche de la version adaptée à votre ordinateur…",
+      "button": "Télécharger pour {os}",
+      "details": "Version {version} · {size}",
+      "recommended": "Recommandé pour cet ordinateur",
+      "choose": "Choisissez votre système",
+      "macIntel": "Mac avec une puce Intel ? Prenez la version Intel",
+      "macArm": "Mac avec Apple silicon ? Prenez la version Apple silicon",
+      "macUnsure": "La plupart des Mac depuis 2020 ont une puce Apple silicon. Pour vérifier : menu Apple → À propos de ce Mac.",
+      "linuxDeb": "Sous Debian ou Ubuntu ? Prenez le paquet .deb",
+      "others": "Autres systèmes et empreintes",
+      "mobileTitle": "Vizulla est un navigateur pour ordinateur",
+      "mobileBody": "Ouvrez cette page sur un ordinateur Mac, Windows ou Linux pour le télécharger. Copiez le lien pour vous l'envoyer.",
+      "copyLink": "Copier le lien",
+      "copied": "Lien copié",
+      "unavailableTitle": "Les téléchargements sont en préparation",
+      "unavailableBody": "Les installateurs ne sont pas accessibles pour le moment. Écrivez-nous et nous vous enverrons un lien de téléchargement.",
+      "contact": "Nous contacter",
+      "started": "Votre téléchargement a commencé. Ensuite : installez Vizulla en trois étapes ci-dessous.",
+      "notice": {
+        "unavailable": "Ce téléchargement n'est pas disponible pour le moment. Réessayez dans quelques minutes.",
+        "busy": "Trop de téléchargements depuis votre réseau. Patientez quelques minutes puis réessayez.",
+        "unknown": "Ce téléchargement est introuvable. Choisissez votre système ci-dessous."
+      }
+    },
+    "features": {
+      "eyebrow": "Pourquoi Vizulla",
+      "title": "Tout ce qu'il vous faut, rien qui vous suit",
+      "lead": "Vizulla repose sur le même moteur que Chrome : vos sites fonctionnent, avec la confidentialité et des outils utiles intégrés.",
+      "items": {
+        "shields": {
+          "title": "Publicités et traqueurs bloqués",
+          "body": "Les boucliers arrêtent publicités, traqueurs et bandeaux de cookies sur tous les sites : les pages chargent plus vite et personne ne vous suit."
+        },
+        "assistant": {
+          "title": "Un assistant sur votre ordinateur",
+          "body": "Résumez une page, posez-lui des questions ou remplissez un formulaire. Il fonctionne sur votre appareil : ce que vous lisez reste chez vous."
+        },
+        "tabs": {
+          "title": "Des onglets bien rangés",
+          "body": "Onglets en haut ou sur le côté, groupes d'onglets, Espaces pour le travail et la maison, et plusieurs fenêtres, comme vous en avez l'habitude."
+        },
+        "passwords": {
+          "title": "Mots de passe gérés",
+          "body": "Enregistrez et remplissez vos mots de passe, créez-en de solides et soyez averti des mots de passe faibles ou réutilisés. Protégés par le verrouillage de votre ordinateur."
+        },
+        "profiles": {
+          "title": "Un profil pour chacun",
+          "body": "Chaque personne ou rôle a son propre profil, avec historique, mots de passe et réglages séparés sur le même ordinateur."
+        },
+        "languages": {
+          "title": "Parle votre langue",
+          "body": "Utilisez Vizulla en anglais, kiswahili, français ou kinyarwanda. Les sites web reçoivent aussi votre langue."
+        }
+      }
+    },
+    "install": {
+      "eyebrow": "Installation",
+      "title": "Installez Vizulla en trois étapes",
+      "lead": "Choisissez votre système. Vizulla se met ensuite à jour tout seul : un bouton de mise à jour apparaît dans la barre d'outils quand une nouvelle version sort.",
+      "step": "Étape {n}",
+      "mac": {
+        "s1": {
+          "title": "Ouvrez le téléchargement",
+          "body": "Double-cliquez sur le fichier .dmg dans votre dossier Téléchargements."
+        },
+        "s2": {
+          "title": "Glissez Vizulla dans Applications",
+          "body": "Faites glisser l'icône Vizulla sur le dossier Applications, puis éjectez l'installateur."
+        },
+        "s3": {
+          "title": "Ouvrez-le la première fois",
+          "body": "macOS demande de confirmer les apps hors de l'App Store. Ouvrez Vizulla, cliquez sur OK, puis allez dans Réglages Système → Confidentialité et sécurité et cliquez sur Ouvrir quand même. Une seule fois suffit."
+        }
+      },
+      "windows": {
+        "s1": {
+          "title": "Lancez l'installateur",
+          "body": "Ouvrez le fichier .exe depuis votre dossier Téléchargements."
+        },
+        "s2": {
+          "title": "Confirmez l'application",
+          "body": "Si Windows affiche « Windows a protégé votre ordinateur », cliquez sur Informations complémentaires, puis Exécuter quand même."
+        },
+        "s3": {
+          "title": "Naviguez",
+          "body": "Vizulla s'ouvre à la fin de l'installation et ajoute un raccourci au menu Démarrer."
+        }
+      },
+      "linux": {
+        "s1": {
+          "title": "Autorisez l'exécution",
+          "body": "Clic droit sur l'AppImage, ouvrez Propriétés et activez Autoriser l'exécution comme programme."
+        },
+        "s2": {
+          "title": "Ouvrez Vizulla",
+          "body": "Double-cliquez sur l'AppImage. Vous utilisez le paquet .deb ? Ouvrez-le avec votre installateur de logiciels."
+        },
+        "s3": {
+          "title": "Restez à jour",
+          "body": "L'AppImage se met à jour toute seule. Avec le paquet .deb, installez les nouvelles versions depuis cette page."
+        }
+      }
+    },
+    "all": {
+      "eyebrow": "Tous les téléchargements",
+      "title": "Chaque système, chaque vérification",
+      "lead": "Version {version}, publiée le {date}. L'empreinte SHA-256 de chaque fichier vous permet de vérifier que le téléchargement est authentique.",
+      "file": "Fichier",
+      "size": "Taille",
+      "get": "Télécharger",
+      "checksum": "SHA-256",
+      "requirements": "Configuration requise",
+      "req": {
+        "mac": "macOS 12 Monterey ou plus récent",
+        "windows": "Windows 10 ou 11, 64 bits",
+        "linux": "Linux 64 bits : Ubuntu 22.04, Debian 12, Fedora 38 ou plus récent"
+      }
+    },
+    "cta": {
+      "eyebrow": "Conçu à Kigali par Universal Bridge",
+      "title": "Vizulla pour toute votre équipe ?",
+      "lead": "Nous installons Vizulla pour les écoles, les bureaux et les institutions publiques, avec vos réglages et votre langue prêts sur chaque ordinateur.",
+      "primary": "Parlons-en",
+      "secondary": "Réserver un appel"
+    },
+    "showcase": {
+      "blocked": "Traqueurs bloqués",
+      "assistant": "Assistant sur l'appareil",
+      "address": "Rechercher ou saisir une adresse",
+      "newTab": "Nouvel onglet"
+    }
   }
 }

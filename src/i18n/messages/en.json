@@ -984,5 +984,162 @@
     },
     "language": "Language for emails",
     "newsletter": "Send me occasional news"
+  },
+  "vizulla": {
+    "metaTitle": "Vizulla Browser — fast, private and free",
+    "metaDescription": "Download Vizulla, the fast, private browser from Universal Bridge: built-in ad and tracker blocking, an on-device assistant, passwords and profiles. Free for macOS, Windows and Linux.",
+    "crumb": "Vizulla Browser",
+    "eyebrow": "A Universal Bridge product",
+    "title": "Vizulla Browser",
+    "lead": "A fast, private browser that blocks ads and trackers, keeps your passwords safe and brings an assistant that runs on your computer. Free, in four languages.",
+    "facts": {
+      "free": "Free, no account needed",
+      "platforms": "macOS · Windows · Linux",
+      "languages": "English · Kiswahili · Français · Kinyarwanda"
+    },
+    "os": {
+      "mac": "macOS",
+      "windows": "Windows",
+      "linux": "Linux"
+    },
+    "platform": {
+      "mac-arm64": "macOS · Apple silicon (M1 or later)",
+      "mac-x64": "macOS · Intel",
+      "win-x64": "Windows 10 and 11 · 64-bit",
+      "linux-appimage": "Linux · AppImage",
+      "linux-deb": "Linux · Debian and Ubuntu (.deb)"
+    },
+    "download": {
+      "detecting": "Finding the right version for your computer…",
+      "button": "Download for {os}",
+      "details": "Version {version} · {size}",
+      "recommended": "Recommended for this computer",
+      "choose": "Choose your system",
+      "macIntel": "Mac with an Intel chip? Get the Intel version",
+      "macArm": "Mac with Apple silicon? Get the Apple silicon version",
+      "macUnsure": "Most Macs since 2020 have Apple silicon. To check yours: Apple menu → About This Mac.",
+      "linuxDeb": "On Debian or Ubuntu? Get the .deb package",
+      "others": "Other systems and checksums",
+      "mobileTitle": "Vizulla is a desktop browser",
+      "mobileBody": "Open this page on a Mac, Windows or Linux computer to download it. Copy the link to send it to yourself.",
+      "copyLink": "Copy link",
+      "copied": "Link copied",
+      "unavailableTitle": "Downloads are being prepared",
+      "unavailableBody": "The installers can't be reached right now. Send us a message and we'll email you a download link.",
+      "contact": "Contact us",
+      "started": "Your download has started. Next: install Vizulla in three steps below.",
+      "notice": {
+        "unavailable": "That download isn't available right now. Please try again in a few minutes.",
+        "busy": "Too many downloads from your network. Please wait a few minutes and try again.",
+        "unknown": "We couldn't find that download. Choose your system below."
+      }
+    },
+    "features": {
+      "eyebrow": "Why Vizulla",
+      "title": "Everything you need, nothing that follows you",
+      "lead": "Vizulla is built on the same engine as Chrome, so your sites just work, with privacy and helpful tools built in.",
+      "items": {
+        "shields": {
+          "title": "Ads and trackers blocked",
+          "body": "Shields stop ads, trackers and cookie pop-ups on every site, so pages load faster and nobody follows you around the web."
+        },
+        "assistant": {
+          "title": "An assistant on your computer",
+          "body": "Summarise a page, ask questions about it or fill a form. It runs on your device, so what you read stays with you."
+        },
+        "tabs": {
+          "title": "Tabs that stay organised",
+          "body": "Tabs on top or on the side, tab groups, Spaces for work and home, and several windows, the way you're used to."
+        },
+        "passwords": {
+          "title": "Passwords, handled",
+          "body": "Save and fill passwords, create strong ones, and get warned about weak or reused passwords. Protected by your computer's lock."
+        },
+        "profiles": {
+          "title": "A profile for everyone",
+          "body": "Each person or role gets their own profile, with separate history, passwords and settings on the same computer."
+        },
+        "languages": {
+          "title": "Speaks your language",
+          "body": "Use Vizulla in English, Kiswahili, French or Kinyarwanda. Websites are asked for your language too."
+        }
+      }
+    },
+    "install": {
+      "eyebrow": "Installation",
+      "title": "Install Vizulla in three steps",
+      "lead": "Pick your system. Vizulla updates itself afterwards: an update button appears in the toolbar when a new version is out.",
+      "step": "Step {n}",
+      "mac": {
+        "s1": {
+          "title": "Open the download",
+          "body": "Double-click the .dmg file in your Downloads folder."
+        },
+        "s2": {
+          "title": "Drag Vizulla to Applications",
+          "body": "Drag the Vizulla icon onto the Applications folder, then eject the installer."
+        },
+        "s3": {
+          "title": "Open it the first time",
+          "body": "macOS asks you to confirm apps from outside the App Store. Open Vizulla, click Done, then go to System Settings → Privacy & Security and click Open Anyway. You only do this once."
+        }
+      },
+      "windows": {
+        "s1": {
+          "title": "Run the installer",
+          "body": "Open the .exe file from your Downloads folder."
+        },
+        "s2": {
+          "title": "Confirm the app",
+          "body": "If Windows shows \"Windows protected your PC\", click More info, then Run anyway."
+        },
+        "s3": {
+          "title": "Start browsing",
+          "body": "Vizulla opens when the installation finishes and adds a shortcut to the Start menu."
+        }
+      },
+      "linux": {
+        "s1": {
+          "title": "Allow it to run",
+          "body": "Right-click the AppImage, open Properties and turn on Allow executing as program."
+        },
+        "s2": {
+          "title": "Open Vizulla",
+          "body": "Double-click the AppImage. Using the .deb package instead? Open it with your software installer."
+        },
+        "s3": {
+          "title": "Keep it up to date",
+          "body": "The AppImage updates itself. With the .deb package, install new versions from this page."
+        }
+      }
+    },
+    "all": {
+      "eyebrow": "All downloads",
+      "title": "Every system, every version check",
+      "lead": "Version {version}, released {date}. Each file's SHA-256 fingerprint lets you confirm the download is genuine.",
+      "file": "File",
+      "size": "Size",
+      "get": "Download",
+      "checksum": "SHA-256",
+      "requirements": "Requirements",
+      "req": {
+        "mac": "macOS 12 Monterey or later",
+        "windows": "Windows 10 or 11, 64-bit",
+        "linux": "64-bit Linux: Ubuntu 22.04, Debian 12, Fedora 38 or newer"
+      }
+    },
+    "cta": {
+      "eyebrow": "Built in Kigali by Universal Bridge",
+      "title": "Want Vizulla for your whole team?",
+      "lead": "We set up Vizulla for schools, offices and public institutions, with your settings and language ready on every computer.",
+      "primary": "Talk to us",
+      "secondary": "Book a call"
+    },
+    "showcase": {
+      "blocked": "Trackers blocked",
+      "assistant": "Assistant on your device",
+      "address": "Search or enter address",
+      "newTab": "New tab"
+    }
   }
 }

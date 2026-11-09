@@ -984,5 +984,162 @@
     },
     "language": "Ururimi rw'imeyili",
     "newsletter": "Unyoherereze amakuru rimwe na rimwe"
+  },
+  "vizulla": {
+    "metaTitle": "Vizulla Browser — yihuta, yizewe kandi ni ubuntu",
+    "metaDescription": "Kuramo Vizulla, mushakisha yihuta kandi irinda ubuzima bwite ya Universal Bridge: ihagarika amatangazo n'ababakurikirana, ifite umufasha ukorera kuri mudasobwa, ibika ijambo ry'ibanga na porofayili. Ni ubuntu kuri macOS, Windows na Linux.",
+    "crumb": "Vizulla Browser",
+    "eyebrow": "Igicuruzwa cya Universal Bridge",
+    "title": "Vizulla Browser",
+    "lead": "Mushakisha yihuta kandi irinda ubuzima bwite: ihagarika amatangazo n'ababakurikirana, ibika neza amagambo y'ibanga kandi ifite umufasha ukorera kuri mudasobwa yawe. Ni ubuntu, mu ndimi enye.",
+    "facts": {
+      "free": "Ni ubuntu, nta konti ikenewe",
+      "platforms": "macOS · Windows · Linux",
+      "languages": "English · Kiswahili · Français · Kinyarwanda"
+    },
+    "os": {
+      "mac": "macOS",
+      "windows": "Windows",
+      "linux": "Linux"
+    },
+    "platform": {
+      "mac-arm64": "macOS · Apple silicon (M1 cyangwa nshya)",
+      "mac-x64": "macOS · Intel",
+      "win-x64": "Windows 10 na 11 · 64-bit",
+      "linux-appimage": "Linux · AppImage",
+      "linux-deb": "Linux · Debian na Ubuntu (.deb)"
+    },
+    "download": {
+      "detecting": "Turimo gushaka verisiyo ijyanye na mudasobwa yawe…",
+      "button": "Kuramo kuri {os}",
+      "details": "Verisiyo {version} · {size}",
+      "recommended": "Iyi ni yo ikwiye iyi mudasobwa",
+      "choose": "Hitamo sisitemu yawe",
+      "macIntel": "Mac ifite chip ya Intel? Fata verisiyo ya Intel",
+      "macArm": "Mac ifite Apple silicon? Fata verisiyo ya Apple silicon",
+      "macUnsure": "Mac nyinshi zakozwe kuva mu 2020 zifite Apple silicon. Kugira ngo urebe iyawe: menu ya Apple → About This Mac.",
+      "linuxDeb": "Ukoresha Debian cyangwa Ubuntu? Fata paki ya .deb",
+      "others": "Izindi sisitemu n'ibimenyetso by'ukuri",
+      "mobileTitle": "Vizulla ni iya mudasobwa",
+      "mobileBody": "Fungura iyi paji kuri mudasobwa ya Mac, Windows cyangwa Linux kugira ngo uyikuremo. Koporora umurongo uwiyoherereze.",
+      "copyLink": "Koporora umurongo",
+      "copied": "Umurongo wakoporowe",
+      "unavailableTitle": "Ibyo gukuramo biracyategurwa",
+      "unavailableBody": "Ubu ntibishoboka kubona porogaramu zo gushyiramo. Twandikire tuzakoherereza umurongo wo gukuramo kuri imeyili.",
+      "contact": "Twandikire",
+      "started": "Gukuramo byatangiye. Ibikurikira: shyiramo Vizulla mu ntambwe eshatu ziri hasi.",
+      "notice": {
+        "unavailable": "Ubu ntibishoboka gukuramo iyi verisiyo. Ongera ugerageze mu minota mike.",
+        "busy": "Hari ibikururwa byinshi biturutse ku murongo wawe wa interineti. Tegereza iminota mike wongere ugerageze.",
+        "unknown": "Ntitwabonye ibyo washakaga gukuramo. Hitamo sisitemu yawe hasi."
+      }
+    },
+    "features": {
+      "eyebrow": "Kuki Vizulla",
+      "title": "Ibyo ukeneye byose, nta wugukurikirana",
+      "lead": "Vizulla yubakiye kuri moteri imwe na Chrome, bityo imbuga zawe zikora neza, kandi ifite uburinzi n'ibikoresho by'ingirakamaro.",
+      "items": {
+        "shields": {
+          "title": "Amatangazo n'ababakurikirana birahagarikwa",
+          "body": "Shields zihagarika amatangazo, ababakurikirana n'ubutumwa bwa cookies ku mbuga zose, bityo paji zifunguka vuba kandi nta wugukurikirana."
+        },
+        "assistant": {
+          "title": "Umufasha uri kuri mudasobwa yawe",
+          "body": "Incamake ya paji, kuyibaza ibibazo cyangwa kuzuza ifishi. Akorera ku gikoresho cyawe, bityo ibyo usoma bikaguma iwawe."
+        },
+        "tabs": {
+          "title": "Tabs ziri ku murongo",
+          "body": "Tabs hejuru cyangwa ku ruhande, amatsinda ya tabs, Spaces z'akazi n'iz'urugo, n'amadirishya menshi, nk'uko usanzwe ubikora."
+        },
+        "passwords": {
+          "title": "Amagambo y'ibanga abitswe neza",
+          "body": "Bika kandi wuzuze amagambo y'ibanga, ukore akomeye, kandi umenyeshwe ayoroshye cyangwa ayasubiwemo. Arindwa n'ifunga rya mudasobwa yawe."
+        },
+        "profiles": {
+          "title": "Porofayili ya buri wese",
+          "body": "Buri muntu cyangwa buri nshingano igira porofayili yayo, ifite amateka, amagambo y'ibanga n'igenamiterere bitandukanye kuri mudasobwa imwe."
+        },
+        "languages": {
+          "title": "Ivuga ururimi rwawe",
+          "body": "Koresha Vizulla mu Cyongereza, Igiswahili, Igifaransa cyangwa Ikinyarwanda. Imbuga za interineti na zo zibwirwa ururimi rwawe."
+        }
+      }
+    },
+    "install": {
+      "eyebrow": "Kuyishyiramo",
+      "title": "Shyiramo Vizulla mu ntambwe eshatu",
+      "lead": "Hitamo sisitemu yawe. Nyuma yaho Vizulla yivugurura ubwayo: buto yo kuvugurura igaragara mu mwanya w'ibikoresho iyo verisiyo nshya isohotse.",
+      "step": "Intambwe ya {n}",
+      "mac": {
+        "s1": {
+          "title": "Fungura icyo wakuyemo",
+          "body": "Kanda kabiri kuri dosiye ya .dmg iri muri Downloads."
+        },
+        "s2": {
+          "title": "Kurura Vizulla ujyane muri Applications",
+          "body": "Kurura ikimenyetso cya Vizulla ugishyire kuri Applications, hanyuma ukuremo installer."
+        },
+        "s3": {
+          "title": "Yifungure ku nshuro ya mbere",
+          "body": "macOS isaba kwemeza porogaramu zitavuye muri App Store. Fungura Vizulla, kanda Done, hanyuma ujye muri System Settings → Privacy & Security ukande Open Anyway. Ubikora rimwe gusa."
+        }
+      },
+      "windows": {
+        "s1": {
+          "title": "Tangiza installer",
+          "body": "Fungura dosiye ya .exe iri muri Downloads."
+        },
+        "s2": {
+          "title": "Emeza porogaramu",
+          "body": "Niba Windows yerekanye \"Windows protected your PC\", kanda More info, hanyuma Run anyway."
+        },
+        "s3": {
+          "title": "Tangira gushakisha",
+          "body": "Vizulla irafunguka iyo kuyishyiramo birangiye, kandi ishyira ikimenyetso muri Start menu."
+        }
+      },
+      "linux": {
+        "s1": {
+          "title": "Yemerere gukora",
+          "body": "Kanda iburyo kuri AppImage, ufungure Properties, ufungure Allow executing as program."
+        },
+        "s2": {
+          "title": "Fungura Vizulla",
+          "body": "Kanda kabiri kuri AppImage. Ukoresha paki ya .deb? Yifungure ukoresheje porogaramu yawe yo gushyiramo software."
+        },
+        "s3": {
+          "title": "Guma ku gihe",
+          "body": "AppImage yivugurura ubwayo. Ku paki ya .deb, shyiramo verisiyo nshya uvuye kuri iyi paji."
+        }
+      }
+    },
+    "all": {
+      "eyebrow": "Ibyo gukuramo byose",
+      "title": "Buri sisitemu, buri genzura",
+      "lead": "Verisiyo {version}, yasohotse ku wa {date}. Ikimenyetso cya SHA-256 cya buri dosiye kigufasha kwemeza ko ibyo wakuyemo ari ukuri.",
+      "file": "Dosiye",
+      "size": "Ingano",
+      "get": "Kuramo",
+      "checksum": "SHA-256",
+      "requirements": "Ibisabwa",
+      "req": {
+        "mac": "macOS 12 Monterey cyangwa nshya",
+        "windows": "Windows 10 cyangwa 11, 64-bit",
+        "linux": "Linux 64-bit: Ubuntu 22.04, Debian 12, Fedora 38 cyangwa nshya"
+      }
+    },
+    "cta": {
+      "eyebrow": "Yakorewe i Kigali na Universal Bridge",
+      "title": "Urashaka Vizulla ku ikipe yawe yose?",
+      "lead": "Dushyira Vizulla mu mashuri, mu biro no mu bigo bya Leta, igenamiterere n'ururimi byanyu biteguye kuri buri mudasobwa.",
+      "primary": "Tuvugane",
+      "secondary": "Saba guhamagarwa"
+    },
+    "showcase": {
+      "blocked": "Ababakurikirana bahagaritswe",
+      "assistant": "Umufasha kuri mudasobwa yawe",
+      "address": "Shakisha cyangwa wandike aderesi",
+      "newTab": "Tab nshya"
+    }
   }
 }

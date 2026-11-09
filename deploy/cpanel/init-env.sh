@@ -58,6 +58,8 @@ CLAMAV_HOST=
 
 # --- Optional ------------------------------------------------------------------
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=
+# Vizulla Browser downloads: fine-grained GitHub token, read-only Contents on vizulla-browser
+VIZULLA_GITHUB_TOKEN=
 NEXT_PUBLIC_CAL_LINK=universal-bridge/discovery
 CRM_WEBHOOK_URL=
 TEAM_ALERT_WEBHOOK_URL=
