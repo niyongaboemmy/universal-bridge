@@ -1160,5 +1160,145 @@
         "passwords": "Amagambo y'ibanga"
       }
     }
+  },
+  "kubika": {
+    "metaTitle": "Kubika — bika ibyo washyize ku mbuga nkoranyambaga",
+    "metaDescription": "Shyiramo link ubike videwo, amafoto, carousel n'amajwi byawe biri kuri YouTube, TikTok, Instagram, X, Facebook na LinkedIn. Nta matangazo, nta bikurikirana, dosiye zisibwa nyuma y'amasaha 24. Igicuruzwa cya Universal Bridge.",
+    "crumb": "Kubika",
+    "eyebrow": "Igicuruzwa cya Universal Bridge",
+    "title": "Kubika",
+    "tagline": "Shyiramo link, <hl>ubike ibyawe.</hl>",
+    "lead": "Bika videwo, amafoto, carousel n'amajwi biri ku mbuga esheshatu mu masegonda make, mu bwiza uhisemo. Nta matangazo, nta bikurikirana.",
+    "paste": {
+      "label": "Link y'ubutumwa",
+      "placeholder": "Shyiramo link y'ubutumwa",
+      "paste": "Omeka",
+      "submit": "Fungura muri Kubika",
+      "unsupported": "Shyiramo link y'ubutumwa buri kuri YouTube, TikTok, Instagram, X, Facebook cyangwa LinkedIn."
+    },
+    "platformsLabel": "Ikorana na YouTube, TikTok, Instagram, X, Facebook na LinkedIn",
+    "openApp": "Fungura Kubika",
+    "facts": {
+      "free": "Ni ubuntu",
+      "anywhere": "Kuri telefone cyangwa mudasobwa, nta kintu ushyiramo",
+      "languages": "English · Français · Kinyarwanda"
+    },
+    "platforms": {
+      "eyebrow": "Imbuga esheshatu",
+      "title": "Aho ubutumwa bwawe buri hose",
+      "lead": "Ahantu hamwe ho gushyira link z'imbuga zose. Kubika ibona ubutumwa ikakwereka uburyo bwose buboneka.",
+      "saves": {
+        "videos": "Videwo",
+        "shorts": "Shorts",
+        "audio": "Amajwi",
+        "photoPosts": "Ubutumwa bw'amafoto",
+        "reels": "Reels",
+        "photos": "Amafoto",
+        "carousels": "Carousel",
+        "gifs": "GIF",
+        "files": "Inyandiko"
+      }
+    },
+    "features": {
+      "eyebrow": "Kuki Kubika",
+      "title": "Ibyo ukeneye byose ngo ubike. Nta birenzeho.",
+      "lead": "Yubakiwe abahanzi n'amatsinda abika ibikorwa byabo.",
+      "items": {
+        "formats": {
+          "title": "Ubwoko n'ubwiza uhitamo",
+          "body": "Videwo Best, 1080p cyangwa 720p, amajwi MP3 cyangwa M4A, ifoto yo hejuru cyangwa GIF."
+        },
+        "carousels": {
+          "title": "Carousel yose icyarimwe",
+          "body": "Hitamo ibyo ushaka, ubibone muri ZIP imwe cyangwa dosiye zitandukanye."
+        },
+        "batch": {
+          "title": "Link nyinshi icyarimwe",
+          "body": "Shyiramo urutonde rwa link, Kubika izikurure zose."
+        },
+        "extension": {
+          "title": "Extension ya mushakisha, iraje vuba",
+          "body": "Bona ubutumwa uri kuri internet, ubufungure muri Kubika ukanze rimwe."
+        },
+        "library": {
+          "title": "Ububiko ushakishamo",
+          "body": "Bika ubutumwa ufite ibimenyetso n'inyandiko; ububone ukoresheje umutwe, ibisobanuro cyangwa umwanditsi."
+        },
+        "privacy": {
+          "title": "Irinda ubuzima bwite",
+          "body": "Nta matangazo, nta bikurikirana, kandi ntitugusaba ijambo ry'ibanga ry'imbuga zawe. Dosiye zisibwa nyuma y'amasaha 24."
+        }
+      }
+    },
+    "bento": {
+      "zip": "{count, plural, one {Ifoto #} other {Amafoto #}} · ZIP",
+      "links": "{count, plural, one {Link #} other {Link #}}",
+      "search": "kivu",
+      "noPasswords": "Nta jambo ry'ibanga dusaba"
+    },
+    "how": {
+      "eyebrow": "Uko bikora",
+      "title": "Intambwe eshatu, amasegonda make",
+      "lead": "Nta porogaramu ushyiramo, nta kintu wiga.",
+      "step": "Intambwe {n}",
+      "s1": {
+        "title": "Koporora link",
+        "body": "Kanda Share ku butumwa, hanyuma Copy link."
+      },
+      "s2": {
+        "title": "Yishyire muri Kubika",
+        "body": "Kubika ikwereka ubutumwa n'uburyo buboneka."
+      },
+      "s3": {
+        "title": "Bubike",
+        "body": "Hitamo ubwoko ububike kuri telefone cyangwa mudasobwa."
+      }
+    },
+    "rights": {
+      "title": "Yakorewe ibintu byawe",
+      "body": "Kubika ibika ibyo utunze cyangwa wemerewe kubika. Ntijya irenga ku byishyurwa, konti zifunze cyangwa uburinzi bwo kwigana.",
+      "open": "Fungura Kubika",
+      "policy": "Imikoreshereze yemewe"
+    },
+    "cta": {
+      "eyebrow": "Byakorewe i Kigali na Universal Bridge",
+      "title": "Kubika ku itsinda ryawe ryose?",
+      "lead": "Imbuga z'itsinda, abanyamuryango, imipaka y'ikoreshwa n'igitabo cy'igenzura ku itangazamakuru, ibigo n'inzego. Tugufasha kubitunganya.",
+      "primary": "Tuvugane",
+      "secondary": "Saba guhamagarwa"
+    },
+    "showcase": {
+      "hero": "Bika ibyawe",
+      "placeholder": "Shyiramo link y'ubutumwa",
+      "fetching": "Turimo kuzana post kuri TikTok…",
+      "noAds": "Nta matangazo",
+      "noTrackers": "Nta bikurikirana",
+      "deleted": "Bisibwa nyuma y'amasaha 24",
+      "recent": "Ibyo uherutse gukurura",
+      "recent1": "Kigali mu ijoro",
+      "recent2": "Amafoto ya studio",
+      "privacy": "Ubuzima bwite",
+      "postTitle": "Ikiyaga cya Kivu ku mugoroba",
+      "postMeta": "Videwo 1 · 0:42",
+      "format": "Ubwoko",
+      "download": "Kurura",
+      "stepFetch": "Gukurura videwo 1 kuri 1",
+      "stepMerge": "Guhuza videwo n'ijwi",
+      "stepSave": "Kubika",
+      "ready": "Dosiye yawe iriteguye",
+      "file": "24.6 MB · MP4",
+      "saveDevice": "Bika ku gikoresho",
+      "saveLibrary": "Bika mu bubiko",
+      "saved": "Byabitswe",
+      "navDownload": "Kurura",
+      "navBatch": "Byinshi",
+      "navLibrary": "Ububiko",
+      "scenes": {
+        "paste": "Shyiramo",
+        "choose": "Hitamo",
+        "download": "Kurura",
+        "save": "Bika"
+      }
+    }
   }
 }

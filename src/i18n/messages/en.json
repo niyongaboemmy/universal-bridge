@@ -1160,5 +1160,145 @@
         "passwords": "Passwords"
       }
     }
+  },
+  "kubika": {
+    "metaTitle": "Kubika — save your posts from social media",
+    "metaDescription": "Paste a link and keep your videos, photos, carousels and audio from YouTube, TikTok, Instagram, X, Facebook and LinkedIn. No ads, no trackers, downloads deleted after 24 hours. A Universal Bridge product.",
+    "crumb": "Kubika",
+    "eyebrow": "A Universal Bridge product",
+    "title": "Kubika",
+    "tagline": "Paste a link. <hl>Keep the post.</hl>",
+    "lead": "Save videos, photos, carousels and audio from six platforms in seconds, in the quality you choose. No ads, no trackers.",
+    "paste": {
+      "label": "Link to a post",
+      "placeholder": "Paste a post link",
+      "paste": "Paste",
+      "submit": "Open in Kubika",
+      "unsupported": "Paste a link to a post from YouTube, TikTok, Instagram, X, Facebook or LinkedIn."
+    },
+    "platformsLabel": "Works with YouTube, TikTok, Instagram, X, Facebook and LinkedIn",
+    "openApp": "Open Kubika",
+    "facts": {
+      "free": "Free to use",
+      "anywhere": "Phone or computer, nothing to install",
+      "languages": "English · Français · Kinyarwanda"
+    },
+    "platforms": {
+      "eyebrow": "Six platforms",
+      "title": "Wherever your posts live",
+      "lead": "One paste box for all of them. Kubika finds the post and offers every format it comes in.",
+      "saves": {
+        "videos": "Videos",
+        "shorts": "Shorts",
+        "audio": "Audio",
+        "photoPosts": "Photo posts",
+        "reels": "Reels",
+        "photos": "Photos",
+        "carousels": "Carousels",
+        "gifs": "GIFs",
+        "files": "Documents"
+      }
+    },
+    "features": {
+      "eyebrow": "Why Kubika",
+      "title": "Everything a save needs. Nothing it doesn't.",
+      "lead": "Built for creators and teams who keep their own work.",
+      "items": {
+        "formats": {
+          "title": "Your format, your quality",
+          "body": "Best, 1080p or 720p video, MP3 or M4A audio, the cover photo or a GIF."
+        },
+        "carousels": {
+          "title": "Whole carousels at once",
+          "body": "Pick the items you want and get them as one ZIP or separate files."
+        },
+        "batch": {
+          "title": "Many links, one go",
+          "body": "Paste a list of links and Kubika works through them for you."
+        },
+        "extension": {
+          "title": "Browser extension, coming soon",
+          "body": "Spot a post while you browse and open it in Kubika with one click."
+        },
+        "library": {
+          "title": "A library you can search",
+          "body": "Keep saved posts with tags and notes; find them by title, caption or author."
+        },
+        "privacy": {
+          "title": "Private by design",
+          "body": "No ads, no trackers, and never your social media password. Downloads are deleted after 24 hours."
+        }
+      }
+    },
+    "bento": {
+      "zip": "{count, plural, one {# photo} other {# photos}} · ZIP",
+      "links": "{count, plural, one {# link} other {# links}}",
+      "search": "kivu",
+      "noPasswords": "No passwords asked"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Three steps, a few seconds",
+      "lead": "No app to install, nothing to learn.",
+      "step": "Step {n}",
+      "s1": {
+        "title": "Copy the link",
+        "body": "Tap Share on the post, then Copy link."
+      },
+      "s2": {
+        "title": "Paste it into Kubika",
+        "body": "Kubika shows the post and the formats it comes in."
+      },
+      "s3": {
+        "title": "Save it",
+        "body": "Pick a format and save it to your phone or computer."
+      }
+    },
+    "rights": {
+      "title": "Made for content that is yours",
+      "body": "Kubika saves what you own or have permission to keep. It never gets around paywalls, private accounts or copy protection.",
+      "open": "Open Kubika",
+      "policy": "Acceptable use"
+    },
+    "cta": {
+      "eyebrow": "Built in Kigali by Universal Bridge",
+      "title": "Kubika for your whole team?",
+      "lead": "Shared workspaces, members, usage limits and an audit log for media teams, agencies and institutions. We help you set it up.",
+      "primary": "Talk to us",
+      "secondary": "Book a call"
+    },
+    "showcase": {
+      "hero": "Keep what is yours",
+      "placeholder": "Paste a post link",
+      "fetching": "Getting the post from TikTok…",
+      "noAds": "No ads",
+      "noTrackers": "No trackers",
+      "deleted": "Deleted after 24 h",
+      "recent": "Recent downloads",
+      "recent1": "Kigali skyline timelapse",
+      "recent2": "Studio carousel",
+      "privacy": "Privacy",
+      "postTitle": "Lake Kivu at golden hour",
+      "postMeta": "1 video · 0:42",
+      "format": "Format",
+      "download": "Download",
+      "stepFetch": "Fetching video 1 of 1",
+      "stepMerge": "Merging video and audio",
+      "stepSave": "Saving",
+      "ready": "Your file is ready",
+      "file": "24.6 MB · MP4",
+      "saveDevice": "Save to device",
+      "saveLibrary": "Save to library",
+      "saved": "Saved",
+      "navDownload": "Download",
+      "navBatch": "Batch",
+      "navLibrary": "Library",
+      "scenes": {
+        "paste": "Paste",
+        "choose": "Choose",
+        "download": "Download",
+        "save": "Save"
+      }
+    }
   }
 }
