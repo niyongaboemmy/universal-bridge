@@ -179,6 +179,17 @@ export const navItems: Item[] = [
         },
       },
     ],
+    feature: {
+      eyebrow: { en: "Our product", fr: "Notre produit", rw: "Igicuruzwa cyacu" },
+      title: { en: "Vizulla Browser", fr: "Vizulla Browser", rw: "Vizulla Browser" },
+      body: {
+        en: "Fast, private and free, with ads and trackers blocked. For macOS, Windows and Linux.",
+        fr: "Rapide, privé et gratuit, sans publicités ni traqueurs. Pour macOS, Windows et Linux.",
+        rw: "Yihuta, irinda ubuzima bwite kandi ni ubuntu, nta matangazo n'ababakurikirana. Kuri macOS, Windows na Linux.",
+      },
+      href: "/vizulla-browser",
+      cta: { en: "Download Vizulla", fr: "Télécharger Vizulla", rw: "Kuramo Vizulla" },
+    },
   },
   { label: { en: "Work", fr: "Réalisations", rw: "Ibyo twakoze" }, href: "/work" },
   {
@@ -292,6 +303,10 @@ export const footerColumns: { title: L; links: { label: L; href: string }[] }[] 
     links: [
       ...navItems[4]!.children!.slice(0, 4).map((c) => ({ label: c.label, href: c.href })),
       { label: { en: "Products", fr: "Produits", rw: "Ibicuruzwa" }, href: "/products" },
+      {
+        label: { en: "Vizulla Browser", fr: "Vizulla Browser", rw: "Vizulla Browser" },
+        href: "/vizulla-browser",
+      },
       { label: { en: "Insights", fr: "Ressources", rw: "Inyandiko" }, href: "/insights" },
     ],
   },

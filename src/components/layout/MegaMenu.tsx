@@ -224,6 +224,16 @@ export function MegaMenu({
                           {item.feature?.cta ?? viewAllLabel}
                           <ArrowRight aria-hidden className="size-4" />
                         </Link>
+                        {/* A highlight linking elsewhere keeps the section's own "View all". */}
+                        {item.feature?.href && item.feature.href !== item.href && (
+                          <Link
+                            href={item.href}
+                            className="mt-3 inline-flex items-center gap-2 text-body-sm text-fg-secondary transition-[gap,color] hover:gap-3 hover:text-fg"
+                          >
+                            {viewAllLabel}
+                            <ArrowRight aria-hidden className="size-3.5" />
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>
