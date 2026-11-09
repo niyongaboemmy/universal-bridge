@@ -300,6 +300,7 @@ INBOX_SALES=sales@universalbridge.rw
 - `PAYLOAD_SECRET` must **never change** after launch, because sessions and two-step secrets depend on it.
 - `NEXT_PUBLIC_SITE_URL` must match the GitHub variable exactly.
 - If a required value is missing or still an example, the server refuses to start and the deploy rolls back. The log says which value.
+- `VIZULLA_GITHUB_TOKEN` (optional) turns on the download buttons at `/vizulla-browser`. The Vizulla repository is private, so create a **fine-grained** token at GitHub → Settings → Developer settings → Fine-grained tokens with access to `niyongaboemmy/vizulla-browser` only and the single permission **Contents: Read-only**. The server uses it to hand each visitor a download link that expires within an hour; the token never reaches the browser. Without it the page shows "Downloads are being prepared" with a contact link. A new Vizulla release appears on the page within ten minutes.
 
 ### 3.6 Deploy
 
