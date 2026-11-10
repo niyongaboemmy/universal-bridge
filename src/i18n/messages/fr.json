@@ -1300,5 +1300,45 @@
         "save": "Enregistrer"
       }
     }
+  },
+  "tools": {
+    "shortcutsLabel": "Nos outils gratuits",
+    "free": "Gratuit",
+    "vizulla": {
+      "name": "Vizulla Browser",
+      "short": "Navigation rapide et privée",
+      "pitch": "Un navigateur rapide et privé qui bloque publicités et traqueurs, avec un assistant qui fonctionne sur votre ordinateur. Pour macOS, Windows et Linux.",
+      "facts": {
+        "0": "Pubs et traqueurs bloqués",
+        "1": "Assistant sur l'appareil",
+        "2": "4 langues"
+      },
+      "explore": "Découvrir Vizulla",
+      "secondary": "Comment l'installer"
+    },
+    "kubika": {
+      "name": "Kubika",
+      "short": "Gardez vos publications",
+      "pitch": "Collez un lien et gardez vos vidéos, photos et carrousels de six plateformes. Sans publicité ni traceurs, fichiers supprimés après 24 heures.",
+      "facts": {
+        "0": "6 plateformes",
+        "1": "Tous les formats",
+        "2": "Supprimé après 24 h"
+      },
+      "explore": "Découvrir Kubika",
+      "secondary": "Ouvrir l'application"
+    },
+    "solutions": {
+      "eyebrow": "Prêts à l'emploi",
+      "title": "Des outils pour *chaque* secteur.",
+      "lead": "Deux produits gratuits de notre équipe, utilisés chaque jour par des écoles, des bureaux et des créateurs."
+    },
+    "art": {
+      "ad": "Pub",
+      "blocked": "Bloquée",
+      "saved": "Enregistré",
+      "save": "Enregistrer",
+      "noAds": "Sans pub"
+    }
   }
 }

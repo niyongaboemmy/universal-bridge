@@ -1300,5 +1300,45 @@
         "save": "Bika"
       }
     }
+  },
+  "tools": {
+    "shortcutsLabel": "Ibikoresho byacu by'ubuntu",
+    "free": "Ubuntu",
+    "vizulla": {
+      "name": "Vizulla Browser",
+      "short": "Mushakisha yihuta kandi yizewe",
+      "pitch": "Mushakisha yihuta irinda ubuzima bwite, ihagarika amatangazo n'ababakurikirana, ifite umufasha ukorera kuri mudasobwa yawe. Kuri macOS, Windows na Linux.",
+      "facts": {
+        "0": "Nta matangazo n'abagukurikirana",
+        "1": "Umufasha kuri mudasobwa",
+        "2": "Indimi 4"
+      },
+      "explore": "Menya Vizulla",
+      "secondary": "Uko uyishyiraho"
+    },
+    "kubika": {
+      "name": "Kubika",
+      "short": "Bika ibyo washyize ku mbuga",
+      "pitch": "Shyiramo link ubike videwo, amafoto na carousel byawe biri ku mbuga esheshatu. Nta matangazo, nta bikurikirana, dosiye zisibwa nyuma y'amasaha 24.",
+      "facts": {
+        "0": "Imbuga 6",
+        "1": "Ubwoko bwose",
+        "2": "Bisibwa nyuma y'amasaha 24"
+      },
+      "explore": "Menya Kubika",
+      "secondary": "Fungura porogaramu"
+    },
+    "solutions": {
+      "eyebrow": "Biteguye gukoreshwa",
+      "title": "Ibikoresho bya *buri* rwego.",
+      "lead": "Ibicuruzwa bibiri by'ubuntu by'itsinda ryacu, amashuri, ibiro n'abahanzi bakoresha buri munsi."
+    },
+    "art": {
+      "ad": "Itangazo",
+      "blocked": "Ryahagaritswe",
+      "saved": "Byabitswe",
+      "save": "Bika",
+      "noAds": "Nta matangazo"
+    }
   }
 }
