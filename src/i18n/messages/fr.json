@@ -1160,5 +1160,145 @@
         "passwords": "Mots de passe"
       }
     }
+  },
+  "kubika": {
+    "metaTitle": "Kubika — gardez vos publications des réseaux sociaux",
+    "metaDescription": "Collez un lien et gardez vos vidéos, photos, carrousels et sons de YouTube, TikTok, Instagram, X, Facebook et LinkedIn. Sans publicité ni traceurs, fichiers supprimés après 24 heures. Un produit Universal Bridge.",
+    "crumb": "Kubika",
+    "eyebrow": "Un produit Universal Bridge",
+    "title": "Kubika",
+    "tagline": "Collez un lien. <hl>Gardez la publication.</hl>",
+    "lead": "Enregistrez vidéos, photos, carrousels et sons de six plateformes en quelques secondes, dans la qualité de votre choix. Sans publicité ni traceurs.",
+    "paste": {
+      "label": "Lien d'une publication",
+      "placeholder": "Collez le lien d'une publication",
+      "paste": "Coller",
+      "submit": "Ouvrir dans Kubika",
+      "unsupported": "Collez le lien d'une publication YouTube, TikTok, Instagram, X, Facebook ou LinkedIn."
+    },
+    "platformsLabel": "Fonctionne avec YouTube, TikTok, Instagram, X, Facebook et LinkedIn",
+    "openApp": "Ouvrir Kubika",
+    "facts": {
+      "free": "Gratuit",
+      "anywhere": "Téléphone ou ordinateur, rien à installer",
+      "languages": "English · Français · Kinyarwanda"
+    },
+    "platforms": {
+      "eyebrow": "Six plateformes",
+      "title": "Là où vivent vos publications",
+      "lead": "Une seule zone de collage pour toutes. Kubika trouve la publication et propose tous ses formats.",
+      "saves": {
+        "videos": "Vidéos",
+        "shorts": "Shorts",
+        "audio": "Son",
+        "photoPosts": "Publications photo",
+        "reels": "Reels",
+        "photos": "Photos",
+        "carousels": "Carrousels",
+        "gifs": "GIF",
+        "files": "Documents"
+      }
+    },
+    "features": {
+      "eyebrow": "Pourquoi Kubika",
+      "title": "Tout ce qu'il faut pour garder. Rien de plus.",
+      "lead": "Pensé pour les créateurs et les équipes qui gardent leur propre travail.",
+      "items": {
+        "formats": {
+          "title": "Votre format, votre qualité",
+          "body": "Vidéo Best, 1080p ou 720p, son MP3 ou M4A, la couverture ou un GIF."
+        },
+        "carousels": {
+          "title": "Des carrousels entiers",
+          "body": "Choisissez les éléments voulus, en un seul ZIP ou en fichiers séparés."
+        },
+        "batch": {
+          "title": "Plusieurs liens d'un coup",
+          "body": "Collez une liste de liens, Kubika s'en occupe pour vous."
+        },
+        "extension": {
+          "title": "Extension de navigateur, bientôt",
+          "body": "Repérez une publication en naviguant et ouvrez-la dans Kubika en un clic."
+        },
+        "library": {
+          "title": "Une bibliothèque consultable",
+          "body": "Gardez vos publications avec étiquettes et notes ; retrouvez-les par titre, légende ou auteur."
+        },
+        "privacy": {
+          "title": "Privé par conception",
+          "body": "Sans publicité, sans traceurs, et jamais votre mot de passe de réseau social. Les fichiers sont supprimés après 24 heures."
+        }
+      }
+    },
+    "bento": {
+      "zip": "{count, plural, one {# photo} other {# photos}} · ZIP",
+      "links": "{count, plural, one {# lien} other {# liens}}",
+      "search": "kivu",
+      "noPasswords": "Aucun mot de passe demandé"
+    },
+    "how": {
+      "eyebrow": "Comment ça marche",
+      "title": "Trois étapes, quelques secondes",
+      "lead": "Aucune application à installer, rien à apprendre.",
+      "step": "Étape {n}",
+      "s1": {
+        "title": "Copiez le lien",
+        "body": "Touchez Partager sur la publication, puis Copier le lien."
+      },
+      "s2": {
+        "title": "Collez-le dans Kubika",
+        "body": "Kubika affiche la publication et ses formats."
+      },
+      "s3": {
+        "title": "Enregistrez",
+        "body": "Choisissez un format et enregistrez sur votre téléphone ou ordinateur."
+      }
+    },
+    "rights": {
+      "title": "Fait pour le contenu qui vous appartient",
+      "body": "Kubika enregistre ce que vous possédez ou avez le droit de garder. Il ne contourne jamais les paywalls, les comptes privés ni les protections contre la copie.",
+      "open": "Ouvrir Kubika",
+      "policy": "Utilisation acceptable"
+    },
+    "cta": {
+      "eyebrow": "Conçu à Kigali par Universal Bridge",
+      "title": "Kubika pour toute votre équipe ?",
+      "lead": "Espaces partagés, membres, limites d'utilisation et journal d'audit pour les rédactions, agences et institutions. Nous vous aidons à tout mettre en place.",
+      "primary": "Parlons-en",
+      "secondary": "Réserver un appel"
+    },
+    "showcase": {
+      "hero": "Gardez ce qui vous appartient",
+      "placeholder": "Collez le lien d'une publication",
+      "fetching": "Récupération de la publication sur TikTok…",
+      "noAds": "Sans publicité",
+      "noTrackers": "Sans traceurs",
+      "deleted": "Supprimé après 24 h",
+      "recent": "Téléchargements récents",
+      "recent1": "Time-lapse de Kigali",
+      "recent2": "Carrousel du studio",
+      "privacy": "Confidentialité",
+      "postTitle": "Le lac Kivu au coucher du soleil",
+      "postMeta": "1 vidéo · 0:42",
+      "format": "Format",
+      "download": "Télécharger",
+      "stepFetch": "Récupération de la vidéo 1 sur 1",
+      "stepMerge": "Assemblage de la vidéo et du son",
+      "stepSave": "Enregistrement",
+      "ready": "Votre fichier est prêt",
+      "file": "24,6 Mo · MP4",
+      "saveDevice": "Enregistrer sur l'appareil",
+      "saveLibrary": "Enregistrer dans la bibliothèque",
+      "saved": "Enregistré",
+      "navDownload": "Télécharger",
+      "navBatch": "Lot",
+      "navLibrary": "Bibliothèque",
+      "scenes": {
+        "paste": "Coller",
+        "choose": "Choisir",
+        "download": "Télécharger",
+        "save": "Enregistrer"
+      }
+    }
   }
 }

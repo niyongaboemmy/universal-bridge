@@ -307,6 +307,7 @@ export const footerColumns: { title: L; links: { label: L; href: string }[] }[] 
         label: { en: "Vizulla Browser", fr: "Vizulla Browser", rw: "Vizulla Browser" },
         href: "/vizulla-browser",
       },
+      { label: { en: "Kubika", fr: "Kubika", rw: "Kubika" }, href: "/kubika" },
       { label: { en: "Insights", fr: "Ressources", rw: "Inyandiko" }, href: "/insights" },
     ],
   },

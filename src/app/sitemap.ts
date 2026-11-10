@@ -11,7 +11,7 @@ const STATIC = [
   ...["/", "/services", "/solutions", "/work", "/products", "/contact", "/book"],
   ...["/academy", "/academy/programs", "/academy/internships", "/academy/apply"],
   ...["/company/about", "/company/leadership", "/company/careers", "/company/partners"],
-  ...["/company/events", "/company/press", "/labs", "/insights", "/vizulla-browser"],
+  ...["/company/events", "/company/press", "/labs", "/insights", "/vizulla-browser", "/kubika"],
   ...LEGAL.map((s) => `/legal/${s}`),
 ];
 const DYNAMIC: [CollectionSlug, string][] = [
