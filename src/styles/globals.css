@@ -5376,8 +5376,7 @@ html.nav-pending * {
 }
 
 /*
- * Our own products (src/features/tools): the hero shortcuts and the two tool
- * cards. Each card loops a 7 s scene; static (reduced motion, Lite mode): the
+ * Our own products (src/features/tools): the two tool cards. Each card loops a 7 s scene; static (reduced motion, Lite mode): the
  * finished state, ads stamped "blocked" and the post saved.
  */
 .ot-ad {
@@ -5389,37 +5388,8 @@ html.nav-pending * {
 .ot-link {
   opacity: 0;
 }
-.ot-pill::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    rgb(255 255 255 / 0.18) 50%,
-    transparent 65%
-  );
-  translate: -120% 0;
-  pointer-events: none;
-}
-.ot-live::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: inherit;
-}
 
 @media (prefers-reduced-motion: no-preference) {
-  html:not([data-lite="on"]) .ot-live::after {
-    animation: ot-ping 1.8s ease-out infinite;
-  }
-  html:not([data-lite="on"]) .ot-pill::after {
-    animation: vz-shine 5s ease-in-out infinite;
-  }
-  html:not([data-lite="on"]) li + li > .ot-pill::after {
-    animation-delay: 0.6s;
-  }
   html:not([data-lite="on"]) .ot-count {
     animation: ot-count 7s linear infinite;
   }
@@ -5452,12 +5422,6 @@ html.nav-pending * {
   }
 }
 
-@keyframes ot-ping {
-  to {
-    scale: 2.6;
-    opacity: 0;
-  }
-}
 @keyframes ot-count {
   0%,
   20% {
@@ -5643,11 +5607,11 @@ html.nav-pending * {
     opacity: 1;
     translate: 0 0;
   }
-  html:not([data-lite="on"]) .pc-progress {
+  .pc-progress {
     /* Looped (not one-shot): it remounts on every slide change, so it stays in step. */
     animation: pc-fill var(--pc-dur) linear infinite;
   }
-  html:not([data-lite="on"]) .pc-progress[data-paused] {
+  .pc-progress[data-paused] {
     animation-play-state: paused;
   }
 }

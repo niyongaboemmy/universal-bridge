@@ -5,6 +5,7 @@ import * as migration_20261010_233714_google_analytics from './20261010_233714_g
 import * as migration_20261011_152503_analytics_audience from './20261011_152503_analytics_audience';
 import * as migration_20261109_120000_vizulla_nav from './20261109_120000_vizulla_nav';
 import * as migration_20261109_180000_kubika_nav from './20261109_180000_kubika_nav';
+import * as migration_20261110_120000_home_copy from './20261110_120000_home_copy';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20261109_180000_kubika_nav.up,
     down: migration_20261109_180000_kubika_nav.down,
     name: '20261109_180000_kubika_nav'
+  },
+  {
+    up: migration_20261110_120000_home_copy.up,
+    down: migration_20261110_120000_home_copy.down,
+    name: '20261110_120000_home_copy'
   },
 ];

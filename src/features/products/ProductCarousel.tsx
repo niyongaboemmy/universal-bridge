@@ -9,8 +9,8 @@ const INTERVAL = 6000;
 /**
  * The hero's product stage: one slide per product, logo tabs below with a
  * progress line. Advances every 6 s; pauses on hover, keyboard focus or the pause
- * button (WCAG 2.2.2). Under reduced motion or Lite mode it
- * starts paused, on the first product. Slides are server-rendered children.
+ * button (WCAG 2.2.2). Under reduced motion it starts
+ * paused, on the first product. Slides are server-rendered children.
  */
 export function ProductCarousel({
   tabs,
@@ -31,7 +31,9 @@ export function ProductCarousel({
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const read = () => setCalm(mq.matches || document.documentElement.dataset.lite === "on");
+    // Lite mode (phones by default) still rotates: it is a cheap cross-fade, and the
+    // carousel is how phones see every product. Reduced motion stays put.
+    const read = () => setCalm(mq.matches);
     read();
     mq.addEventListener("change", read);
     return () => mq.removeEventListener("change", read);

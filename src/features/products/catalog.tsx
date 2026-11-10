@@ -7,7 +7,7 @@ import { KubikaMini, VizullaMini } from "@/features/tools/OwnTools";
 import { localizePath, type Locale } from "@/i18n/routing";
 import { getProducts } from "@/lib/cms/content";
 
-/** One product as the home page promotes it (hero carousel, shortcuts). */
+/** One product as the home page promotes it (the hero carousel). */
 export type CatalogProduct = {
   key: string;
   name: string;
