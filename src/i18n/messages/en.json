@@ -1297,12 +1297,11 @@
     }
   },
   "tools": {
-    "shortcutsLabel": "Our products",
     "free": "Free",
     "vizulla": {
       "name": "Vizulla Browser",
       "short": "Fast, private browsing",
-      "pitch": "A fast, private browser that blocks ads and trackers, with an assistant that runs on your computer. For macOS, Windows and Linux.",
+      "pitch": "Fast and private: ads and trackers blocked, an assistant on your computer. macOS, Windows, Linux.",
       "facts": {
         "0": "Ads & trackers blocked",
         "1": "On-device assistant",
@@ -1314,7 +1313,7 @@
     "kubika": {
       "name": "Kubika",
       "short": "Save your social posts",
-      "pitch": "Paste a link and keep your videos, photos and carousels from six platforms. No ads, no trackers, files deleted after 24 hours.",
+      "pitch": "Paste a link, keep your videos, photos and carousels. No ads, no trackers.",
       "facts": {
         "0": "6 platforms",
         "1": "Every format",

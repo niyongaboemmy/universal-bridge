@@ -295,7 +295,7 @@ test.describe("v2 V-1 hero shows what we build", () => {
   }) => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "Software, AI and devices — engineered in Kigali.",
+      "Software & AI, engineered in Kigali.",
     );
     const showcase = page.locator(".showcase");
     await expect(showcase).toBeVisible();

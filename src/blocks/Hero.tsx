@@ -6,7 +6,6 @@ import { AccentText } from "@/components/ui/AccentText";
 import { Button } from "@/components/ui/Button";
 import { Media } from "@/components/ui/Media";
 import type { Media as MediaDoc } from "@/payload-types";
-import { ToolShortcuts } from "@/features/tools/ToolShortcuts";
 import { HeroShowcase } from "./HeroShowcase";
 import { localizePath } from "@/i18n/routing";
 import { editable } from "@/lib/live-edit/attrs";
@@ -17,13 +16,7 @@ import type { BlockProps } from "./types";
  * FR-HOME-01 hero. Complete without JavaScript (UI/UX §16): text, CTAs and
  * art are server-rendered; motion layers on later.
  */
-export function HeroBlock({
-  block,
-  locale,
-  first,
-  edit,
-  shortcuts,
-}: BlockProps<"hero"> & { shortcuts?: boolean }) {
+export function HeroBlock({ block, locale, first, edit }: BlockProps<"hero">) {
   const night = block.mood !== "day";
   const Heading = first ? "h1" : "h2";
   const showcase = block.visual === "showcase";
@@ -44,10 +37,8 @@ export function HeroBlock({
           )}
         </div>
       )}
-      <div className="container-page grid items-center gap-12 pt-10 pb-16 lg:min-h-[min(88svh,860px)] grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:py-28 short:lg:min-h-0 short:lg:py-14">
+      <div className="container-page grid items-center gap-8 pt-6 pb-16 sm:gap-12 sm:pt-10 lg:min-h-[min(88svh,860px)] grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:py-28 short:lg:min-h-0 short:lg:py-14">
         <div className="relative">
-          {/* Home only: shortcuts to our own products, above the headline. */}
-          {shortcuts && <ToolShortcuts locale={locale} />}
           {block.eyebrow && (
             <p className="eyebrow" {...editable(edit, "eyebrow", "text", block.eyebrow)}>
               {block.eyebrow}
@@ -83,7 +74,8 @@ export function HeroBlock({
                 asChild
                 size="lg"
                 variant="secondary"
-                className={night ? "bg-transparent" : undefined}
+                // Phones: one button, so the product carousel shows on the first screen.
+                className={cn("max-sm:hidden", night && "bg-transparent")}
               >
                 <a href={localizePath(block.secondary.href, locale)}>
                   <span {...editable(edit, "secondary.label", "text", block.secondary.label)}>

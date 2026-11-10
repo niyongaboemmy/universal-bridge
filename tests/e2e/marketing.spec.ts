@@ -9,7 +9,7 @@ import {
 } from "./helpers";
 
 const TEMPLATES = [
-  ["/", "Software, AI and devices — engineered in Kigali."],
+  ["/", "Software & AI, engineered in Kigali."],
   ["/services", "Everything you need to build, run and grow software."],
   ["/services/cloud-devops", "Cloud & DevOps"],
   ["/solutions", "Technology that understands your sector."],
@@ -59,7 +59,7 @@ test.describe("S3 marketing templates", () => {
   test("core pages are translated (I18N-06)", async ({ page }) => {
     await page.goto("/fr");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "Logiciels, IA et objets connectés — conçus à Kigali.",
+      "Logiciels et IA, conçus à Kigali.",
     );
     await page.goto("/rw/services");
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Ibyo ukeneye byose");

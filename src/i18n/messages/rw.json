@@ -1297,12 +1297,11 @@
     }
   },
   "tools": {
-    "shortcutsLabel": "Ibicuruzwa byacu",
     "free": "Ubuntu",
     "vizulla": {
       "name": "Vizulla Browser",
       "short": "Mushakisha yihuta kandi yizewe",
-      "pitch": "Mushakisha yihuta irinda ubuzima bwite, ihagarika amatangazo n'ababakurikirana, ifite umufasha ukorera kuri mudasobwa yawe. Kuri macOS, Windows na Linux.",
+      "pitch": "Yihuta kandi yizewe: nta matangazo n'abagukurikirana, umufasha kuri mudasobwa yawe. macOS, Windows, Linux.",
       "facts": {
         "0": "Nta matangazo n'abagukurikirana",
         "1": "Umufasha kuri mudasobwa",
@@ -1314,7 +1313,7 @@
     "kubika": {
       "name": "Kubika",
       "short": "Bika ibyo washyize ku mbuga",
-      "pitch": "Shyiramo link ubike videwo, amafoto na carousel byawe biri ku mbuga esheshatu. Nta matangazo, nta bikurikirana, dosiye zisibwa nyuma y'amasaha 24.",
+      "pitch": "Shyiramo link, ubike videwo, amafoto na carousel byawe. Nta matangazo, nta bikurikirana.",
       "facts": {
         "0": "Imbuga 6",
         "1": "Ubwoko bwose",

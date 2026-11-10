@@ -12,13 +12,10 @@ export function RenderBlocks({
   blocks,
   locale,
   edit,
-  page,
 }: {
   blocks?: AnyBlock[] | null;
   locale: Locale;
   edit?: EditRef;
-  /** The page's slug, for blocks that add something on one page only. */
-  page?: string;
 }) {
   return (
     <>
@@ -29,16 +26,7 @@ export function RenderBlocks({
         const e = child(edit, "layout", block.id);
         switch (block.blockType) {
           case "hero":
-            return (
-              <HeroBlock
-                key={key}
-                block={block}
-                locale={locale}
-                edit={e}
-                first={first}
-                shortcuts={first && page === "home"}
-              />
-            );
+            return <HeroBlock key={key} block={block} locale={locale} edit={e} first={first} />;
           case "logoCloud":
             return <S.LogoCloudBlock key={key} block={block} locale={locale} edit={e} />;
           case "servicesGrid":

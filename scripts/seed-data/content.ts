@@ -588,14 +588,14 @@ export const pages = {
           rw: "KUVA 2019 · KIGALI",
         },
         title: {
-          en: "Software, AI and devices\u00a0— *engineered* in Kigali.",
-          fr: "Logiciels, IA et objets connectés\u00a0— *conçus* à Kigali.",
-          rw: "Porogaramu, AI n'ibikoresho\u00a0— *byakorewe* i Kigali.",
+          en: "Software & AI, *engineered* in Kigali.",
+          fr: "Logiciels et IA, *conçus* à Kigali.",
+          rw: "Porogaramu na AI, *byakorewe* i Kigali.",
         },
         lead: {
-          en: "We design, build and run software, AI and connected devices for companies, public institutions and NGOs, from the first idea to a system people rely on every day.",
-          fr: "Nous concevons, développons et exploitons logiciels, IA et objets connectés pour les entreprises, les institutions publiques et les ONG, de la première idée au système utilisé chaque jour.",
-          rw: "Dukora porogaramu, AI n'ibikoresho bihujwe na interineti ku bigo, inzego za Leta n'imiryango, kuva ku gitekerezo kugeza kuri sisitemu ikoreshwa buri munsi.",
+          en: "Apps, AI and smart devices for companies, institutions and NGOs, from idea to launch.",
+          fr: "Applications, IA et objets connectés pour entreprises, institutions et ONG, de l'idée au lancement.",
+          rw: "Porogaramu, AI n'ibikoresho bigezweho ku bigo, inzego n'imiryango, kuva ku gitekerezo kugeza bitangiye gukoreshwa.",
         },
         primary: cta("Start a project", "Démarrer un projet", "Tangira umushinga", "/contact"),
         secondary: cta(
@@ -609,7 +609,7 @@ export const pages = {
           fr: "Conçu à Kigali · Livré partout",
           rw: "Byubakiwe i Kigali · Bigera ku isi yose",
         },
-        // UI/UX audit v2 V-1: show what we build (live product, Labs sensor, dashboard), not our sign.
+        // Show what we build (every product, in the hero carousel), not our sign.
         visual: "showcase",
       },
       {
@@ -650,8 +650,8 @@ export const pages = {
               rw: "Duhera ku kibazo.",
             },
             body: {
-              en: "We begin with your users and the problem they face, then agree goals, scope and a clear plan before any code is written.",
-              fr: "Nous partons de vos utilisateurs et de leur problème, puis fixons objectifs, périmètre et plan clair avant d'écrire la moindre ligne de code.",
+              en: "We agree on users, goals and a clear plan before writing code.",
+              fr: "Utilisateurs, objectifs et plan clair, avant d'écrire du code.",
             },
           },
           {
@@ -662,8 +662,8 @@ export const pages = {
               rw: "Buri byumweru bibiri.",
             },
             body: {
-              en: "Every two-week sprint ends with a demo of working software, so you see progress early and can steer it while change is still cheap.",
-              fr: "Chaque sprint de deux semaines se termine par une démo d'un logiciel qui fonctionne : vous voyez l'avancement tôt et pouvez l'orienter à moindre coût.",
+              en: "A working demo every two weeks, so you can steer early.",
+              fr: "Une démo fonctionnelle toutes les deux semaines, pour ajuster tôt.",
             },
           },
           {
@@ -674,8 +674,8 @@ export const pages = {
               rw: "Gupima ibifite akamaro.",
             },
             body: {
-              en: "We agree how success will be measured at the start, then track it after launch, so the conversation is about results, not features.",
-              fr: "Nous définissons dès le départ comment mesurer le succès, puis le suivons après le lancement : on parle de résultats, pas de fonctionnalités.",
+              en: "We set success measures up front and track them after launch.",
+              fr: "Des indicateurs fixés dès le départ, suivis après le lancement.",
             },
           },
         ],
@@ -713,9 +713,9 @@ export const pages = {
             media: "coding-hub",
             title: { en: "Coding Hub", fr: "Coding Hub", rw: "Coding Hub" },
             body: {
-              en: "Web platforms, mobile apps and cloud infrastructure, built and tested for real phones on real networks.",
-              fr: "Plateformes web, applications mobiles et infrastructure cloud, conçues et testées pour de vrais téléphones sur de vrais réseaux.",
-              rw: "Imbuga, porogaramu za telefoni na cloud, bigeragezwa kuri telefoni nyazo no ku miyoboro nyayo.",
+              en: "Web, mobile and cloud, tested on real phones and networks.",
+              fr: "Web, mobile et cloud, testés sur de vrais téléphones et réseaux.",
+              rw: "Imbuga, telefoni na cloud, bigeragezwa ku miyoboro nyayo.",
             },
           },
           {
@@ -724,9 +724,9 @@ export const pages = {
             media: "ai-hub",
             title: { en: "AI Innovations Hub", fr: "AI Innovations Hub", rw: "AI Innovations Hub" },
             body: {
-              en: "Assistants grounded in your own documents, computer vision and forecasting, built responsibly and with consent.",
-              fr: "Assistants fondés sur vos propres documents, vision par ordinateur et prévisions, développés de façon responsable et avec consentement.",
-              rw: "Abafasha ba AI bashingiye ku nyandiko zawe, AI ireba n'iteganyagihe ry'amakuru, byubakwa mu buryo bwizewe.",
+              en: "AI assistants, computer vision and forecasting, built responsibly.",
+              fr: "Assistants IA, vision par ordinateur et prévisions, de façon responsable.",
+              rw: "Abafasha ba AI, AI ireba n'iteganyamakuru, byubakwa neza.",
             },
           },
           {
@@ -739,9 +739,9 @@ export const pages = {
               rw: "Embedded Systems Hub",
             },
             body: {
-              en: "Sensors, drones, robots and IoT prototypes, taken from the breadboard to field tests.",
-              fr: "Capteurs, drones, robots et prototypes IoT, du circuit d'essai jusqu'aux tests sur le terrain.",
-              rw: "Sensors, drones, robots n'ibikoresho bya IoT, kuva ku igerageza kugeza ku murima.",
+              en: "Sensors, drones and robots, from breadboard to field.",
+              fr: "Capteurs, drones et robots, du prototype au terrain.",
+              rw: "Sensors, drones na robots, kuva ku igerageza kugeza ku murima.",
             },
           },
         ],
@@ -767,8 +767,8 @@ export const pages = {
           {
             title: { en: "UTC+2, all year", fr: "UTC+2, toute l'année", rw: "UTC+2, umwaka wose" },
             body: {
-              en: "No daylight-saving changes: a full working-day overlap with Europe.",
-              fr: "Pas de changement d'heure : une journée de travail commune avec l'Europe.",
+              en: "A full working-day overlap with Europe.",
+              fr: "Une journée de travail commune avec l'Europe.",
             },
           },
           {
@@ -778,8 +778,8 @@ export const pages = {
               rw: "Icyongereza, Igifaransa, Ikinyarwanda",
             },
             body: {
-              en: "Workshops, documents and support in English, French or Kinyarwanda.",
-              fr: "Ateliers, documents et support en anglais, français ou kinyarwanda.",
+              en: "Support in English, French or Kinyarwanda.",
+              fr: "Support en anglais, français ou kinyarwanda.",
             },
           },
           {
@@ -789,8 +789,8 @@ export const pages = {
               rw: "Kurinda amakuru",
             },
             body: {
-              en: "Built around Rwanda's Law No. 058/2021, with GDPR in mind for EU users.",
-              fr: "Conçu selon la loi rwandaise n° 058/2021, en tenant compte du RGPD.",
+              en: "Designed for Rwanda's data law and the GDPR.",
+              fr: "Conçu pour la loi rwandaise sur les données et le RGPD.",
             },
           },
           {
@@ -800,8 +800,8 @@ export const pages = {
               rw: "Kigali Innovation City",
             },
             body: {
-              en: "Part of a fast-growing tech ecosystem in one of Africa's best-connected capitals.",
-              fr: "Au cœur d'un écosystème tech en plein essor, dans une capitale africaine très connectée.",
+              en: "In one of Africa's best-connected capitals.",
+              fr: "Dans l'une des capitales les plus connectées d'Afrique.",
             },
           },
         ],
@@ -826,9 +826,9 @@ export const pages = {
           rw: "Iga. Hanga. *Yobora.*",
         },
         lead: {
-          en: "Hands-on courses and internships in coding, AI, robotics and design, taught by working engineers online and in Kigali. Every certificate can be verified online.",
-          fr: "Des formations pratiques et des stages en code, IA, robotique et design, animés par des ingénieurs en activité, en ligne et à Kigali. Chaque certificat est vérifiable en ligne.",
-          rw: "Amasomo ngiro n'imenyerezamwuga muri porogaramu, AI, robotike n'igishushanyo, yigishwa n'abahanga, kuri interineti n'i Kigali. Buri cyemezo kigenzurwa kuri interineti.",
+          en: "Courses and internships in coding, AI, robotics and design, taught by working engineers.",
+          fr: "Formations et stages en code, IA, robotique et design, animés par des ingénieurs.",
+          rw: "Amasomo n'imenyerezamwuga muri porogaramu, AI, robotike n'igishushanyo, yigishwa n'abahanga.",
         },
         cta: cta("Find your program", "Trouver votre programme", "Shaka isomo ryawe", "/academy"),
         media: "academy-hub",
@@ -842,9 +842,9 @@ export const pages = {
           rw: "Twubake ibizaza *ejo*.",
         },
         lead: {
-          en: "Tell us what you want to build or fix. We reply within one working day with honest advice and clear next steps.",
-          fr: "Dites-nous ce que vous voulez créer ou améliorer. Nous répondons sous un jour ouvré avec un avis franc et des prochaines étapes claires.",
-          rw: "Tubwire icyo ushaka kubaka cyangwa gukosora. Tugusubiza mu munsi umwe w'akazi, tukakugira inama.",
+          en: "Tell us what you need. We reply within one working day.",
+          fr: "Dites-nous ce dont vous avez besoin. Réponse sous un jour ouvré.",
+          rw: "Tubwire icyo ukeneye. Tugusubiza mu munsi umwe w'akazi.",
         },
         primary: cta("Start a project", "Démarrer un projet", "Tangira umushinga", "/contact"),
         secondary: cta("Book a call", "Réserver un appel", "Saba ikiganiro", "/book"),

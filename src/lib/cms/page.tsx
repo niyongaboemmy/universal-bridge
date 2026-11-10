@@ -46,7 +46,7 @@ export async function CmsPage({
   const edit = await docRef("pages", page, locale);
   return (
     <>
-      <RenderBlocks blocks={page.layout} locale={locale} edit={edit} page={slug} />
+      <RenderBlocks blocks={page.layout} locale={locale} edit={edit} />
       {children}
     </>
   );
