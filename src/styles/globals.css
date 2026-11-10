@@ -5597,3 +5597,62 @@ html.nav-pending * {
     translate: -50% 0;
   }
 }
+
+/*
+ * Home hero product carousel (features/products). Slides cross-fade; the
+ * device slides in, the card rises. Reduced motion: a plain cross-fade.
+ */
+.pc-slide {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.6s var(--ease-standard),
+    visibility 0s linear 0.6s;
+}
+.pc-slide[data-active] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s var(--ease-standard);
+}
+.pc-progress {
+  scale: 1 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-lite="on"]) .pc-slide .pc-device {
+    translate: 6% 0;
+    scale: 0.96;
+    transition:
+      translate 0.9s var(--ease-emphasized),
+      scale 0.9s var(--ease-emphasized);
+  }
+  html:not([data-lite="on"]) .pc-slide :is(.pc-card, .pc-chip) {
+    opacity: 0;
+    translate: 0 14px;
+    transition:
+      opacity 0.5s var(--ease-standard) 0.2s,
+      translate 0.6s var(--ease-emphasized) 0.2s;
+  }
+  html:not([data-lite="on"]) .pc-slide .pc-chip {
+    transition-delay: 0.35s;
+  }
+  html:not([data-lite="on"]) .pc-slide[data-active] .pc-device {
+    translate: 0 0;
+    scale: 1;
+  }
+  html:not([data-lite="on"]) .pc-slide[data-active] :is(.pc-card, .pc-chip) {
+    opacity: 1;
+    translate: 0 0;
+  }
+  html:not([data-lite="on"]) .pc-progress {
+    /* Looped (not one-shot): it remounts on every slide change, so it stays in step. */
+    animation: pc-fill var(--pc-dur) linear infinite;
+  }
+  html:not([data-lite="on"]) .pc-progress[data-paused] {
+    animation-play-state: paused;
+  }
+}
+@keyframes pc-fill {
+  from {
+    scale: 0 1;
+  }
+}

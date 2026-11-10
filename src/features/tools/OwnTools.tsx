@@ -144,7 +144,7 @@ export async function OwnTools({
 }
 
 /** A Vizulla window on a news page: the ads are stamped and fold away, the shield counts. */
-function VizullaMini({ ad, blocked }: { ad: string; blocked: string }) {
+export function VizullaMini({ ad, blocked }: { ad: string; blocked: string }) {
   return (
     <div
       className="showcase-layer absolute inset-x-5 top-7 bottom-0 sm:inset-x-10"
@@ -234,7 +234,7 @@ function Ad({
 }
 
 /** A phone running Kubika: a link lands, the post downloads, it is saved. Platforms float around. */
-function KubikaMini({ saved, noAds, save }: { saved: string; noAds: string; save: string }) {
+export function KubikaMini({ saved, noAds, save }: { saved: string; noAds: string; save: string }) {
   const spots = [
     "top-[12%] left-[8%]",
     "top-[48%] left-[4%]",
