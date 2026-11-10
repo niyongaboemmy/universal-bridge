@@ -148,7 +148,8 @@ test.describe("P1-4 one primary-action colour", () => {
       loc.evaluate((el) => getComputedStyle(el).backgroundColor);
     await page.goto("/");
     const header = await bg(page.locator("header").getByRole("link", { name: "Let's talk" }));
-    const hero = await bg(page.locator("main section").first().getByRole("link").first());
+    // The hero's first call to action, past the product shortcuts (a nav) above the headline.
+    const hero = await bg(page.locator("main section").first().locator("a:not(nav a)").first());
     await page.goto("/contact");
     const submit = await bg(page.getByRole("button", { name: "Send" }));
     expect(header).toBe("rgb(254, 118, 13)");

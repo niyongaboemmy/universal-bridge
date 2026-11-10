@@ -1300,5 +1300,45 @@
         "save": "Save"
       }
     }
+  },
+  "tools": {
+    "shortcutsLabel": "Our free tools",
+    "free": "Free",
+    "vizulla": {
+      "name": "Vizulla Browser",
+      "short": "Fast, private browsing",
+      "pitch": "A fast, private browser that blocks ads and trackers, with an assistant that runs on your computer. For macOS, Windows and Linux.",
+      "facts": {
+        "0": "Ads & trackers blocked",
+        "1": "On-device assistant",
+        "2": "4 languages"
+      },
+      "explore": "Explore Vizulla",
+      "secondary": "How to install"
+    },
+    "kubika": {
+      "name": "Kubika",
+      "short": "Save your social posts",
+      "pitch": "Paste a link and keep your videos, photos and carousels from six platforms. No ads, no trackers, files deleted after 24 hours.",
+      "facts": {
+        "0": "6 platforms",
+        "1": "Every format",
+        "2": "Deleted after 24 h"
+      },
+      "explore": "Explore Kubika",
+      "secondary": "Open the app"
+    },
+    "solutions": {
+      "eyebrow": "Ready to use",
+      "title": "Tools for *every* sector.",
+      "lead": "Two free products from our team that schools, offices and creators use every day."
+    },
+    "art": {
+      "ad": "Ad",
+      "blocked": "Blocked",
+      "saved": "Saved",
+      "save": "Save",
+      "noAds": "No ads"
+    }
   }
 }

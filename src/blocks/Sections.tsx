@@ -1,3 +1,4 @@
+import { OwnTools } from "@/features/tools/OwnTools";
 import { ArrowRight, CalendarDays, MessagesSquare, Quote } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -262,6 +263,8 @@ export async function IndustriesGridBlock({ block, locale, edit }: BlockProps<"i
           </li>
         ))}
       </ul>
+      {/* Our own products, ready for any sector. */}
+      <OwnTools locale={locale} header="solutions" className="mt-24" />
     </Section>
   );
 }
@@ -349,23 +352,28 @@ export async function ProductsShowcaseBlock({
     getProducts(locale),
     getTranslations({ locale, namespace: "templates" }),
   ]);
-  if (!products.length) return null;
-  if (products.length === 1) {
-    const p = products[0]!;
+  // Our own products (Vizulla Browser, Kubika) lead; the CMS products follow.
+  const own = <OwnTools locale={locale} className="mt-12" />;
+  if (products.length <= 1) {
+    const p = products[0];
     return (
       <Section id={block.anchor} night>
         <SectionHeader eyebrow={block.eyebrow} title={block.title} lead={block.lead} edit={edit} />
-        <ProductSpotlight
-          product={p}
-          locale={locale}
-          statusLabel={t(`product.status.${p.status}`)}
-        />
+        {own}
+        {p && (
+          <ProductSpotlight
+            product={p}
+            locale={locale}
+            statusLabel={t(`product.status.${p.status}`)}
+          />
+        )}
       </Section>
     );
   }
   return (
     <Section id={block.anchor} night>
       <SectionHeader eyebrow={block.eyebrow} title={block.title} lead={block.lead} edit={edit} />
+      {own}
       <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (
           <li key={p.id}>

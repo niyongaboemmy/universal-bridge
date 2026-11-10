@@ -5374,3 +5374,226 @@ html.nav-pending * {
     scale: 0.6;
   }
 }
+
+/*
+ * Our own products (src/features/tools): the hero shortcuts and the two tool
+ * cards. Each card loops a 7 s scene; static (reduced motion, Lite mode): the
+ * finished state, ads stamped "blocked" and the post saved.
+ */
+.ot-ad {
+  height: var(--h);
+}
+.ot-glyph {
+  scale: 1;
+}
+.ot-link {
+  opacity: 0;
+}
+.ot-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.18) 50%,
+    transparent 65%
+  );
+  translate: -120% 0;
+  pointer-events: none;
+}
+.ot-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-lite="on"]) .ot-live::after {
+    animation: ot-ping 1.8s ease-out infinite;
+  }
+  html:not([data-lite="on"]) .ot-pill::after {
+    animation: vz-shine 5s ease-in-out infinite;
+  }
+  html:not([data-lite="on"]) li + li > .ot-pill::after {
+    animation-delay: 0.6s;
+  }
+  html:not([data-lite="on"]) .ot-count {
+    animation: ot-count 7s linear infinite;
+  }
+  html:not([data-lite="on"]) .ot-ad {
+    animation: ot-ad 7s var(--ease-standard) calc(var(--n) * 0.5s) infinite;
+  }
+  html:not([data-lite="on"]) .ot-ad__x {
+    animation: ot-ad-x 7s var(--ease-standard) calc(var(--n) * 0.5s) infinite;
+  }
+  html:not([data-lite="on"]) .ot-type {
+    animation: ot-type 7s steps(26) infinite;
+  }
+  html:not([data-lite="on"]) .ot-link {
+    animation: ot-link 7s linear infinite;
+  }
+  html:not([data-lite="on"]) .ot-glyph {
+    animation: ot-glyph 7s var(--ease-emphasized) infinite;
+  }
+  html:not([data-lite="on"]) .ot-post {
+    animation: ot-post 7s var(--ease-standard) infinite;
+  }
+  html:not([data-lite="on"]) .ot-bar {
+    animation: ot-bar 7s var(--ease-standard) infinite;
+  }
+  html:not([data-lite="on"]) .ot-save {
+    animation: ot-save 7s linear infinite;
+  }
+  html:not([data-lite="on"]) .ot-toast {
+    animation: ot-toast 7s var(--ease-standard) infinite;
+  }
+}
+
+@keyframes ot-ping {
+  to {
+    scale: 2.6;
+    opacity: 0;
+  }
+}
+@keyframes ot-count {
+  0%,
+  20% {
+    --vz-n: 0;
+  }
+  55%,
+  100% {
+    --vz-n: 27;
+  }
+}
+@keyframes ot-ad {
+  0%,
+  42% {
+    height: var(--h);
+    opacity: 1;
+  }
+  52%,
+  90% {
+    height: 0;
+    opacity: 0;
+  }
+  97%,
+  100% {
+    height: var(--h);
+    opacity: 1;
+  }
+}
+@keyframes ot-ad-x {
+  0%,
+  18% {
+    opacity: 0;
+  }
+  24%,
+  90% {
+    opacity: 1;
+  }
+  97%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ot-type {
+  0%,
+  8% {
+    max-width: 0;
+  }
+  24%,
+  94% {
+    max-width: 12rem;
+  }
+  100% {
+    max-width: 0;
+  }
+}
+@keyframes ot-link {
+  0%,
+  24% {
+    opacity: 1;
+  }
+  25%,
+  94% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes ot-glyph {
+  0%,
+  24% {
+    scale: 0;
+  }
+  28% {
+    scale: 1.3;
+  }
+  31%,
+  94% {
+    scale: 1;
+  }
+  100% {
+    scale: 0;
+  }
+}
+@keyframes ot-post {
+  0%,
+  30% {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  36%,
+  94% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes ot-bar {
+  0%,
+  38% {
+    scale: 0 1;
+  }
+  64%,
+  94% {
+    scale: 1 1;
+  }
+  100% {
+    scale: 0 1;
+  }
+}
+@keyframes ot-save {
+  0%,
+  68%,
+  72%,
+  100% {
+    scale: 1;
+  }
+  70% {
+    scale: 0.9;
+  }
+}
+@keyframes ot-toast {
+  0%,
+  72% {
+    opacity: 0;
+    translate: -50% 12px;
+  }
+  76%,
+  92% {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  97%,
+  100% {
+    opacity: 0;
+    translate: -50% 0;
+  }
+}
