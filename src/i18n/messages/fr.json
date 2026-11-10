@@ -859,15 +859,10 @@
     }
   },
   "showcase": {
-    "dashboard": "Tableau de bord coopératif",
-    "live": "En direct",
-    "orders": "Commandes cette semaine",
-    "members": "Membres",
-    "sensor": "Humidité du sol · Musanze",
-    "sms": "Alerte envoyée par SMS",
-    "web": "Web",
-    "mobile": "Mobile",
-    "iot": "IoT"
+    "products": "Nos produits",
+    "explore": "Découvrir {name}",
+    "pause": "Mettre le carrousel en pause",
+    "play": "Relancer le carrousel"
   },
   "academyTeaser": {
     "nextIntakes": "Prochaines promotions",
@@ -1302,7 +1297,7 @@
     }
   },
   "tools": {
-    "shortcutsLabel": "Nos outils gratuits",
+    "shortcutsLabel": "Nos produits",
     "free": "Gratuit",
     "vizulla": {
       "name": "Vizulla Browser",

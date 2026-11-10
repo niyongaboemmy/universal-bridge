@@ -859,15 +859,10 @@
     }
   },
   "showcase": {
-    "dashboard": "Imbonerahamwe ya koperative",
-    "live": "Ubu",
-    "orders": "Ibyatumijwe iki cyumweru",
-    "members": "Abanyamuryango",
-    "sensor": "Ubuhehere bw'ubutaka · Musanze",
-    "sms": "Integuza yoherejwe kuri SMS",
-    "web": "Murandasi",
-    "mobile": "Telefoni",
-    "iot": "IoT"
+    "products": "Ibicuruzwa byacu",
+    "explore": "Menya {name}",
+    "pause": "Hagarika urukurikirane rw'ibicuruzwa",
+    "play": "Komeza urukurikirane rw'ibicuruzwa"
   },
   "academyTeaser": {
     "nextIntakes": "Ibyiciro bikurikira",
@@ -1302,7 +1297,7 @@
     }
   },
   "tools": {
-    "shortcutsLabel": "Ibikoresho byacu by'ubuntu",
+    "shortcutsLabel": "Ibicuruzwa byacu",
     "free": "Ubuntu",
     "vizulla": {
       "name": "Vizulla Browser",

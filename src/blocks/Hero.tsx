@@ -99,7 +99,7 @@ export function HeroBlock({
         <div
           className={cn(
             "relative lg:aspect-[5/6] short:lg:mx-auto short:lg:aspect-square short:lg:w-[min(100%,70svh)]",
-            showcase ? "aspect-square" : hasMedia ? "aspect-[4/3]" : "hidden lg:block",
+            showcase ? "aspect-[4/5]" : hasMedia ? "aspect-[4/3]" : "hidden lg:block",
           )}
         >
           {showcase ? (

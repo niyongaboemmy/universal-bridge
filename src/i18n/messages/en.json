@@ -859,15 +859,10 @@
     }
   },
   "showcase": {
-    "dashboard": "Cooperative dashboard",
-    "live": "Live",
-    "orders": "Orders this week",
-    "members": "Members",
-    "sensor": "Soil moisture · Musanze",
-    "sms": "Alert sent by SMS",
-    "web": "Web",
-    "mobile": "Mobile",
-    "iot": "IoT"
+    "products": "Our products",
+    "explore": "Explore {name}",
+    "pause": "Pause the product carousel",
+    "play": "Play the product carousel"
   },
   "academyTeaser": {
     "nextIntakes": "Next intakes",
@@ -1302,7 +1297,7 @@
     }
   },
   "tools": {
-    "shortcutsLabel": "Our free tools",
+    "shortcutsLabel": "Our products",
     "free": "Free",
     "vizulla": {
       "name": "Vizulla Browser",
